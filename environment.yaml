@@ -2,79 +2,66 @@ name: dlenv
 channels:
   - pytorch
   - nvidia
+  - conda-forge
   - defaults
 dependencies:
   # python
-  - python=3.11
-  - pip
-  - ipykernel                   # jupyter notebooks
-  - pytest                      # unit tests
+  - python=3.11.9
+  - pip=24.0
+  - ipykernel=6.29.5                  # jupyter notebooks
+  - pytest=8.2.2                      # unit tests
 
   # scientific
-  - numpy<2                      # arrays
-  - pandas<2.2                     # dataframes
-  - scipy<1.14                      # scientific computing
-  - sympy<1.13                      # symbolic math
-  - networkx<3.3                   # graphs
-  - statsmodels<0.14                # statistics
-  - matplotlib<3.9                 # low-level plotting
-  - seaborn<0.13                    # high level plotting
-  - altair<5.3                     # high level plotting
+  - numpy=1.26.4                      # arrays
+  - pandas=2.1.4                      # dataframes
+  - scipy=1.13.1                      # scientific computing
+  - sympy=1.12.1                      # symbolic math
+  - networkx=3.2.1                    # graphs
+  - statsmodels=0.13.5                # statistics
+  - matplotlib=3.8.4                  # low-level plotting
+  - seaborn=0.12.2                    # high level plotting
+  - altair=5.3.0                      # high level plotting
+  - cvxpy=1.5.2                       # convex optimization
 
   # modeling
-  - scikit-learn<1.5               # general ml
-  - lightning<2.3                  # torch training loop abstraction
-  - torchmetrics<1.4               # metrics for lightning
-  - tensorflow<2.16                 # includes keras and tensorboard
+  - scikit-learn=1.4.2                # general ml
+  - lightgbm=4.4.0                    # gradient boosted decision trees
+  - py-xgboost=2.0.3                  # gradient boosted decision trees
+  - catboost=1.2.5                    # gradient boosted decision trees
 
   # pytorch
-  - pytorch=2.2.2                      # tensors and dynamic nns with gpu accel
-  - torchvision=0.17.2               # core vision algorithms
-  - torchaudio=2.2.2                 # audio
-  - pytorch-cuda=12.1
-  # - cudatoolkit<=12.2                # enable gpu accel for torch  TODO: check if this is necessary, it might be included in pytorch-cuda
-
-  # rapids
-  - cudf                        # gpu pandas
-  - cuml                        # gpu scikit-learn
-  - cugraph                     # gpu networkx
+  - pytorch=2.2.2                     # tensors and dynamic nns with gpu accel
+  - torchvision=0.17.2                # core vision algorithms
+  - torchaudio=2.2.2                  # audio
+  - pytorch-cuda=12.1                 # install torch with gpu support
+  - lightning=2.2.5                   # torch training loop abstraction
+  - torchmetrics=1.3.2                # metrics for lightning
 
   # mlops
-  - optuna                      # hyperparameter optimization
-  - mlflow                      # experiment tracking
+  - tensorflow-gpu=2.15.0             # includes keras and tensorboard
+  - optuna=3.6.1                      # hyperparameter optimization
+  - mlflow=2.14.2                     # experiment tracking
 
   # utils
-  - tqdm                        # progress bars
-  - psutil                      # system tools (ex.: top)
-  - loguru                      # logging
-  - codetiming                  # code timer
-  - joblib                      # parallelisation
-  - numba                       # jit compilation
-  - tabulate                    # pretty print of df
-  - hydra                       # config files
-  - pyarrow
+  - tqdm=4.66.4                       # progress bars
+  - psutil=5.9.8                      # system tools (ex.: top)
+  - loguru=0.7.2                      # logging
+  - codetiming=1.3.2                  # code timer
+  - joblib=1.4.2                      # parallelisation
+  - numba=0.59.1                      # jit compilation
+  - tabulate=0.8.10                   # pretty print of df
+  - hydra-core=1.3.2                  # config files
+  - pyarrow=15.0.0                    # python bindings for apache arrow
+  - missingno=0.5.2                   # visualize nans
 
   # nlp
-  - transformers                # pre-trained transformers from huggingface
-  - nltk                        # NLP general
+  - transformers=4.42.3               # pre-trained transformers from huggingface
+  - nltk=3.8.1                        # NLP general
 
   # vision
-  - opencv-python               # core vision algorithms
-  - Pillow                      # core vision algorithms
-  - albumentations              # image augmentations
-  - timm                        # pre-trained models
-  - scikit-image                # core vision algorithms
-  - segmentation-models-pytorch # segmentation
-
-  - pip:  # TODO: try to install these with conda
-    # convex optimization
-    - cvxpy                       # convex optimization
-    - cvxpylayers                 # cvxopt layer for torch
-
-    # trees
-    - lightgbm                    # gradient boosted decision trees
-    - xgboost<2.1                    # gradient boosted decision trees
-    - catboost                    # gradient boosted decision trees
-
-    # utils
-    - missingno                   # visualize nans
+  - scikit-image=0.23.2               # core vision algorithms
+  - opencv=4.8.1                      # core vision algorithms
+  - pillow=10.4.0                     # core vision algorithms
+  - albumentations=1.3.1              # image augmentations
+  - timm=0.9.2                        # pre-trained models
+  - segmentation-models-pytorch=0.3.3 # segmentation
