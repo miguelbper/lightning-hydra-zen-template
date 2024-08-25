@@ -56,6 +56,7 @@ albumentations = "*"
 timm = "*"
 segmentation-models-pytorch = "*"
 nltk = "^3.9.1"
+rootutils = "^1.0.7"
 
 [[tool.poetry.source]]
 name = "pytorch"
