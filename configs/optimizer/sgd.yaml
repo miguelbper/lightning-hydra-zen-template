@@ -1,0 +1,3 @@
+# https://pytorch.org/docs/stable/generated/torch.optim.SGD.html#torch.optim.SGD
+_target_: torch.optim.SGD
+params: ???

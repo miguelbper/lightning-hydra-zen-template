@@ -31,6 +31,7 @@ repos:
     rev: 1.7.9
     hooks:
       - id: bandit
+        args: ["-s", "B101"]
 
   - repo: https://github.com/myint/docformatter
     rev: v1.7.5
