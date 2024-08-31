@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "thunder"
+name = "deep-learning-template"
 version = "0.0.1"
 description = "A template for deep learning projects, using PyTorch Lightning and Hydra."
 authors = ["miguelbpgh <mbpereira94@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "thunder"}]
+packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"

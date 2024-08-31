@@ -1,0 +1,1 @@
+_target_: thunder.datamodule.mnist_datamodule.MNISTDataModule
