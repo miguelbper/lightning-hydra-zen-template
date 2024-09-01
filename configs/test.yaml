@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - datamodule: mnist
+  - model: mnist
+  - logger: null
+  - trainer: default
+  - paths: default
+  - hydra: default
+
+task_name: "test"
+ckpt_path: ???

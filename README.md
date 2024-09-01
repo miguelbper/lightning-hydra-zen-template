@@ -21,6 +21,8 @@ Template for deep learning projects, using
 - [Hydra](https://github.com/facebookresearch/hydra) - Configuration files
 - [Loguru](https://github.com/Delgan/loguru) - Logging
 
+Based on https://github.com/ashleve/lightning-hydra-template
+
 ## Setup
 Fork the repo or copy the code to the working directory of the new project.
 
