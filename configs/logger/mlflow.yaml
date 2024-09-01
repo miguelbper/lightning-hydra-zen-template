@@ -2,3 +2,5 @@
 
 mlflow:
   _target_: lightning.pytorch.loggers.mlflow.MLFlowLogger
+  tracking_uri: ${paths.log_dir}/mlflow/mlruns # run `mlflow ui` command inside the `logs/mlflow/` dir to open the UI
+  # save_dir: "./mlruns"

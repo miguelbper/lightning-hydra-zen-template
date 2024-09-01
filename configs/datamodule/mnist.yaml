@@ -1,1 +1,1 @@
-_target_: thunder.datamodule.mnist_datamodule.MNISTDataModule
+_target_: src.datamodule.mnist_datamodule.MNISTDataModule

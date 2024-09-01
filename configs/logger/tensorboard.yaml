@@ -2,3 +2,5 @@
 
 tensorboard:
   _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger
+  save_dir: ${paths.output_dir}/tensorboard/
+  name: null
