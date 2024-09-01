@@ -1,0 +1,22 @@
+# @package _global_
+
+task_name: "debug"
+
+callbacks: null
+logger: null
+
+# https://hydra.cc/docs/tutorials/basic/running_your_app/logging/
+hydra:
+  job_logging:
+    root:
+      level: DEBUG
+  verbose: True
+
+trainer:
+  max_epochs: 1
+  accelerator: cpu
+  devices: 1
+  detect_anomaly: true
+
+data:
+  num_workers: 0

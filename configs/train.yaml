@@ -1,3 +1,24 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - data: mnist
+  - model: mnist
+  - callbacks: default
+  - logger: default
+  - trainer: default
+  - paths: default
+  - hydra: default
+
+  - experiment: null
+  - hparams_search: null
+  - debug: null
+
+task_name: "train"
+train: True
+test: True
+ckpt_path: null
+seed: null
 
 metric: "val/acc"
 mode: "max"
