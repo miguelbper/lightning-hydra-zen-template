@@ -13,4 +13,4 @@ def instantiate_list(cfg: DictConfig) -> list[Any]:
     Returns:
         list[Any]: A list of instantiated objects.
     """
-    return list(map(hydra.utils.instantiate, cfg.values()))
+    return [hydra.utils.instantiate(obj) for _, obj in cfg.items()] if cfg else []
