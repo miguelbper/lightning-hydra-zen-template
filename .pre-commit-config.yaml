@@ -40,12 +40,12 @@ repos:
     rev: v1.7.5
     hooks:
       - id: docformatter
-        args: ["--black"]
+        args: ["--black", "--in-place"]
 
   - repo: https://github.com/python-poetry/poetry
     rev: 1.8.3
     hooks:
       - id: poetry-check
         args: ["--lock"]
-      - id: poetry-lock
-        args: ["--no-update"]
+      # - id: poetry-lock
+      #   args: ["--no-update"]
