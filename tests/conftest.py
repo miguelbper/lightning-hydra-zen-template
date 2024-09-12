@@ -3,13 +3,17 @@ import rootutils
 from hydra import compose, initialize
 from omegaconf import DictConfig, open_dict
 
+rootutils.setup_root(__file__)
+output = "${paths.log_dir}/${task_name}/runs/${now:%Y-%m-%d}_${now:%H-%M-%S}"
+
 
 @pytest.fixture(scope="package")
 def cfg_train() -> DictConfig:
     with initialize(config_path="../configs", version_base="1.3"):
         cfg = compose(config_name="train", return_hydra_config=True)
         with open_dict(cfg):
-            cfg.paths.root_dir = str(rootutils.find_root(indicator=".git"))
+            cfg.hydra.job.num = 1
+            cfg.hydra.runtime.output_dir = output
     return cfg
 
 
@@ -18,5 +22,6 @@ def cfg_test() -> DictConfig:
     with initialize(config_path="../configs", version_base="1.3"):
         cfg = compose(config_name="test", return_hydra_config=True)
         with open_dict(cfg):
-            cfg.paths.root_dir = str(rootutils.find_root(indicator=".git"))
+            cfg.hydra.job.num = 1
+            cfg.hydra.runtime.output_dir = output
     return cfg

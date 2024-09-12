@@ -1,3 +1,4 @@
+import re
 from collections.abc import Hashable, MutableMapping
 from typing import Any
 
@@ -31,6 +32,20 @@ def flatten(
     return dict(items)
 
 
+def format(dictionary: dict[str, Any]) -> dict[str, Any]:
+    """Formats the keys of a dictionary by removing any invalid characters.
+
+    Args:
+        dictionary (dict[str, Any]): The dictionary to be formatted.
+    Returns:
+        dict[str, Any]: The formatted dictionary with valid keys.
+    """
+    valid_chars = re.compile(r"[^a-zA-Z0-9_\-./ ]")
+    remove_invalid = lambda k: valid_chars.sub("", k)  # noqa: E731
+    formatted = {remove_invalid(k): v for k, v in dictionary.items()}
+    return formatted
+
+
 def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     """Logs the configuration parameters and hyperparameters.
 
@@ -41,7 +56,6 @@ def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
         None
     """
     cfg_dict = OmegaConf.to_container(cfg, resolve=True)
-    flat_cfg = flatten(cfg_dict)
+    flat_cfg = format(flatten(cfg_dict))
     for logger in trainer.loggers:
-        if hasattr(logger, "log_hyperparams"):
-            logger.log_hyperparams(flat_cfg)
+        logger.log_hyperparams(flat_cfg)
