@@ -35,14 +35,12 @@ def flatten(
 def format(dictionary: dict[str, Any]) -> dict[str, Any]:
     """Formats the keys of a dictionary by removing any invalid characters.
 
-    Valid characters: a-z, A-Z, 0-9, _, -, ., /, and space (those accepted as keys in MLflow).
-
     Args:
         dictionary (dict[str, Any]): The dictionary to be formatted.
     Returns:
         dict[str, Any]: The formatted dictionary with valid keys.
     """
-    valid_chars = re.compile(r"[^a-zA-Z0-9_\-./ ]")
+    valid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
     remove_invalid = lambda k: valid_chars.sub("", k)  # noqa: E731
     formatted = {remove_invalid(k): v for k, v in dictionary.items()}
     return formatted

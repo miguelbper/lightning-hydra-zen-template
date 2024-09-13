@@ -28,10 +28,3 @@ class TestLogCfg:
         trainer = hydra.utils.instantiate(cfg_train.trainer, logger=logger)
 
         log_cfg(cfg_train, trainer)
-
-        # for log in logger:
-        #     if hasattr(log, "log_hyperparams"):
-        #         assert log.log_hyperparams.called
-        #         assert log.log_hyperparams.call_count == 1
-        #         assert log.log_hyperparams.call_args[0][0] == flatten(cfg_train)
-        #         assert log.log_hyperparams.call_args[1] == {}
