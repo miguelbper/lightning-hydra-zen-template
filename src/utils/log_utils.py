@@ -1,32 +1,30 @@
 import re
-from collections.abc import Hashable, MutableMapping
+from collections.abc import MutableMapping
+from functools import partial
 from typing import Any
 
 from lightning import Trainer
 from omegaconf import DictConfig, OmegaConf
 
 
-def flatten(
-    dictionary: dict[Hashable, Any], parent_key: str = "", separator: str = "."
-) -> dict[Hashable, Any]:
+def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
     """Flatten a nested dictionary into a single-level dictionary.
 
     Args:
-        dictionary (dict[Hashable, Any]): The nested dictionary to be flattened.
+        dictionary (dict[str, Any]): The nested dictionary to be flattened.
         parent_key (str, optional): The parent key to be used for the flattened keys.
-        separator (str, optional): The separator to be used between parent and child keys.
     Returns:
-        dict[Hashable, Any]: The flattened dictionary.
+        dict[str, Any]: The flattened dictionary.
     Example:
         >>> nested_dict = {"a": {"b": 1, "c": {"d": 2}}}
         >>> flatten(nested_dict)
         {'a.b': 1, 'a.c.d': 2}
     """
-    items = []
+    items: list[tuple[str, Any]] = []
     for key, value in dictionary.items():
-        new_key = parent_key + separator + key if parent_key else key
+        new_key = f"{parent_key}.{key}" if parent_key else key
         if isinstance(value, MutableMapping):
-            items.extend(flatten(value, parent_key=new_key, separator=separator).items())
+            items.extend(flatten(value, parent_key=new_key).items())
         else:
             items.append((new_key, value))
     return dict(items)
@@ -40,9 +38,9 @@ def format(dictionary: dict[str, Any]) -> dict[str, Any]:
     Returns:
         dict[str, Any]: The formatted dictionary with valid keys.
     """
-    valid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
-    remove_invalid = lambda k: valid_chars.sub("", k)  # noqa: E731
-    formatted = {remove_invalid(k): v for k, v in dictionary.items()}
+    invalid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
+    replace_invalid = partial(invalid_chars.sub, "_")
+    formatted = {replace_invalid(k): v for k, v in dictionary.items()}
     return formatted
 
 
@@ -55,7 +53,7 @@ def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     Returns:
         None
     """
-    cfg_dict = OmegaConf.to_container(cfg, resolve=True)
-    flat_cfg = format(flatten(cfg_dict))
+    cfg_dict: dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore
+    flat_cfg: dict[str, Any] = format(flatten(cfg_dict))
     for logger in trainer.loggers:
         logger.log_hyperparams(flat_cfg)
