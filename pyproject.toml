@@ -37,3 +37,19 @@ dev = [
     "pytest-cov>=5.0.0",
     "pytest>=8.3.3",
 ]
+
+[tool.ruff]
+line-length = 99
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle
+    "F",  # Pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "UP",  # pyupgrade
+    "SIM",  # flake8-simplify
+]
+
+[tool.ruff.format]
+docstring-code-format = true
