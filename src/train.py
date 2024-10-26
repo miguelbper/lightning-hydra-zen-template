@@ -32,9 +32,11 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     Args:
         cfg (DictConfig): Configuration object containing all necessary parameters
                           for training, validation, and testing.
+
     Returns:
-        tuple[Metrics, Objects]: A tuple containing the training metrics and a dictionary
-                                 of instantiated objects used during the process.
+        tuple[Metrics, Objects]: A tuple containing:
+            Metrics: Collected metrics from the training process.
+            Objects: Instantiated objects used during the process.
     """
     # Set random seed
     if cfg.get("seed"):
@@ -84,10 +86,11 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="train.yaml")
 def main(cfg: DictConfig) -> float | None:
-    """
-    Main function to train the model and return the specified metric.
+    """Main function to train the model and return the specified metric.
+
     Args:
         cfg (DictConfig): Configuration object containing training parameters and settings.
+
     Returns:
         float | None: The value of the specified metric from the training process, or None if the
             metric is not found.
