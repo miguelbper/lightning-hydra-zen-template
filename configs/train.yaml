@@ -16,7 +16,7 @@ defaults:
 
 task_name: "train"
 train: True
-test: True
+eval: True
 ckpt_path: null
 seed: null
 

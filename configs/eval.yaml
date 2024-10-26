@@ -9,5 +9,5 @@ defaults:
   - paths: default
   - hydra: default
 
-task_name: "test"
+task_name: "eval"
 ckpt_path: ???
