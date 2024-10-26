@@ -11,7 +11,7 @@ def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
     """Flatten a nested dictionary into a single-level dictionary.
 
     Args:
-        dictionary (dict[str, Any]): The nested dictionary to be flattened.
+        dictionary (MutableMapping): The nested dictionary to be flattened.
         parent_key (str, optional): The parent key to be used for the flattened keys.
     Returns:
         dict[str, Any]: The flattened dictionary.
@@ -31,7 +31,7 @@ def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
 
 
 def format(dictionary: dict[str, Any]) -> dict[str, Any]:
-    """Formats the keys of a dictionary by removing any invalid characters.
+    """Formats the keys of a dictionary by replacing any invalid characters.
 
     Args:
         dictionary (dict[str, Any]): The dictionary to be formatted.
