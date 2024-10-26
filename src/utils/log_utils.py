@@ -18,7 +18,7 @@ def flatten(
     Returns:
         dict[Hashable, Any]: The flattened dictionary.
     Example:
-        >>> nested_dict = {'a': {'b': 1, 'c': {'d': 2}}}
+        >>> nested_dict = {"a": {"b": 1, "c": {"d": 2}}}
         >>> flatten(nested_dict)
         {'a.b': 1, 'a.c.d': 2}
     """

@@ -1,10 +1,10 @@
-from typing import Any, Optional
+from typing import Any
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
 
-def instantiate_list(cfg: Optional[DictConfig]) -> list[Any]:
+def instantiate_list(cfg: DictConfig | None) -> list[Any]:
     """Instantiate a list of objects based on the configuration dictionary.
 
     Args:

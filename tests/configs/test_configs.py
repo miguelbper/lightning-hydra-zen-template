@@ -23,13 +23,13 @@ def test_cfg_train(cfg_train: DictConfig) -> None:
     assert isinstance(trainer, Trainer)
 
 
-def test_cfg_test(cfg_test: DictConfig) -> None:
-    HydraConfig().set_config(cfg_test)
+def test_cfg_eval(cfg_eval: DictConfig) -> None:
+    HydraConfig().set_config(cfg_eval)
 
-    logger = instantiate_list(cfg_test.get("logger"))
-    model = hydra.utils.instantiate(cfg_test.model)
-    datamodule = hydra.utils.instantiate(cfg_test.datamodule)
-    trainer = hydra.utils.instantiate(cfg_test.trainer, logger=logger)
+    logger = instantiate_list(cfg_eval.get("logger"))
+    model = hydra.utils.instantiate(cfg_eval.model)
+    datamodule = hydra.utils.instantiate(cfg_eval.datamodule)
+    trainer = hydra.utils.instantiate(cfg_eval.trainer, logger=logger)
 
     assert isinstance(model, LightningModule)
     assert isinstance(datamodule, LightningDataModule)
