@@ -4,6 +4,7 @@ from typing import Any
 import hydra
 import lightning as L
 import rootutils
+from hydra.utils import instantiate
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
@@ -11,7 +12,7 @@ from omegaconf import DictConfig
 from src.utils.instantiate_list import instantiate_list
 from src.utils.log_utils import log_cfg
 
-Metrics = dict[str, float]
+Metrics = dict[str, float]  # TODO: float or Tensor?
 Objects = dict[str, Any]
 
 
@@ -50,30 +51,34 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     logger: list[Logger] = instantiate_list(cfg.get("logger"))
 
     log.info(f"Instantiating model <{cfg.model._target_}>")
-    model: LightningModule = hydra.utils.instantiate(cfg.model)
+    model: LightningModule = instantiate(cfg.model)
 
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
-    datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
+    datamodule: LightningDataModule = instantiate(cfg.datamodule)
 
     log.info("Instantiating trainer")
-    trainer: Trainer = hydra.utils.instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
+    trainer: Trainer = instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
 
     # Log configuration
     log_cfg(cfg, trainer)
 
     # Train -> Validate -> Test
+    log.info("Training model")
     trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
     best_ckpt = trainer.checkpoint_callback.best_model_path
 
+    log.info("Validating model")
     trainer.validate(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
     metrics = trainer.callback_metrics
 
     if cfg.get("eval"):
+        log.info("Testing model")
         trainer.test(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
         metrics.update(trainer.callback_metrics)
+        # TODO: Will trainer.test override metrics? Check if this is correct
 
     # Return metrics and objects
-    objects = {
+    objects = {  # TODO: Make objects be a pydantic model? (also in eval.py)
         "cfg": cfg,
         "callbacks": callbacks,
         "logger": logger,
@@ -96,7 +101,9 @@ def main(cfg: DictConfig) -> float | None:
             metric is not found.
     """
     metrics, _ = train(cfg)
-    return metrics.get(cfg.metric)
+    metric_name = cfg.get("metric") or ""
+    metric_value = metrics.get(metric_name)
+    return metric_value
 
 
 if __name__ == "__main__":
