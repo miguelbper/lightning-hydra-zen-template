@@ -24,3 +24,10 @@ repos:
       - id: ruff  # linter
         args: ["--fix"]
       - id: ruff-format  # formatter
+
+  - repo: https://github.com/PyCQA/docformatter
+    rev: 06907d0  # https://github.com/PyCQA/docformatter/commit/06907d0267368b49b9180eed423fae5697c1e909
+    hooks:
+      - id: docformatter
+        additional_dependencies: [tomli]
+        args: [--in-place, --config, ./pyproject.toml]

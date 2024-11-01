@@ -40,7 +40,7 @@ def evaluate(cfg: DictConfig) -> tuple[Metrics, Objects]:
 
     log_cfg(cfg, trainer)
 
-    log.info("Testing model")
+    log.info("Testing model...")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
     metrics = trainer.callback_metrics
 

@@ -52,6 +52,3 @@ select = [
     "UP",  # pyupgrade
     "SIM",  # flake8-simplify
 ]
-
-[tool.ruff.format]
-docstring-code-format = true

@@ -15,23 +15,13 @@ log = logging.getLogger(__name__)
 
 
 def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
-    """Train, validate, and optionally test a model using the provided configuration.
+    """Train a model from a configuration object.
 
-    The function performs the following steps:
-    - Instantiates model, datamodule, and trainer based on the configuration.
-    - Trains the model using the provided datamodule and optionally resumes from a checkpoint.
-    - Validates the model using the best checkpoint.
-    - Optionally tests the model if evaluation is enabled in the configuration.
-    - Returns the collected metrics and a dictionary of instantiated objects.
-
-    Args:
-        cfg (DictConfig): Configuration object containing all necessary parameters
-                          for training, validation, and testing.
-
-    Returns:
-        tuple[Metrics, Objects]: A tuple containing:
-            Metrics: Collected metrics from the training process.
-            Objects: Instantiated objects used during the process.
+    :param cfg: Configuration object representing the config files.
+    :type cfg: DictConfig
+    :return: A dictionary of metrics and the objects (cfg, model,
+        datamodule, trainer) used in the training process.
+    :rtype: tuple[Metrics, Objects]
     """
     if cfg.get("seed"):
         L.seed_everything(cfg.seed, workers=True)
@@ -46,16 +36,16 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
 
     log_cfg(cfg, trainer)
 
-    log.info("Training model")
+    log.info("Training model...")
     trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
     best_ckpt = trainer.checkpoint_callback.best_model_path
 
-    log.info("Validating model")
+    log.info("Validating model...")
     trainer.validate(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
     metrics = trainer.callback_metrics
 
     if cfg.get("eval"):
-        log.info("Testing model")
+        log.info("Testing model...")
         trainer.test(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
         metrics.update(trainer.callback_metrics)
         # TODO: Will trainer.test override metrics? Check if this is correct
