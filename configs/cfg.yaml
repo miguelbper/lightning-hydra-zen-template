@@ -14,7 +14,7 @@ defaults:
   - hparams_search: null
   - debug: null
 
-task_name: "train"
+task_name: null
 train: True
 eval: True
 ckpt_path: null

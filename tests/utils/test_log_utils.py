@@ -1,9 +1,8 @@
-import hydra
 from hydra.core.hydra_config import HydraConfig
+from hydra.utils import instantiate
 from omegaconf import DictConfig
 
-from src.utils.instantiate_list import instantiate_list
-from src.utils.log_utils import flatten, log_cfg
+from src.utils.utils import flatten, log_cfg
 
 
 class TestFlatten:
@@ -21,10 +20,7 @@ class TestFlatten:
 
 
 class TestLogCfg:
-    def test_log_cfg(self, cfg_train: DictConfig) -> None:
-        HydraConfig().set_config(cfg_train)
-
-        logger = instantiate_list(cfg_train.get("logger"))
-        trainer = hydra.utils.instantiate(cfg_train.trainer, logger=logger)
-
-        log_cfg(cfg_train, trainer)
+    def test_log_cfg(self, cfg: DictConfig) -> None:
+        HydraConfig().set_config(cfg)
+        trainer = instantiate(cfg.trainer)
+        log_cfg(cfg, trainer)

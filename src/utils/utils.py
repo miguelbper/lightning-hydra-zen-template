@@ -6,6 +6,8 @@ from typing import Any
 from lightning import Trainer
 from omegaconf import DictConfig, OmegaConf
 
+from src.utils.types import Metrics
+
 
 def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
     """Flatten a nested dictionary into a single-level dictionary.
@@ -53,7 +55,25 @@ def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     Returns:
         None
     """
-    cfg_dict: dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore
-    flat_cfg: dict[str, Any] = format(flatten(cfg_dict))
+    cfg_dict = OmegaConf.to_container(cfg, resolve=True)
+    flat_cfg = format(flatten(cfg_dict))
     for logger in trainer.loggers:
         logger.log_hyperparams(flat_cfg)
+
+
+def metric_value(metrics: Metrics, metric_name: str | None) -> float | None:
+    """Retrieve the value of a specified metric from a Metrics object.
+
+    Args:
+        metrics (Metrics): An object containing various metrics.
+        metric_name (str | None): The name of the metric to retrieve.
+
+    Returns:
+        float | None: The value of the specified metric as a float. Returns None if the metric_name
+            is None or is not found.
+    """
+    if metric_name is None:
+        return None
+    if metric_name not in metrics:
+        return None
+    return metrics[metric_name].item()
