@@ -1,6 +1,15 @@
 # https://lightning.ai/docs/pytorch/stable/common/trainer.html
 
 _target_: lightning.pytorch.trainer.Trainer
+logger:
+  - ${logger.csv}
+  - ${logger.mlflow}
+  - ${logger.tensorboard}
+callbacks:
+  - ${callbacks.early_stopping}
+  - ${callbacks.model_checkpoint}
+  - ${callbacks.rich_progress_bar}
+  - ${callbacks.rich_model_summary}
 min_epochs: 1
 max_epochs: 10
 check_val_every_n_epoch: 1

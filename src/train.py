@@ -5,11 +5,9 @@ import hydra
 import lightning as L
 import rootutils
 from hydra.utils import instantiate
-from lightning import Callback, LightningDataModule, LightningModule, Trainer
-from lightning.pytorch.loggers import Logger
+from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
-from src.utils.instantiate_list import instantiate_list
 from src.utils.log_utils import log_cfg
 
 Metrics = dict[str, float]  # TODO: float or Tensor?
@@ -44,12 +42,6 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
         L.seed_everything(cfg.seed, workers=True)
 
     # Instantiate all objects
-    log.info("Instantiating callbacks")
-    callbacks: list[Callback] = instantiate_list(cfg.get("callbacks"))
-
-    log.info("Instantiating loggers")
-    logger: list[Logger] = instantiate_list(cfg.get("logger"))
-
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = instantiate(cfg.model)
 
@@ -57,7 +49,7 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     datamodule: LightningDataModule = instantiate(cfg.datamodule)
 
     log.info("Instantiating trainer")
-    trainer: Trainer = instantiate(cfg.trainer, callbacks=callbacks, logger=logger)
+    trainer: Trainer = instantiate(cfg.trainer)
 
     # Log configuration
     log_cfg(cfg, trainer)
@@ -80,8 +72,6 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     # Return metrics and objects
     objects = {  # TODO: Make objects be a pydantic model? (also in eval.py)
         "cfg": cfg,
-        "callbacks": callbacks,
-        "logger": logger,
         "model": model,
         "datamodule": datamodule,
         "trainer": trainer,
@@ -89,7 +79,7 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     return metrics, objects
 
 
-@hydra.main(version_base="1.3", config_path="../configs", config_name="train.yaml")
+@hydra.main(version_base="1.3", config_path="../configs", config_name="cfg.yaml")
 def main(cfg: DictConfig) -> float | None:
     """Main function to train the model and return the specified metric.
 
