@@ -53,5 +53,5 @@ select = [
     "SIM",  # flake8-simplify
 ]
 
-[tool.ruff.format]
-docstring-code-format = true
+[tool.docformatter]
+style = "sphinx"  # Write docstrings in Sphinx style so that docformatter can format them

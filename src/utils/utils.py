@@ -12,15 +12,13 @@ from src.utils.types import Metrics
 def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
     """Flatten a nested dictionary into a single-level dictionary.
 
-    Args:
-        dictionary (MutableMapping): The nested dictionary to be flattened.
-        parent_key (str, optional): The parent key to be used for the flattened keys.
-    Returns:
-        dict[str, Any]: The flattened dictionary.
-    Example:
-        >>> nested_dict = {"a": {"b": 1, "c": {"d": 2}}}
-        >>> flatten(nested_dict)
-        {'a.b': 1, 'a.c.d': 2}
+    :param dictionary: The nested dictionary to be flattened
+    :type dictionary: MutableMapping
+    :param parent_key: The parent key to be used for the flattened keys,
+        defaults to ""
+    :type parent_key: str, optional
+    :return: The flattened dictionary
+    :rtype: dict[str, Any]
     """
     items: list[tuple[str, Any]] = []
     for key, value in dictionary.items():
@@ -35,10 +33,10 @@ def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
 def format(dictionary: dict[str, Any]) -> dict[str, Any]:
     """Formats the keys of a dictionary by replacing any invalid characters.
 
-    Args:
-        dictionary (dict[str, Any]): The dictionary to be formatted.
-    Returns:
-        dict[str, Any]: The formatted dictionary with valid keys.
+    :param dictionary: The dictionary to be formatted
+    :type dictionary: dict[str, Any]
+    :return: The formatted dictionary with valid keys
+    :rtype: dict[str, Any]
     """
     invalid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
     replace_invalid = partial(invalid_chars.sub, "_")
@@ -49,11 +47,10 @@ def format(dictionary: dict[str, Any]) -> dict[str, Any]:
 def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     """Logs the configuration parameters and hyperparameters.
 
-    Args:
-        cfg (DictConfig): The configuration parameters.
-        trainer (Trainer): The trainer object.
-    Returns:
-        None
+    :param cfg: _description_
+    :type cfg: DictConfig
+    :param trainer: _description_
+    :type trainer: Trainer
     """
     cfg_dict = OmegaConf.to_container(cfg, resolve=True)
     flat_cfg = format(flatten(cfg_dict))
@@ -64,13 +61,13 @@ def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
 def metric_value(metrics: Metrics, metric_name: str | None) -> float | None:
     """Retrieve the value of a specified metric from a Metrics object.
 
-    Args:
-        metrics (Metrics): An object containing various metrics.
-        metric_name (str | None): The name of the metric to retrieve.
-
-    Returns:
-        float | None: The value of the specified metric as a float. Returns None if the metric_name
-            is None or is not found.
+    :param metrics: An object containing various metrics
+    :type metrics: Metrics
+    :param metric_name: The name of the metric to retrieve
+    :type metric_name: str | None
+    :return: The value of the specified metric as a float. Returns None
+        if the metric_name is None or not found.
+    :rtype: float | None
     """
     if metric_name is None:
         return None
