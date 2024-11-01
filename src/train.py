@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 
 import hydra
 import lightning as L
@@ -9,9 +8,9 @@ from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
 from src.utils.log_utils import log_cfg
+from src.utils.pydantic import Objects
 
 Metrics = dict[str, float]  # TODO: float or Tensor?
-Objects = dict[str, Any]
 
 
 rootutils.setup_root(__file__)
@@ -22,7 +21,7 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     """Train, validate, and optionally test a model using the provided configuration.
 
     The function performs the following steps:
-    - Instantiates callbacks, loggers, model, datamodule, and trainer based on the configuration.
+    - Instantiates model, datamodule, and trainer based on the configuration.
     - Trains the model using the provided datamodule and optionally resumes from a checkpoint.
     - Validates the model using the best checkpoint.
     - Optionally tests the model if evaluation is enabled in the configuration.
@@ -37,24 +36,19 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
             Metrics: Collected metrics from the training process.
             Objects: Instantiated objects used during the process.
     """
-    # Set random seed
     if cfg.get("seed"):
         L.seed_everything(cfg.seed, workers=True)
 
-    # Instantiate all objects
-    log.info(f"Instantiating model <{cfg.model._target_}>")
+    log.info(f"Instantiating model <{cfg.model._target_}>...")
     model: LightningModule = instantiate(cfg.model)
-
-    log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
+    log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>...")
     datamodule: LightningDataModule = instantiate(cfg.datamodule)
-
-    log.info("Instantiating trainer")
+    log.info(f"Instantiating trainer <{cfg.trainer._target_}>...")
     trainer: Trainer = instantiate(cfg.trainer)
+    objects = Objects(cfg=cfg, model=model, datamodule=datamodule, trainer=trainer)
 
-    # Log configuration
     log_cfg(cfg, trainer)
 
-    # Train -> Validate -> Test
     log.info("Training model")
     trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
     best_ckpt = trainer.checkpoint_callback.best_model_path
@@ -69,13 +63,6 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
         metrics.update(trainer.callback_metrics)
         # TODO: Will trainer.test override metrics? Check if this is correct
 
-    # Return metrics and objects
-    objects = {  # TODO: Make objects be a pydantic model? (also in eval.py)
-        "cfg": cfg,
-        "model": model,
-        "datamodule": datamodule,
-        "trainer": trainer,
-    }
     return metrics, objects
 
 
