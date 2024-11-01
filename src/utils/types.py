@@ -3,6 +3,7 @@ from omegaconf import DictConfig
 from pydantic import BaseModel, ConfigDict
 from torch import Tensor
 
+Batch = tuple[Tensor, Tensor]
 Metrics = dict[str, Tensor]
 
 

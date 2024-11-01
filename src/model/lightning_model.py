@@ -5,7 +5,7 @@ from torch import Tensor, nn
 from torch.nn.modules.loss import _Loss
 from torch.optim.optimizer import Optimizer
 
-Batch = tuple[Any, Any]
+from src.utils.types import Batch
 
 
 class LightningModel(LightningModule):
