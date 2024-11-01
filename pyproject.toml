@@ -52,3 +52,6 @@ select = [
     "UP",  # pyupgrade
     "SIM",  # flake8-simplify
 ]
+
+[tool.docformatter]
+style = "sphinx"  # Write docstrings in Sphinx style so that docformatter can format them

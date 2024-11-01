@@ -14,21 +14,14 @@ log = logging.getLogger(__name__)
 
 
 def evaluate(cfg: DictConfig) -> tuple[Metrics, Objects]:
-    """Evaluate the model using the provided configuration.
+    """Evaluate a model from a configuration object (which should include a
+    checkpoint).
 
-    The function performs the following steps:
-    - Instantiates model, datamodule, and trainer based on the configuration.
-    - Logs the configuration.
-    - Tests the model using the trainer and data module.
-    - Returns the evaluation metrics and a dictionary of instantiated objects.
-
-    Args:
-        cfg (DictConfig): Configuration object containing all necessary parameters.
-
-    Returns:
-        tuple[Metrics, Objects]: A tuple containing:
-            - Metrics: Evaluation metrics obtained from the model testing.
-            - Objects: A dictionary of instantiated objects.
+    :param cfg: Configuration object representing the config files.
+    :type cfg: DictConfig
+    :return: A dictionary of metrics and the objects (cfg, model,
+        datamodule, trainer) used in the training process.
+    :rtype: tuple[Metrics, Objects]
     """
     log.info(f"Instantiating model <{cfg.model._target_}>...")
     model: LightningModule = instantiate(cfg.model)
@@ -51,11 +44,8 @@ def evaluate(cfg: DictConfig) -> tuple[Metrics, Objects]:
 def main(cfg: DictConfig) -> None:
     """Main function to evaluate the model based on the provided configuration.
 
-    Args:
-        cfg (DictConfig): Configuration object containing parameters for evaluation.
-
-    Returns:
-        None
+    :param cfg: Configuration object representing the config files.
+    :type cfg: DictConfig
     """
     evaluate(cfg)
 
