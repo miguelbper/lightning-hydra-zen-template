@@ -1,5 +1,5 @@
-import hydra
 from hydra.core.hydra_config import HydraConfig
+from hydra.utils import instantiate
 from omegaconf import DictConfig
 
 from src.utils.instantiate_list import instantiate_list
@@ -25,6 +25,6 @@ class TestLogCfg:
         HydraConfig().set_config(cfg_train)
 
         logger = instantiate_list(cfg_train.get("logger"))
-        trainer = hydra.utils.instantiate(cfg_train.trainer, logger=logger)
+        trainer = instantiate(cfg_train.trainer, logger=logger)
 
         log_cfg(cfg_train, trainer)

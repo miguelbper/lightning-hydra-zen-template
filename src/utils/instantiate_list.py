@@ -1,6 +1,6 @@
 from typing import Any
 
-import hydra
+from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 
 
@@ -14,4 +14,4 @@ def instantiate_list(cfg: DictConfig | None) -> list[Any]:
         list[Any]: A list of instantiated objects.
     """
     cfg = cfg or OmegaConf.create({})
-    return [hydra.utils.instantiate(obj) for _, obj in cfg.items()]
+    return [instantiate(obj) for _, obj in cfg.items()]

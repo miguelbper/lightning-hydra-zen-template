@@ -1,5 +1,5 @@
-import hydra
 from hydra.core.hydra_config import HydraConfig
+from hydra.utils import instantiate
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig
@@ -12,9 +12,9 @@ def test_cfg_train(cfg_train: DictConfig) -> None:
 
     callbacks = instantiate_list(cfg_train.get("callbacks"))
     logger = instantiate_list(cfg_train.get("logger"))
-    model = hydra.utils.instantiate(cfg_train.model)
-    datamodule = hydra.utils.instantiate(cfg_train.datamodule)
-    trainer = hydra.utils.instantiate(cfg_train.trainer, callbacks=callbacks, logger=logger)
+    model = instantiate(cfg_train.model)
+    datamodule = instantiate(cfg_train.datamodule)
+    trainer = instantiate(cfg_train.trainer, callbacks=callbacks, logger=logger)
 
     assert all(isinstance(callback, Callback) for callback in callbacks)
     assert all(isinstance(log, Logger) for log in logger)
@@ -27,9 +27,9 @@ def test_cfg_eval(cfg_eval: DictConfig) -> None:
     HydraConfig().set_config(cfg_eval)
 
     logger = instantiate_list(cfg_eval.get("logger"))
-    model = hydra.utils.instantiate(cfg_eval.model)
-    datamodule = hydra.utils.instantiate(cfg_eval.datamodule)
-    trainer = hydra.utils.instantiate(cfg_eval.trainer, logger=logger)
+    model = instantiate(cfg_eval.model)
+    datamodule = instantiate(cfg_eval.datamodule)
+    trainer = instantiate(cfg_eval.trainer, logger=logger)
 
     assert isinstance(model, LightningModule)
     assert isinstance(datamodule, LightningDataModule)

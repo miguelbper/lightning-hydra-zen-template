@@ -19,7 +19,7 @@ rootutils.setup_root(__file__)
 log = logging.getLogger(__name__)
 
 
-def test(cfg: DictConfig) -> tuple[Metrics, Objects]:
+def evaluate(cfg: DictConfig) -> tuple[Metrics, Objects]:
     """Evaluate the model using the provided configuration.
 
     The function performs the following steps:
@@ -84,7 +84,7 @@ def main(cfg: DictConfig) -> None:
     Returns:
         None
     """
-    test(cfg)
+    evaluate(cfg)
 
 
 if __name__ == "__main__":
