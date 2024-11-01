@@ -7,11 +7,8 @@ from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
-from src.utils.log_utils import log_cfg
-from src.utils.pydantic import Objects
-
-Metrics = dict[str, float]  # TODO: float or Tensor?
-
+from src.utils.types import Metrics, Objects
+from src.utils.utils import log_cfg, metric_value
 
 rootutils.setup_root(__file__)
 log = logging.getLogger(__name__)
@@ -78,9 +75,8 @@ def main(cfg: DictConfig) -> float | None:
             metric is not found.
     """
     metrics, _ = train(cfg)
-    metric_name = cfg.get("metric") or ""
-    metric_value = metrics.get(metric_name)
-    return metric_value
+    metric = metric_value(metrics, cfg.get("metric"))
+    return metric
 
 
 if __name__ == "__main__":

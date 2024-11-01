@@ -6,11 +6,8 @@ from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
-from src.utils.log_utils import log_cfg
-from src.utils.pydantic import Objects
-
-Metrics = dict[str, float]
-
+from src.utils.types import Metrics, Objects
+from src.utils.utils import log_cfg
 
 rootutils.setup_root(__file__)
 log = logging.getLogger(__name__)

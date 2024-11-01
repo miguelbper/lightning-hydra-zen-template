@@ -2,7 +2,7 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.utils import instantiate
 from omegaconf import DictConfig
 
-from src.utils.log_utils import flatten, log_cfg
+from src.utils.utils import flatten, log_cfg
 
 
 class TestFlatten:
