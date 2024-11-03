@@ -43,7 +43,12 @@ uv python install
 uv sync
 ```
 
-5. Run the unit tests:
+5. Install the package in editable mode:
+```bash
+uv pip install -e .
+```
+
+6. Run the unit tests:
 ```bash
 uv run pytest
 ```
