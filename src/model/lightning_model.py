@@ -1,9 +1,12 @@
+from collections.abc import Callable, Iterator
 from typing import Any
 
 from lightning import LightningModule
 from torch import Tensor, nn
 from torch.nn.modules.loss import _Loss
-from torch.optim.optimizer import Optimizer
+from torch.nn.parameter import Parameter
+from torch.optim import Optimizer
+from torch.optim.lr_scheduler import LRScheduler
 from torchmetrics import MetricCollection
 
 from src.utils.types import (
@@ -21,21 +24,25 @@ class LightningModel(LightningModule):
         self,
         model: nn.Module,
         loss_fn: _Loss,
-        optimizer: Optimizer,
+        optimizer: Callable[[Iterator[Parameter]], Optimizer],
+        scheduler: Callable[[Optimizer], LRScheduler],
         metric_collection: MetricCollection,
         task: Task,
     ) -> None:
         super().__init__()
+        self.save_hyperparameters(logger=False)
+
         self.model = model
         self.loss_fn = loss_fn
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.metric_collection = metric_collection
         self.task = task
 
         self.metrics = {
-            Split.TRAIN: self.metric_collection.clone(prefix=f"{Split.TRAIN.value}/"),
-            Split.VAL: self.metric_collection.clone(prefix=f"{Split.VAL.value}/"),
-            Split.TEST: self.metric_collection.clone(prefix=f"{Split.TEST.value}/"),
+            Split.TRAIN: metric_collection.clone(prefix=f"{Split.TRAIN.value}/"),
+            Split.VAL: metric_collection.clone(prefix=f"{Split.VAL.value}/"),
+            Split.TEST: metric_collection.clone(prefix=f"{Split.TEST.value}/"),
         }
         self.output_cls_name = {
             Task.REGRESSION: RegressionOutput,
@@ -65,6 +72,16 @@ class LightningModel(LightningModule):
     def test_step(self, batch: Batch, batch_idx: int) -> None:
         self.step(batch, batch_idx, Split.TEST)
 
-    def configure_optimizers(self) -> Optimizer:
-        # TODO: include scheduler
-        return self.optimizer
+    def configure_optimizers(self) -> dict[str, Any]:
+        optimizer = self.optimizer(params=self.parameters())
+        optim_cfg = {"optimizer": optimizer}
+        if self.scheduler:
+            scheduler = self.scheduler(optimizer=optimizer)
+            # TODO: should these options be given in the cfg file?
+            optim_cfg["lr_scheduler"] = {
+                "scheduler": scheduler,
+                "monitor": "val/loss",  # TODO: how to do this?
+                "interval": "epoch",
+                "frequency": 1,
+            }
+        return optim_cfg
