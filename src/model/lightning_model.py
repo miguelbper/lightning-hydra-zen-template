@@ -11,8 +11,8 @@ from torchmetrics import MetricCollection
 
 from src.utils.types import (
     Batch,
-    BinaryClassificationOutput,
-    MulticlassClassificationOutput,
+    BinaryOutput,
+    MulticlassOutput,
     RegressionOutput,
     Split,
     Task,
@@ -46,11 +46,11 @@ class LightningModel(LightningModule):
         }
         self.output_cls_name = {
             Task.REGRESSION: RegressionOutput,
-            Task.BINARY_CLASSIFICATION: BinaryClassificationOutput,
-            Task.MULTICLASS_CLASSIFICATION: MulticlassClassificationOutput,
+            Task.BINARY: BinaryOutput,
+            Task.MULTICLASS: MulticlassOutput,
         }[task]
 
-    def forward(self, inputs: Tensor) -> Any:
+    def forward(self, inputs: Tensor) -> RegressionOutput | BinaryOutput | MulticlassOutput:
         logits = self.model(inputs)
         return self.output_cls_name(logits=logits)
 

@@ -26,8 +26,8 @@ class Split(Enum):
 
 class Task(Enum):
     REGRESSION = auto()
-    BINARY_CLASSIFICATION = auto()
-    MULTICLASS_CLASSIFICATION = auto()
+    BINARY = auto()
+    MULTICLASS = auto()
 
 
 class RegressionOutput(BaseModel):
@@ -36,7 +36,7 @@ class RegressionOutput(BaseModel):
     preds: Tensor = Field(alias="logits")
 
 
-class BinaryClassificationOutput(BaseModel):
+class BinaryOutput(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     logits: Tensor
@@ -54,7 +54,7 @@ class BinaryClassificationOutput(BaseModel):
         return (values["probs"] > 0.5).float()
 
 
-class MulticlassClassificationOutput(BaseModel):
+class MulticlassOutput(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     logits: Tensor
