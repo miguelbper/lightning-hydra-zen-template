@@ -6,8 +6,6 @@ from typing import Any
 from lightning import Trainer
 from omegaconf import DictConfig, OmegaConf
 
-from src.utils.types import Metrics
-
 
 def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
     """Flatten a nested dictionary into a single-level dictionary.
@@ -30,20 +28,6 @@ def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
     return dict(items)
 
 
-def format(dictionary: dict[str, Any]) -> dict[str, Any]:
-    """Formats the keys of a dictionary by replacing any invalid characters.
-
-    :param dictionary: The dictionary to be formatted
-    :type dictionary: dict[str, Any]
-    :return: The formatted dictionary with valid keys
-    :rtype: dict[str, Any]
-    """
-    invalid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
-    replace_invalid = partial(invalid_chars.sub, "_")
-    formatted = {replace_invalid(k): v for k, v in dictionary.items()}
-    return formatted
-
-
 def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     """Logs the configuration parameters and hyperparameters.
 
@@ -53,24 +37,11 @@ def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     :type trainer: Trainer
     """
     cfg_dict = OmegaConf.to_container(cfg, resolve=True)
-    flat_cfg = format(flatten(cfg_dict))
+    cfg_flat = flatten(cfg_dict)
+
+    invalid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
+    replace_invalid = partial(invalid_chars.sub, "_")
+    cfg_formatted = {replace_invalid(k): v for k, v in cfg_flat.items()}
+
     for logger in trainer.loggers:
-        logger.log_hyperparams(flat_cfg)
-
-
-def metric_value(metrics: Metrics, metric_name: str | None) -> float | None:
-    """Retrieve the value of a specified metric from a Metrics object.
-
-    :param metrics: An object containing various metrics
-    :type metrics: Metrics
-    :param metric_name: The name of the metric to retrieve
-    :type metric_name: str | None
-    :return: The value of the specified metric as a float. Returns None
-        if the metric_name is None or not found.
-    :rtype: float | None
-    """
-    if metric_name is None:
-        return None
-    if metric_name not in metrics:
-        return None
-    return metrics[metric_name].item()
+        logger.log_hyperparams(cfg_formatted)

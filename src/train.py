@@ -8,7 +8,7 @@ from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
 from src.utils.types import Metrics, Objects
-from src.utils.utils import log_cfg, metric_value
+from src.utils.utils import log_cfg
 
 rootutils.setup_root(__file__)
 log = logging.getLogger(__name__)
@@ -65,8 +65,7 @@ def main(cfg: DictConfig) -> float | None:
     :rtype: float | None
     """
     metrics, _ = train(cfg)
-    metric = metric_value(metrics, cfg.get("metric"))
-    return metric
+    return metrics.get(cfg.get("metric"))
 
 
 if __name__ == "__main__":

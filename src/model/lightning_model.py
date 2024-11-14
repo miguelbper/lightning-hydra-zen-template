@@ -1,22 +1,71 @@
 from collections.abc import Callable, Iterator
+from enum import Enum, auto
 from typing import Any
 
 from lightning import LightningModule
-from torch import Tensor, nn
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+from torch import Tensor, nn, sigmoid, softmax
 from torch.nn.modules.loss import _Loss
 from torch.nn.parameter import Parameter
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 from torchmetrics import MetricCollection
 
-from src.utils.types import (
-    Batch,
-    BinaryOutput,
-    MulticlassOutput,
-    RegressionOutput,
-    Split,
-    Task,
-)
+Batch = tuple[Tensor, Tensor]
+
+
+class Split(Enum):
+    TRAIN = "train"
+    VAL = "val"
+    TEST = "test"
+
+
+class Task(Enum):
+    REGRESSION = auto()
+    BINARY = auto()
+    MULTICLASS = auto()
+
+
+class RegressionOutput(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    preds: Tensor = Field(alias="logits")
+
+
+class BinaryOutput(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    logits: Tensor
+    probs: Tensor = Field(init=False)
+    preds: Tensor = Field(init=False)
+
+    @field_validator("probs", mode="before")
+    @classmethod
+    def compute_probs(cls, v, values):
+        return sigmoid(values["logits"])
+
+    @field_validator("preds", mode="before")
+    @classmethod
+    def compute_preds(cls, v, values):
+        return (values["probs"] > 0.5).float()
+
+
+class MulticlassOutput(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    logits: Tensor
+    probs: Tensor = Field(init=False)
+    preds: Tensor = Field(init=False)
+
+    @field_validator("probs", mode="before")
+    @classmethod
+    def compute_probs(cls, v, values):
+        return softmax(values["logits"], dim=1)
+
+    @field_validator("preds", mode="before")
+    @classmethod
+    def compute_preds(cls, v, values):
+        return values["probs"].argmax(dim=1)
 
 
 class LightningModel(LightningModule):
@@ -59,7 +108,7 @@ class LightningModel(LightningModule):
         logits = self.model(inputs)
         loss = self.loss_fn(logits, target)
         self.log(f"{split.value}/loss", loss, on_step=True, on_epoch=False)
-        self.metrics[split](logits, target)
+        self.metrics[split].update(logits, target)
         self.log_dict(self.metrics[split], on_step=True, on_epoch=True)
         return loss
 
@@ -77,11 +126,10 @@ class LightningModel(LightningModule):
         optim_cfg = {"optimizer": optimizer}
         if self.scheduler:
             scheduler = self.scheduler(optimizer=optimizer)
-            # TODO: should these options be given in the cfg file?
             optim_cfg["lr_scheduler"] = {
                 "scheduler": scheduler,
-                "monitor": "val/loss",  # TODO: how to do this?
                 "interval": "epoch",
                 "frequency": 1,
+                "monitor": "val/loss",
             }
         return optim_cfg
