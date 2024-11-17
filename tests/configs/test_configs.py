@@ -15,5 +15,5 @@ def test_cfg(cfg: DictConfig) -> None:
     assert isinstance(model, LightningModule)
     assert isinstance(datamodule, LightningDataModule)
     assert isinstance(trainer, Trainer)
-    assert all([isinstance(callback, Callback) for callback in trainer.callbacks])
-    assert all([isinstance(logger, Logger) for logger in trainer.loggers])
+    assert all(isinstance(callback, Callback) for callback in trainer.callbacks)
+    assert all(isinstance(logger, Logger) for logger in trainer.loggers)
