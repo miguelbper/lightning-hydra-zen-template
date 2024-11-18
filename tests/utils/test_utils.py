@@ -19,6 +19,16 @@ class TestFlatten:
         assert flatten(nested) == {"a.b.c": 1}
 
 
+class TestFormat:
+    def test_format_empty(self) -> None:
+        empty = {}
+        assert format(empty) == empty
+
+    def test_format_(self) -> None:
+        empty = {}
+        assert format(empty) == empty
+
+
 class TestLogCfg:
     def test_log_cfg(self, cfg: DictConfig) -> None:
         HydraConfig().set_config(cfg)
