@@ -1,5 +1,4 @@
 from collections.abc import Callable, Iterator
-from enum import Enum, auto
 from typing import Any
 
 from lightning import LightningModule
@@ -12,18 +11,6 @@ from torch.optim.lr_scheduler import LRScheduler
 from torchmetrics import MetricCollection
 
 Batch = tuple[Tensor, Tensor]
-
-
-class Split(Enum):
-    TRAIN = "train"
-    VAL = "val"
-    TEST = "test"
-
-
-class Task(Enum):
-    REGRESSION = auto()
-    BINARY = auto()
-    MULTICLASS = auto()
 
 
 class RegressionOutput(BaseModel):
@@ -76,7 +63,7 @@ class LightningModel(LightningModule):
         optimizer: Callable[[Iterator[Parameter]], Optimizer],
         scheduler: Callable[[Optimizer], LRScheduler],
         metric_collection: MetricCollection,
-        task: Task,
+        task: str,
     ) -> None:
         super().__init__()
         self.save_hyperparameters(logger=False)
@@ -89,37 +76,37 @@ class LightningModel(LightningModule):
         self.task = task
 
         self.metrics = {
-            Split.TRAIN: metric_collection.clone(prefix=f"{Split.TRAIN.value}/"),
-            Split.VAL: metric_collection.clone(prefix=f"{Split.VAL.value}/"),
-            Split.TEST: metric_collection.clone(prefix=f"{Split.TEST.value}/"),
+            "train": metric_collection.clone(prefix="train"),
+            "val": metric_collection.clone(prefix="val"),
+            "test": metric_collection.clone(prefix="test"),
         }
         self.output_cls_name = {
-            Task.REGRESSION: RegressionOutput,
-            Task.BINARY: BinaryOutput,
-            Task.MULTICLASS: MulticlassOutput,
+            "regression": RegressionOutput,
+            "binary": BinaryOutput,
+            "multiclass": MulticlassOutput,
         }[task]
 
     def forward(self, inputs: Tensor) -> RegressionOutput | BinaryOutput | MulticlassOutput:
         logits = self.model(inputs)
         return self.output_cls_name(logits=logits)
 
-    def step(self, batch: Batch, batch_idx: int, split: Split) -> Tensor:
+    def step(self, batch: Batch, batch_idx: int, split: str) -> Tensor:
         inputs, target = batch
         logits = self.model(inputs)
         loss = self.loss_fn(logits, target)
-        self.log(f"{split.value}/loss", loss, on_step=True, on_epoch=False)
+        self.log(f"{split}/loss", loss, on_step=True, on_epoch=False)
         self.metrics[split].update(logits, target)
         self.log_dict(self.metrics[split], on_step=True, on_epoch=True)
         return loss
 
     def training_step(self, batch: Batch, batch_idx: int) -> Tensor:
-        return self.step(batch, batch_idx, Split.TRAIN)
+        return self.step(batch, batch_idx, "train")
 
     def validation_step(self, batch: Batch, batch_idx: int) -> None:
-        self.step(batch, batch_idx, Split.VAL)
+        self.step(batch, batch_idx, "val")
 
     def test_step(self, batch: Batch, batch_idx: int) -> None:
-        self.step(batch, batch_idx, Split.TEST)
+        self.step(batch, batch_idx, "test")
 
     def configure_optimizers(self) -> dict[str, Any]:
         optimizer = self.optimizer(params=self.parameters())
