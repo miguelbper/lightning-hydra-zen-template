@@ -58,3 +58,6 @@ select = [
 
 [tool.docformatter]
 style = "sphinx"  # Write docstrings in Sphinx style so that docformatter can format them
+
+[tool.mypy]
+ignore_missing_imports = true

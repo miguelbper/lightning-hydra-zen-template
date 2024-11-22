@@ -1,7 +1,7 @@
 from collections.abc import Callable, Iterator
-from typing import Any
 
 from lightning import LightningModule
+from lightning.pytorch.utilities.types import OptimizerLRSchedulerConfig
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from torch import Tensor, nn, sigmoid, softmax
 from torch.nn.modules.loss import _Loss
@@ -61,7 +61,7 @@ class LightningModel(LightningModule):
         model: nn.Module,
         loss_fn: _Loss,
         optimizer: Callable[[Iterator[Parameter]], Optimizer],
-        scheduler: Callable[[Optimizer], LRScheduler],
+        scheduler: Callable[[Optimizer], LRScheduler] | None,
         metric_collection: MetricCollection,
         task: str,
     ) -> None:
@@ -108,7 +108,7 @@ class LightningModel(LightningModule):
     def test_step(self, batch: Batch, batch_idx: int) -> None:
         self.step(batch, batch_idx, "test")
 
-    def configure_optimizers(self) -> dict[str, Any]:
+    def configure_optimizers(self) -> OptimizerLRSchedulerConfig:
         optimizer = self.optimizer(params=self.parameters())
         optim_cfg = {"optimizer": optimizer}
         if self.scheduler:

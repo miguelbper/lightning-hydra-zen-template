@@ -65,7 +65,9 @@ def main(cfg: DictConfig) -> float | None:
     :rtype: float | None
     """
     metrics, _ = train(cfg)
-    return metrics.get(cfg.get("metric"))
+    metric_torch = metrics.get(cfg.get("metric"))
+    metric_float = metric_torch.item() if metric_torch is not None else None
+    return metric_float
 
 
 if __name__ == "__main__":

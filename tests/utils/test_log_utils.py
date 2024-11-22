@@ -7,7 +7,7 @@ from src.utils.utils import flatten, log_cfg
 
 class TestFlatten:
     def test_flatten_empty(self) -> None:
-        empty = {}
+        empty: dict[str, int] = {}
         assert flatten(empty) == empty
 
     def test_flatten_simple(self) -> None:
