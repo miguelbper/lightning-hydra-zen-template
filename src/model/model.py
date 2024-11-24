@@ -2,8 +2,7 @@ from collections.abc import Callable, Iterator
 
 from lightning import LightningModule
 from lightning.pytorch.utilities.types import OptimizerLRSchedulerConfig
-from pydantic import BaseModel, ConfigDict, Field, field_validator
-from torch import Tensor, nn, sigmoid, softmax
+from torch import Tensor, nn
 from torch.nn.modules.loss import _Loss
 from torch.nn.parameter import Parameter
 from torch.optim import Optimizer
@@ -13,49 +12,7 @@ from torchmetrics import MetricCollection
 Batch = tuple[Tensor, Tensor]
 
 
-class RegressionOutput(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    preds: Tensor = Field(alias="logits")
-
-
-class BinaryOutput(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    logits: Tensor
-    probs: Tensor = Field(init=False)
-    preds: Tensor = Field(init=False)
-
-    @field_validator("probs", mode="before")
-    @classmethod
-    def compute_probs(cls, v, values):
-        return sigmoid(values["logits"])
-
-    @field_validator("preds", mode="before")
-    @classmethod
-    def compute_preds(cls, v, values):
-        return (values["probs"] > 0.5).float()
-
-
-class MulticlassOutput(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    logits: Tensor
-    probs: Tensor = Field(init=False)
-    preds: Tensor = Field(init=False)
-
-    @field_validator("probs", mode="before")
-    @classmethod
-    def compute_probs(cls, v, values):
-        return softmax(values["logits"], dim=1)
-
-    @field_validator("preds", mode="before")
-    @classmethod
-    def compute_preds(cls, v, values):
-        return values["probs"].argmax(dim=1)
-
-
-class LightningModel(LightningModule):
+class Model(LightningModule):
     def __init__(
         self,
         model: nn.Module,
@@ -63,7 +20,6 @@ class LightningModel(LightningModule):
         optimizer: Callable[[Iterator[Parameter]], Optimizer],
         scheduler: Callable[[Optimizer], LRScheduler] | None,
         metric_collection: MetricCollection,
-        task: str,
     ) -> None:
         super().__init__()
         self.save_hyperparameters(logger=False)
@@ -73,22 +29,12 @@ class LightningModel(LightningModule):
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.metric_collection = metric_collection
-        self.task = task
 
         self.metrics = {
             "train": metric_collection.clone(prefix="train"),
             "val": metric_collection.clone(prefix="val"),
             "test": metric_collection.clone(prefix="test"),
         }
-        self.output_cls_name = {
-            "regression": RegressionOutput,
-            "binary": BinaryOutput,
-            "multiclass": MulticlassOutput,
-        }[task]
-
-    def forward(self, inputs: Tensor) -> RegressionOutput | BinaryOutput | MulticlassOutput:
-        logits = self.model(inputs)
-        return self.output_cls_name(logits=logits)
 
     def step(self, batch: Batch, batch_idx: int, split: str) -> Tensor:
         inputs, target = batch
@@ -109,10 +55,10 @@ class LightningModel(LightningModule):
         self.step(batch, batch_idx, "test")
 
     def configure_optimizers(self) -> OptimizerLRSchedulerConfig:
-        optimizer = self.optimizer(params=self.parameters())
+        optimizer: Optimizer = self.optimizer(params=self.parameters())
         optim_cfg = {"optimizer": optimizer}
         if self.scheduler:
-            scheduler = self.scheduler(optimizer=optimizer)
+            scheduler: LRScheduler = self.scheduler(optimizer=optimizer)
             optim_cfg["lr_scheduler"] = {
                 "scheduler": scheduler,
                 "interval": "epoch",
