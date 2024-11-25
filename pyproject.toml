@@ -46,6 +46,7 @@ dev = [
 [tool.ruff]
 line-length = 99
 
+# Set of rules taken from https://docs.astral.sh/ruff/linter/#rule-selection
 [tool.ruff.lint]
 select = [
     "E",  # pycodestyle
@@ -56,8 +57,10 @@ select = [
     "SIM",  # flake8-simplify
 ]
 
+# docformatter pre-commit hook configured so that it is able to format Sphinx style docstrings
 [tool.docformatter]
-style = "sphinx"  # Write docstrings in Sphinx style so that docformatter can format them
+style = "sphinx"
 
-[tool.mypy]
+[[tool.mypy.overrides]]
+module = ["rootutils"]
 ignore_missing_imports = true
