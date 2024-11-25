@@ -64,5 +64,5 @@ select = [
 style = "sphinx"
 
 [[tool.mypy.overrides]]
-module = ["rootutils"]
+module = ["rootutils", "torchvision.datasets", "torchvision.transforms"]
 ignore_missing_imports = true

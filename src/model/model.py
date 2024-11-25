@@ -9,7 +9,7 @@ from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 from torchmetrics import MetricCollection
 
-Batch = tuple[Tensor, Tensor]
+from src.utils.types import Batch
 
 
 class Model(LightningModule):

@@ -4,6 +4,8 @@ from torch.utils.data import DataLoader, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import Compose, Normalize, ToTensor
 
+from src.utils.types import Batch
+
 
 class MNISTDataModule(LightningDataModule):
     def __init__(
@@ -38,8 +40,7 @@ class MNISTDataModule(LightningDataModule):
         if stage == "test":
             self.mnist_test = MNIST(self.data_dir, train=False, transform=self.transform)
 
-    # TODO: add specific type hint for DataLoader
-    def train_dataloader(self) -> DataLoader:
+    def train_dataloader(self) -> DataLoader[Batch]:
         return DataLoader(
             self.mnist_train,
             batch_size=self.batch_size,
@@ -48,7 +49,7 @@ class MNISTDataModule(LightningDataModule):
             shuffle=True,
         )
 
-    def val_dataloader(self) -> DataLoader:
+    def val_dataloader(self) -> DataLoader[Batch]:
         return DataLoader(
             self.mnist_val,
             batch_size=self.batch_size,
@@ -57,7 +58,7 @@ class MNISTDataModule(LightningDataModule):
             shuffle=False,
         )
 
-    def test_dataloader(self) -> DataLoader:
+    def test_dataloader(self) -> DataLoader[Batch]:
         return DataLoader(
             self.mnist_test,
             batch_size=self.batch_size,
