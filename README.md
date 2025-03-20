@@ -1,10 +1,10 @@
 # Deep Learning Template
-[![python](https://img.shields.io/badge/-Python-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![pytorch](https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
-[![lightning](https://img.shields.io/badge/-Lightning-792ee5?logo=lightning&logoColor=white)](https://pytorchlightning.ai/)
+[![Python](https://img.shields.io/badge/Python-3776ab?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![PyTorch](https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
+[![PyTorch Lightning](https://img.shields.io/badge/-Lightning-7e4fff?logo=lightning&logoColor=white)](https://pytorchlightning.ai/)
 [![hydra](https://img.shields.io/badge/-Hydra-89b8cd?logo=meta)](https://hydra.cc/)
-[![ruff](https://img.shields.io/badge/-Ruff-261230?logo=ruff&logoColor=261230&labelColor=d7ff64)](https://github.com/astral-sh/ruff)
-[![uv](https://img.shields.io/badge/-uv-261230?logo=astral&logoColor=261230&labelColor=de5fe9)](https://github.com/astral-sh/uv)
+[![ruff](https://img.shields.io/badge/Ruff-261230?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/badge/uv-de5fe9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv)
 [![license](https://img.shields.io/badge/license-MIT-green.svg?labelColor=gray)](https://github.com/miguelbper/deep-learning-template/blob/main/LICENSE)
 <!-- [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) -->
 <!-- [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) -->
@@ -43,17 +43,7 @@ uv python install
 uv sync
 ```
 
-5. Install the package in editable mode:
-```bash
-uv pip install -e .
-```
-
-6. Run the unit tests:
-```bash
-uv run pytest
-```
-
-
-## References
-
-Based on the very nice [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template).
+## Acknowledgements
+As a reference for this template, I used the following very nice projects:
+- [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
+- [drivendataorg/cookiecutter-data-science](https://github.com/drivendataorg/cookiecutter-data-science)
