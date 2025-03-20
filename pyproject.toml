@@ -9,44 +9,75 @@ authors = [
     {name = "Miguel Pereira", email = "miguel.b.per@gmail.com"},
 ]
 dependencies = [
-    "torch==2.5.1+cu124",
-    "torchvision==0.20.1+cu124",
-    "lightning>=2.4.0",
-    "torchmetrics>=1.5.1",
-    "hydra-core>=1.3.2",
     "hydra-colorlog>=1.2.0",
+    "hydra-core>=1.3.2",
     "hydra-optuna-sweeper>=1.2.0",
-    "tensorboard>=2.18.0",
-    "optuna>=2.10.1",
-    "mlflow>=2.17.1",
     "ipykernel>=6.29.5",
-    "rich>=13.9.3",
+    "lightning>=2.5.1",
+    "mlflow>=2.21.0",
+    "omegaconf>=2.3.0",
+    "optuna>=2.10.1",
+    "pydantic>=2.10.6",
+    "rich>=13.9.4",
     "rootutils>=1.0.7",
-    "pydantic>=2.9.2",
+    "torch>=2.6.0",
+    "torchaudio>=2.6.0",
+    "torchmetrics>=1.7.0",
+    "torchvision>=0.21.0",
 ]
-
-[tool.setuptools]
-packages = ["src"]
-
-[tool.uv.sources]
-torch = { index = "pytorch" }
-torchvision = { index = "pytorch" }
-
-[[tool.uv.index]]
-name = "pytorch"
-url = "https://download.pytorch.org/whl/cu124"
-explicit = true
 
 [dependency-groups]
 dev = [
-    "mypy>=1.13.0",
-    "pre-commit>=4.0.1",
-    "pytest-cov>=5.0.0",
-    "pytest>=8.3.3",
+    "pre-commit>=4.1.0",
+    "pytest-cov>=6.0.0",
+    "pytest>=8.3.5",
 ]
 
+# ------------------------------------------------------------------------------
+# Dependency sources
+# ------------------------------------------------------------------------------
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
+    { index = "pytorch-cuda", marker = "platform_system == 'Linux'" },
+]
+torchvision = [
+    { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
+    { index = "pytorch-cuda", marker = "platform_system == 'Linux'" },
+]
+torchaudio = [
+    { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
+    { index = "pytorch-cuda", marker = "platform_system == 'Linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+# ------------------------------------------------------------------------------
+# Build
+# ------------------------------------------------------------------------------
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+# ------------------------------------------------------------------------------
+# Linting
+# ------------------------------------------------------------------------------
+
 [tool.ruff]
-line-length = 99
+line-length = 120
 
 # Set of rules taken from https://docs.astral.sh/ruff/linter/#rule-selection
 [tool.ruff.lint]
@@ -59,10 +90,9 @@ select = [
     "SIM",  # flake8-simplify
 ]
 
-# docformatter pre-commit hook configured so that it is able to format Sphinx style docstrings
-[tool.docformatter]
-style = "sphinx"
-
-[[tool.mypy.overrides]]
-module = ["rootutils", "torchvision.datasets", "torchvision.transforms"]
-ignore_missing_imports = true
+# Set of rules taken from https://rdrn.me/postmodern-python/
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+strict = ["**/*.py"]
+pythonVersion = "3.13"

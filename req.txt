@@ -1,0 +1,14 @@
+torch
+torchvision
+torchaudio
+lightning
+torchmetrics
+hydra-core
+hydra-colorlog
+hydra-optuna-sweeper
+optuna
+mlflow
+ipykernel
+rich
+rootutils
+pydantic
