@@ -23,6 +23,8 @@ Template for deep learning projects, using
 - [uv](https://github.com/astral-sh/uv) - Dependency management
 
 
+<!-- TODO: add directory structure explanation -->
+
 ## Setup
 1. Fork the repo or copy the code to the working directory of the new project. Move to the working directory.
 

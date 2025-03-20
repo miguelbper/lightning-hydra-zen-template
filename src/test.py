@@ -13,8 +13,8 @@ rootutils.setup_root(__file__)
 log = logging.getLogger(__name__)
 
 
-def evaluate(cfg: DictConfig) -> tuple[Metrics, Objects]:
-    """Evaluate a model from a configuration object (which should include a
+def test(cfg: DictConfig) -> tuple[Metrics, Objects]:
+    """Test a model from a configuration object (which should include a
     checkpoint).
 
     :param cfg: Configuration object representing the config files.
@@ -47,7 +47,7 @@ def main(cfg: DictConfig) -> None:
     :param cfg: Configuration object representing the config files.
     :type cfg: DictConfig
     """
-    evaluate(cfg)
+    test(cfg)
 
 
 if __name__ == "__main__":
