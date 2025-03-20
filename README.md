@@ -24,21 +24,50 @@ Template for deep learning projects, using
 
 
 <!-- TODO: add directory structure explanation -->
+## Directory structure
+```
+├── configs                 <- Configuration files for Hydra, containing model, training, and experiment settings
+│   └── ...
+│
+├── data                    <- Directory for datasets
+│   ├── interim             <- Intermediate results of dataset processing
+│   ├── processed           <- Datasets ready to be used by the modelling scripts
+│   └── raw                 <- Datasets as obtained from the source
+│
+├── logs                    <- Training logs, metrics, checkpoints, and experiment tracking data
+├── notebooks               <- Jupyter notebooks for experimentation
+├── scripts                 <- Shell scripts
+│
+├── src                     <- Source code for the project
+│   ├── datamodule          <- Lightning DataModules for handling datasets
+│   ├── model               <- Neural network model definitions and Lightning Modules
+│   ├── ...
+│   ├── test.py             <- Testing / evaluation script
+│   └── train.py            <- Training script
+│
+├── tests                   <- Automated tests
+│   └── ...
+│
+├── .envrc-example          <- Environment variables, automatically loaded with direnv
+├── .gitignore              <- Specifies which files Git should ignore
+├── .pre-commit-config.yaml <- Git pre-commit hooks
+├── .python-version         <- Python version that should be installed
+├── justfile                <- Project commands
+├── LICENSE                 <- MIT License file
+├── pyproject.toml          <- Project configuration file with dependencies and tool settings
+├── README.md               <- The top-level README for developers using this project
+└── uv.lock                 <- The requirements file for reproducing the environment
+```
 
 ## Setup
-1. Fork the repo or copy the code to the working directory of the new project. Move to the working directory.
+1. Click the green "Use this template" button on GitHub to start a new project.
 
 2. Install uv:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-3. Install python with uv:
-```bash
-uv python install
-```
-
-4. Install the virtual environment (this will create a venv folder in the working directory):
+3. Install the virtual environment (this will create a `.venv` folder in the working directory):
 ```bash
 uv sync
 ```
@@ -56,3 +85,6 @@ As a reference for this template, I used the following very nice projects:
 - Add a justfile
 - Learning exercise
 -->
+
+<!-- TODO: at some point, add links to good "best practices" reading -->
+<!-- TODO: add "checklist" on how to approach a new problem -->
