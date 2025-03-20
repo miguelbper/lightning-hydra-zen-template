@@ -6,10 +6,8 @@
 [![ruff](https://img.shields.io/badge/Ruff-261230?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
 [![uv](https://img.shields.io/badge/uv-de5fe9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv)
 [![license](https://img.shields.io/badge/license-MIT-green.svg?labelColor=gray)](https://github.com/miguelbper/deep-learning-template/blob/main/LICENSE)
-<!-- [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) -->
-<!-- [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) -->
-<!-- add automatic tests passing -->
-<!-- add automatic code coverage -->
+<!-- TODO: add automatic tests passing -->
+<!-- TODO: add automatic code coverage -->
 
 
 
@@ -47,3 +45,12 @@ uv sync
 As a reference for this template, I used the following very nice projects:
 - [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
 - [drivendataorg/cookiecutter-data-science](https://github.com/drivendataorg/cookiecutter-data-science)
+
+<!-- TODO: at some point, may add what motivated me to do these changes
+- Borrow ideas from both
+- Better dependency management with uv
+- Better linting and formatting with Ruff
+- Better generic LightningModule, not adapted to dataset at hand
+- Add a justfile
+- Learning exercise
+-->
