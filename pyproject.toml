@@ -9,7 +9,8 @@ authors = [
     {name = "Miguel Pereira", email = "miguel.b.per@gmail.com"},
 ]
 dependencies = [
-    "torch>=2.5.0",
+    "torch==2.5.1+cu124",
+    "torchvision==0.20.1+cu124",
     "lightning>=2.4.0",
     "torchmetrics>=1.5.1",
     "hydra-core>=1.3.2",
@@ -29,6 +30,7 @@ packages = ["src"]
 
 [tool.uv.sources]
 torch = { index = "pytorch" }
+torchvision = { index = "pytorch" }
 
 [[tool.uv.index]]
 name = "pytorch"
@@ -46,6 +48,7 @@ dev = [
 [tool.ruff]
 line-length = 99
 
+# Set of rules taken from https://docs.astral.sh/ruff/linter/#rule-selection
 [tool.ruff.lint]
 select = [
     "E",  # pycodestyle
@@ -56,5 +59,10 @@ select = [
     "SIM",  # flake8-simplify
 ]
 
+# docformatter pre-commit hook configured so that it is able to format Sphinx style docstrings
 [tool.docformatter]
-style = "sphinx"  # Write docstrings in Sphinx style so that docformatter can format them
+style = "sphinx"
+
+[[tool.mypy.overrides]]
+module = ["rootutils", "torchvision.datasets", "torchvision.transforms"]
+ignore_missing_imports = true

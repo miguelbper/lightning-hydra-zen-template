@@ -1,15 +1,12 @@
 import re
-from collections.abc import MutableMapping
 from functools import partial
 from typing import Any
 
 from lightning import Trainer
 from omegaconf import DictConfig, OmegaConf
 
-from src.utils.types import Metrics
 
-
-def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
+def flatten(dictionary: dict, parent_key: str = "") -> dict[str, Any]:
     """Flatten a nested dictionary into a single-level dictionary.
 
     :param dictionary: The nested dictionary to be flattened
@@ -23,25 +20,27 @@ def flatten(dictionary: MutableMapping, parent_key: str = "") -> dict[str, Any]:
     items: list[tuple[str, Any]] = []
     for key, value in dictionary.items():
         new_key = f"{parent_key}.{key}" if parent_key else key
-        if isinstance(value, MutableMapping):
+        if isinstance(value, dict):
             items.extend(flatten(value, parent_key=new_key).items())
         else:
             items.append((new_key, value))
     return dict(items)
 
 
-def format(dictionary: dict[str, Any]) -> dict[str, Any]:
-    """Formats the keys of a dictionary by replacing any invalid characters.
+def containers_to_dict(container: dict | list | Any) -> dict | Any:
+    """Converts lists to dicts  of the form index:value, in a nested
+    combination of dicts and lists.
 
-    :param dictionary: The dictionary to be formatted
-    :type dictionary: dict[str, Any]
-    :return: The formatted dictionary with valid keys
-    :rtype: dict[str, Any]
+    :param container: The nested combination of lists and dicts, or just
+        a value
+    :type container: dict | list | Any
     """
-    invalid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
-    replace_invalid = partial(invalid_chars.sub, "_")
-    formatted = {replace_invalid(k): v for k, v in dictionary.items()}
-    return formatted
+    if isinstance(container, dict):
+        return {k: containers_to_dict(v) for (k, v) in container.items()}
+    elif isinstance(container, list):
+        return containers_to_dict(dict(enumerate(container)))
+    else:
+        return container
 
 
 def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
@@ -52,25 +51,13 @@ def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     :param trainer: _description_
     :type trainer: Trainer
     """
-    cfg_dict = OmegaConf.to_container(cfg, resolve=True)
-    flat_cfg = format(flatten(cfg_dict))
+    cfg_cont = OmegaConf.to_container(cfg, resolve=True)
+    cfg_dict = containers_to_dict(cfg_cont)
+    cfg_flat = flatten(cfg_dict)
+
+    invalid_chars = re.compile(r"[^a-zA-Z0-9_\-.]")
+    replace_invalid = partial(invalid_chars.sub, "_")
+    cfg_formatted = {replace_invalid(k): v for k, v in cfg_flat.items()}
+
     for logger in trainer.loggers:
-        logger.log_hyperparams(flat_cfg)
-
-
-def metric_value(metrics: Metrics, metric_name: str | None) -> float | None:
-    """Retrieve the value of a specified metric from a Metrics object.
-
-    :param metrics: An object containing various metrics
-    :type metrics: Metrics
-    :param metric_name: The name of the metric to retrieve
-    :type metric_name: str | None
-    :return: The value of the specified metric as a float. Returns None
-        if the metric_name is None or not found.
-    :rtype: float | None
-    """
-    if metric_name is None:
-        return None
-    if metric_name not in metrics:
-        return None
-    return metrics[metric_name].item()
+        logger.log_hyperparams(cfg_formatted)

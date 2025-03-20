@@ -167,3 +167,4 @@ logs/*
 outputs/
 .vscode/
 .ruff_cache/
+data/
