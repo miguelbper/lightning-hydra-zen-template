@@ -1,7 +1,0 @@
-# This file should list all available loggers
-# The loggers in use are specified in the trainer config
-
-defaults:
-  - csv
-  - mlflow
-  - tensorboard
