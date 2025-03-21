@@ -87,4 +87,10 @@ As a reference for this template, I used the following very nice projects:
 -->
 
 <!-- TODO: at some point, add links to good "best practices" reading -->
+
 <!-- TODO: add "checklist" on how to approach a new problem -->
+
+<!-- TODO: add extra libraries that can be used
+- nbautoexport for creating copies of notebooks
+- ...
+-->
