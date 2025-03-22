@@ -4,6 +4,9 @@ from hydra.utils import instantiate
 from lightning import LightningModule
 from omegaconf import DictConfig
 
+B, C, H, W = 32, 3, 32, 32
+num_classes = 10
+
 
 class TestModel:
     def test_instantiation(self, cfg: DictConfig):
@@ -25,7 +28,7 @@ class TestModel:
         HydraConfig().set_config(cfg)
 
         model = instantiate(cfg.model)
-        batch = (torch.randn(32, 3, 224, 224), torch.randint(0, 10, (32,)))
+        batch = (torch.randn(B, C, H, W), torch.randint(0, num_classes, (B,)))
         loss = model.training_step(batch, 0)
         assert loss is not None
         assert isinstance(loss, torch.Tensor)

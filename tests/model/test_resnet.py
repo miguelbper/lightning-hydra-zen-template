@@ -3,6 +3,9 @@ from torch import nn
 
 from src.model.resnet import ResNet
 
+B, C, H, W = 32, 3, 32, 32
+num_classes = 10
+
 
 def test_instantiation():
     resnet = ResNet()
@@ -12,6 +15,6 @@ def test_instantiation():
 
 def test_forward_rgb():
     resnet = ResNet()
-    x = torch.randn(1, 3, 224, 224)
+    x = torch.randn(B, C, H, W)
     y = resnet(x)
-    assert y.shape == (1, 10)
+    assert y.shape == (B, num_classes)

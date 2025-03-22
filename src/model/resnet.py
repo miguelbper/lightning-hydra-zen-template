@@ -2,6 +2,7 @@ import torch
 from torch import nn
 
 
+# TODO: Use the pretrained resnet instead
 class ResNet(nn.Module):
     def __init__(self, num_classes: int = 10) -> None:
         super().__init__()  # type: ignore

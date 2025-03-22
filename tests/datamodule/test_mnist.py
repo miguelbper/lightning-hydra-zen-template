@@ -4,8 +4,8 @@ from lightning import LightningDataModule
 from src.datamodule.mnist import MNISTDataModule
 
 ROOT_DIR = rootutils.setup_root(search_from=__file__, indicator=".project-root", dotenv=False)
-
 DATA_DIR = ROOT_DIR / "data/raw"
+B, C, H, W = 32, 3, 32, 32
 
 
 def test_instantiation():
@@ -21,5 +21,5 @@ def test_shape():
     train_dataloader = datamodule.train_dataloader()
     batch = next(iter(train_dataloader))
     images, labels = batch
-    assert images.shape == (32, 3, 224, 224)
-    assert labels.shape == (32,)
+    assert images.shape == (B, C, H, W)
+    assert labels.shape == (B,)

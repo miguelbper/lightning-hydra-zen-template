@@ -12,8 +12,8 @@ Target = torch.Tensor
 Batch = tuple[Input, Target]
 
 MNIST_NUM_TRAIN_EXAMPLES = 60000
-IMAGENET_MEAN = (0.485, 0.456, 0.406)
-IMAGENET_STD = (0.229, 0.224, 0.225)
+MNIST_MEAN = 0.1307
+MNIST_STD = 0.3081
 
 
 class MNISTDataModule(LightningDataModule):
@@ -37,9 +37,9 @@ class MNISTDataModule(LightningDataModule):
             [
                 v2.ToImage(),
                 v2.RGB(),
-                v2.Resize(224),
+                v2.Pad(2),
                 v2.ToDtype(torch.float32, scale=True),
-                v2.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+                v2.Normalize(mean=[MNIST_MEAN for _ in range(3)], std=[MNIST_STD for _ in range(3)]),
             ]
         )
 
