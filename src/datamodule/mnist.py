@@ -1,7 +1,7 @@
 import torch
 from lightning import LightningDataModule
 from torch import Generator
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, Dataset, Subset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import v2
 
@@ -17,7 +17,7 @@ MNIST_STD = 0.3081
 class MNISTDataModule(LightningDataModule):
     def __init__(
         self,
-        data_dir: str = "data/",
+        data_dir: str,
         batch_size: int = 32,
         num_workers: int = 0,
         pin_memory: bool = False,
@@ -45,13 +45,14 @@ class MNISTDataModule(LightningDataModule):
 
     def setup(self, stage: str) -> None:
         if stage == "fit":
-            self.mnist_train, self.mnist_val = random_split(
-                dataset=MNIST(self.data_dir, train=True, transform=self.transform),
-                lengths=[self.num_train_examples, self.num_val_examples],
-                generator=Generator().manual_seed(42),
-            )
+            dataset: Dataset[Batch] = MNIST(self.data_dir, train=True, transform=self.transform)
+            lengths: list[int] = [self.num_train_examples, self.num_val_examples]
+            generator: Generator = Generator().manual_seed(42)
+            splits: list[Subset[Batch]] = random_split(dataset=dataset, lengths=lengths, generator=generator)
+            self.mnist_train: Dataset[Batch] = splits[0]
+            self.mnist_val: Dataset[Batch] = splits[1]
         if stage == "test":
-            self.mnist_test = MNIST(self.data_dir, train=False, transform=self.transform)
+            self.mnist_test: Dataset[Batch] = MNIST(self.data_dir, train=False, transform=self.transform)
 
     def train_dataloader(self) -> DataLoader[Batch]:
         return DataLoader(
