@@ -25,36 +25,36 @@ class Model(LightningModule):
     ) -> None:
         super().__init__()
         self.save_hyperparameters(logger=False, ignore=["model", "loss_fn", "metric_collection"])
-
         self.model = model
         self.loss_fn = loss_fn
         self.optimizer = optimizer
         self.scheduler = scheduler
+
+        # Useful documentation for metrics
+        # https://lightning.ai/docs/torchmetrics/stable/pages/overview.html#torchmetrics.MetricCollection
+        # https://lightning.ai/docs/torchmetrics/stable/pages/lightning.html
         self.metric_collection = metric_collection
+        self.val_metrics = metric_collection.clone(prefix="val/")
+        self.test_metrics = metric_collection.clone(prefix="test/")
 
-        self.metrics = {
-            "train": metric_collection.clone(prefix="train"),
-            "val": metric_collection.clone(prefix="val"),
-            "test": metric_collection.clone(prefix="test"),
-        }
-
-    def step(self, batch: Batch, batch_idx: int, split: str) -> Tensor:
+    def training_step(self, batch: Batch, batch_idx: int) -> Tensor:
         inputs, target = batch
         logits = self.model(inputs)
         loss = self.loss_fn(logits, target)
-        self.log(f"{split}/loss", loss, on_step=True, on_epoch=False)  # type: ignore
-        self.metrics[split].update(logits, target)
-        self.log_dict(self.metrics[split], on_step=True, on_epoch=True)  # type: ignore
+        self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True)  # type: ignore
         return loss
 
-    def training_step(self, batch: Batch, batch_idx: int) -> Tensor:
-        return self.step(batch, batch_idx, "train")
-
     def validation_step(self, batch: Batch, batch_idx: int) -> None:
-        self.step(batch, batch_idx, "val")
+        inputs, target = batch
+        logits = self.model(inputs)
+        self.val_metrics.update(logits, target)
+        self.log_dict(self.val_metrics, on_step=True, on_epoch=True)  # type: ignore
 
     def test_step(self, batch: Batch, batch_idx: int) -> None:
-        self.step(batch, batch_idx, "test")
+        inputs, target = batch
+        logits = self.model(inputs)
+        self.test_metrics.update(logits, target)
+        self.log_dict(self.test_metrics, on_step=True, on_epoch=True)  # type: ignore
 
     def configure_optimizers(self) -> OptimizerConfig | OptimizerLRSchedulerConfig:
         optimizer: Optimizer = self.optimizer(self.parameters())
