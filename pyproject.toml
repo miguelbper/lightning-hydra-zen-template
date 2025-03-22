@@ -31,6 +31,7 @@ dev = [
     "pre-commit>=4.1.0",
     "pytest-cov>=6.0.0",
     "pytest>=8.3.5",
+    "pyright>=1.1.397",
 ]
 
 # ------------------------------------------------------------------------------
@@ -78,6 +79,7 @@ packages = ["src"]
 
 [tool.ruff]
 line-length = 120
+exclude = ["typings"]
 
 # Set of rules taken from https://docs.astral.sh/ruff/linter/#rule-selection
 [tool.ruff.lint]
@@ -96,3 +98,5 @@ venvPath = "."
 venv = ".venv"
 strict = ["**/*.py"]
 pythonVersion = "3.13"
+stubPath = "typings"
+ignore = ["typings/**"]
