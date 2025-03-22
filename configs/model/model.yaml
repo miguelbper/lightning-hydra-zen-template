@@ -9,4 +9,8 @@ optimizer:
 scheduler: null
 metric_collection:
   _target_: torchmetrics.MetricCollection
-  metrics: []
+  metrics:
+    - ${metrics.accuracy}
+    - ${metrics.f1_score}
+    - ${metrics.precision}
+    - ${metrics.recall}

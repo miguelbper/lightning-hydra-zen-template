@@ -2,17 +2,17 @@
 
 defaults:
   - _self_
-  - datamodule: mnist
-  - model: model
   - callbacks: default
-  - logger: default
-  - trainer: default
-  - paths: default
-  - hydra: default
-
+  - datamodule: mnist
+  - debug: null
   - experiment: null
   - hparams_search: null
-  - debug: null
+  - hydra: default
+  - logger: default
+  - metrics: default
+  - model: model
+  - paths: default
+  - trainer: default
 
 task_name: null
 train: True
