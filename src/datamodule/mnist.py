@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import torch
 from lightning import LightningDataModule
 from torch import Generator
@@ -10,14 +12,14 @@ Target = torch.Tensor
 Batch = tuple[Input, Target]
 
 MNIST_NUM_TRAIN_EXAMPLES = 60000
-MNIST_MEAN = 0.1307
-MNIST_STD = 0.3081
+IMAGENET_MEAN = (0.485, 0.456, 0.406)
+IMAGENET_STD = (0.229, 0.224, 0.225)
 
 
 class MNISTDataModule(LightningDataModule):
     def __init__(
         self,
-        data_dir: str,
+        data_dir: str | Path,
         batch_size: int = 32,
         num_workers: int = 0,
         pin_memory: bool = False,
@@ -34,8 +36,10 @@ class MNISTDataModule(LightningDataModule):
         self.transform = v2.Compose(
             [
                 v2.ToImage(),
+                v2.RGB(),
+                v2.Resize(224),
                 v2.ToDtype(torch.float32, scale=True),
-                v2.Normalize((MNIST_MEAN,), (MNIST_STD,)),
+                v2.Normalize(IMAGENET_MEAN, IMAGENET_STD),
             ]
         )
 

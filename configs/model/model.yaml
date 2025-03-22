@@ -1,6 +1,6 @@
 _target_: src.model.model.Model
 model:
-  _target_: torch.nn.Identity
+  _target_: src.model.resnet.ResNet
 loss_fn:
   _target_: torch.nn.CrossEntropyLoss
 optimizer:
