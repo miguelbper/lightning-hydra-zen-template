@@ -9,13 +9,13 @@ from omegaconf import DictConfig, OmegaConf
 def flatten(dictionary: dict, parent_key: str = "") -> dict[str, Any]:
     """Flatten a nested dictionary into a single-level dictionary.
 
-    :param dictionary: The nested dictionary to be flattened
-    :type dictionary: MutableMapping
-    :param parent_key: The parent key to be used for the flattened keys,
-        defaults to ""
-    :type parent_key: str, optional
-    :return: The flattened dictionary
-    :rtype: dict[str, Any]
+    Args:
+        dictionary (dict[str, Any]): The nested dictionary to be flattened
+        parent_key (str, optional): The parent key to be used for the flattened keys.
+            Defaults to "".
+
+    Returns:
+        dict[str, Any]: The flattened dictionary
     """
     items: list[tuple[str, Any]] = []
     for key, value in dictionary.items():
@@ -28,12 +28,15 @@ def flatten(dictionary: dict, parent_key: str = "") -> dict[str, Any]:
 
 
 def containers_to_dict(container: dict | list | Any) -> dict | Any:
-    """Converts lists to dicts  of the form index:value, in a nested
-    combination of dicts and lists.
+    """Converts lists to dicts of the form index:value, in a nested combination
+    of dicts and lists.
 
-    :param container: The nested combination of lists and dicts, or just
-        a value
-    :type container: dict | list | Any
+    Args:
+        container (dict | list | Any): The nested combination of lists and dicts,
+            or just a value
+
+    Returns:
+        dict | Any: The converted container with lists transformed to dicts
     """
     if isinstance(container, dict):
         return {k: containers_to_dict(v) for (k, v) in container.items()}
@@ -46,10 +49,12 @@ def containers_to_dict(container: dict | list | Any) -> dict | Any:
 def log_cfg(cfg: DictConfig, trainer: Trainer) -> None:
     """Logs the configuration parameters and hyperparameters.
 
-    :param cfg: _description_
-    :type cfg: DictConfig
-    :param trainer: _description_
-    :type trainer: Trainer
+    Args:
+        cfg (DictConfig): The configuration object to log
+        trainer (Trainer): The trainer object containing loggers
+
+    Returns:
+        None
     """
     cfg_cont = OmegaConf.to_container(cfg, resolve=True)
     cfg_dict = containers_to_dict(cfg_cont)

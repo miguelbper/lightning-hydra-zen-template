@@ -17,11 +17,13 @@ def test(cfg: DictConfig) -> tuple[Metrics, Objects]:
     """Test a model from a configuration object (which should include a
     checkpoint).
 
-    :param cfg: Configuration object representing the config files.
-    :type cfg: DictConfig
-    :return: A dictionary of metrics and the objects (cfg, model,
-        datamodule, trainer) used in the training process.
-    :rtype: tuple[Metrics, Objects]
+    Args:
+        cfg (DictConfig): Configuration object representing the config files.
+
+    Returns:
+        tuple[Metrics, Objects]: A tuple containing:
+            - Metrics: A dictionary of metrics from testing
+            - Objects: The objects (cfg, model, datamodule, trainer) used in the testing process
     """
     log.info(f"Instantiating model <{cfg.model._target_}>...")
     model: LightningModule = instantiate(cfg.model)
@@ -44,8 +46,11 @@ def test(cfg: DictConfig) -> tuple[Metrics, Objects]:
 def main(cfg: DictConfig) -> None:
     """Main function to evaluate the model based on the provided configuration.
 
-    :param cfg: Configuration object representing the config files.
-    :type cfg: DictConfig
+    Args:
+        cfg (DictConfig): Configuration object representing the config files.
+
+    Returns:
+        None
     """
     test(cfg)
 

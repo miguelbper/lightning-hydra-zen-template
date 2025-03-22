@@ -17,11 +17,13 @@ log = logging.getLogger(__name__)
 def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     """Train a model from a configuration object.
 
-    :param cfg: Configuration object representing the config files.
-    :type cfg: DictConfig
-    :return: A dictionary of metrics and the objects (cfg, model,
-        datamodule, trainer) used in the training process.
-    :rtype: tuple[Metrics, Objects]
+    Args:
+        cfg (DictConfig): Configuration object representing the config files.
+
+    Returns:
+        tuple[Metrics, Objects]: A tuple containing:
+            - Metrics: A dictionary of metrics from training
+            - Objects: The objects (cfg, model, datamodule, trainer) used in the training process
     """
     if cfg.get("seed"):
         L.seed_everything(cfg.seed, workers=True)
@@ -57,12 +59,13 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
 def main(cfg: DictConfig) -> float | None:
     """Main function to train the model and return the specified metric.
 
-    :param cfg: Configuration object containing training parameters and
-        settings.
-    :type cfg: DictConfig
-    :return: The value of the specified metric from the training
-        process, or None if the metric is not found.
-    :rtype: float | None
+    Args:
+        cfg (DictConfig): Configuration object containing training parameters and
+            settings.
+
+    Returns:
+        float | None: The value of the specified metric from the training
+            process, or None if the metric is not found.
     """
     metrics, _ = train(cfg)
     metric_torch = metrics.get(cfg.get("metric"))
