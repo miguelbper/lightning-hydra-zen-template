@@ -4,7 +4,6 @@ from typing import Any
 from lightning import LightningModule
 from lightning.pytorch.utilities.types import OptimizerLRSchedulerConfig
 from torch import Tensor, nn
-from torch.nn.modules.loss import _Loss
 from torch.nn.parameter import Parameter
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
@@ -19,7 +18,7 @@ class Model(LightningModule):
     def __init__(
         self,
         model: nn.Module,
-        loss_fn: _Loss,
+        loss_fn: nn.Module,
         optimizer: Callable[[Iterator[Parameter]], Optimizer],
         scheduler: Callable[[Optimizer], LRScheduler] | None,
         metric_collection: MetricCollection,
