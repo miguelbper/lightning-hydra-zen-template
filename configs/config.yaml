@@ -6,7 +6,7 @@ defaults:
   - datamodule: mnist
   - debug: null
   - experiment: null
-  - hparams_search: null
+  - hpo: null
   - hydra: default
   - logger: default
   - metrics: default
@@ -20,5 +20,5 @@ eval: True
 ckpt_path: null
 seed: null
 
-metric: "val/acc"
+monitor: "val/acc"
 mode: "max"

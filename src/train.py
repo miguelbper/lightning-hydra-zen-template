@@ -47,7 +47,7 @@ def train(cfg: DictConfig) -> float:
         metrics.update(trainer.callback_metrics)
         # TODO: Will trainer.test override metrics? Check if this is correct
 
-    return metrics[cfg.get("metric")].item()
+    return metrics[cfg.get("monitor")].item()
 
 
 if __name__ == "__main__":
