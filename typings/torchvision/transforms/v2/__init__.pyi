@@ -16,3 +16,19 @@ from ._temporal import UniformTemporalSubsample
 from ._type_conversion import PILToTensor, ToImage, ToPILImage, ToPureTensor
 from ._utils import check_type, get_bounding_boxes, has_all, has_any, query_chw, query_size
 from ._deprecated import ToTensor
+
+__all__ = [
+    "AutoAugmentPolicy", "InterpolationMode",
+    "Transform",
+    "CutMix", "JPEG", "MixUp", "RandomErasing",
+    "AugMix", "AutoAugment", "RandAugment", "TrivialAugmentWide",
+    "ColorJitter", "Grayscale", "RGB", "RandomAdjustSharpness", "RandomAutocontrast", "RandomChannelPermutation", "RandomEqualize", "RandomGrayscale", "RandomInvert", "RandomPhotometricDistort", "RandomPosterize", "RandomSolarize",
+    "Compose", "RandomApply", "RandomChoice", "RandomOrder",
+    "CenterCrop", "ElasticTransform", "FiveCrop", "Pad", "RandomAffine", "RandomCrop", "RandomHorizontalFlip", "RandomIoUCrop", "RandomPerspective", "RandomResize", "RandomResizedCrop", "RandomRotation", "RandomShortestSize", "RandomVerticalFlip", "RandomZoomOut", "Resize", "ScaleJitter", "TenCrop",
+    "ClampBoundingBoxes", "ConvertBoundingBoxFormat",
+    "ConvertImageDtype", "GaussianBlur", "GaussianNoise", "Identity", "Lambda", "LinearTransformation", "Normalize", "SanitizeBoundingBoxes", "ToDtype",
+    "UniformTemporalSubsample",
+    "PILToTensor", "ToImage", "ToPILImage", "ToPureTensor",
+    "check_type", "get_bounding_boxes", "has_all", "has_any", "query_chw", "query_size",
+    "ToTensor",
+]
