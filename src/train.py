@@ -34,11 +34,12 @@ def train(cfg: DictConfig) -> float:
 
     log.info("Training model...")
     trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
-    best_ckpt: Path = trainer.checkpoint_callback.best_model_path
+    best_ckpt: Path = Path(trainer.checkpoint_callback.best_model_path)  # type: ignore
 
     log.info("Validating model...")
     trainer.validate(model=model, datamodule=datamodule, ckpt_path=best_ckpt)
     metrics: dict[str, torch.Tensor] = trainer.callback_metrics
+    # TODO: use best model score instead? -> saves one validation run
 
     if cfg.get("eval"):
         log.info("Testing model...")
