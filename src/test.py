@@ -19,9 +19,7 @@ def test(cfg: DictConfig) -> None:
         cfg (DictConfig): Configuration object representing the config files.
 
     Returns:
-        tuple[Metrics, Objects]: A tuple containing:
-            - Metrics: A dictionary of metrics from testing
-            - Objects: The objects (cfg, model, datamodule, trainer) used in the testing process
+        None
     """
     log.info("Instantiating objects...")
     model: LightningModule = instantiate(cfg.model)
