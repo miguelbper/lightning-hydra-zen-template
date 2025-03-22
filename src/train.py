@@ -10,7 +10,7 @@ from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
 rootutils.setup_root(search_from=__file__, indicator=".project-root", dotenv=False)
-log = logging.getLogger(__name__)  # TODO: should I be using loguru instead?
+log = logging.getLogger(__name__)
 
 
 @hydra.main(version_base="1.3", config_path="../configs", config_name="config.yaml")
