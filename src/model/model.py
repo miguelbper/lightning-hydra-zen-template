@@ -1,12 +1,12 @@
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from typing import Any
 
 from lightning import LightningModule
-from lightning.pytorch.utilities.types import OptimizerLRSchedulerConfig
+from lightning.pytorch.utilities.types import OptimizerConfig, OptimizerLRSchedulerConfig
 from torch import Tensor, nn
-from torch.nn.parameter import Parameter
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
+from torch.optim.optimizer import ParamsT
 from torchmetrics import MetricCollection
 
 Input = Any
@@ -19,7 +19,7 @@ class Model(LightningModule):
         self,
         model: nn.Module,
         loss_fn: nn.Module,
-        optimizer: Callable[[Iterator[Parameter]], Optimizer],
+        optimizer: Callable[[ParamsT], Optimizer],
         scheduler: Callable[[Optimizer], LRScheduler] | None,
         metric_collection: MetricCollection,
     ) -> None:
@@ -42,9 +42,9 @@ class Model(LightningModule):
         inputs, target = batch
         logits = self.model(inputs)
         loss = self.loss_fn(logits, target)
-        self.log(f"{split}/loss", loss, on_step=True, on_epoch=False)
+        self.log(f"{split}/loss", loss, on_step=True, on_epoch=False)  # type: ignore
         self.metrics[split].update(logits, target)
-        self.log_dict(self.metrics[split], on_step=True, on_epoch=True)
+        self.log_dict(self.metrics[split], on_step=True, on_epoch=True)  # type: ignore
         return loss
 
     def training_step(self, batch: Batch, batch_idx: int) -> Tensor:
@@ -56,15 +56,20 @@ class Model(LightningModule):
     def test_step(self, batch: Batch, batch_idx: int) -> None:
         self.step(batch, batch_idx, "test")
 
-    def configure_optimizers(self) -> OptimizerLRSchedulerConfig:
-        optimizer: Optimizer = self.optimizer(params=self.parameters())
-        optim_cfg = {"optimizer": optimizer}
+    def configure_optimizers(self) -> OptimizerConfig | OptimizerLRSchedulerConfig:
+        optimizer: Optimizer = self.optimizer(self.parameters())
         if self.scheduler:
-            scheduler: LRScheduler = self.scheduler(optimizer=optimizer)
-            optim_cfg["lr_scheduler"] = {
-                "scheduler": scheduler,
-                "interval": "epoch",
-                "frequency": 1,
-                "monitor": "val/loss",
+            scheduler: LRScheduler = self.scheduler(optimizer)
+            optim_scheduler_cfg: OptimizerLRSchedulerConfig = {
+                "optimizer": optimizer,
+                "lr_scheduler": {
+                    "scheduler": scheduler,
+                    "interval": "epoch",
+                    "frequency": 1,
+                    "monitor": "val/loss",
+                },
             }
-        return optim_cfg
+            return optim_scheduler_cfg
+        else:
+            optim_cfg: OptimizerConfig = {"optimizer": optimizer}
+            return optim_cfg

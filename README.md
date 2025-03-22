@@ -87,6 +87,7 @@ As a reference for this template, I used the following very nice projects:
 
 <!-- ###########################################################################
 TODOS
+- TODO: add HPO callbacks: automatic LearningRate, BatchSize
 - TODO: add links to good "best practices" reading/watching material, as well as my own suggestions
 - TODO: add checklist on how to approach a new problem
 - TODO: add extra suggested libraries (nbautoexport, ...)
