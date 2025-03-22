@@ -23,7 +23,6 @@ Template for deep learning projects, using
 - [uv](https://github.com/astral-sh/uv) - Dependency management
 
 
-<!-- TODO: add directory structure explanation -->
 ## Directory structure
 ```
 ├── configs                 <- Configuration files for Hydra, containing model, training, and experiment settings
@@ -71,13 +70,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ```bash
 uv sync
 ```
+<!-- TODO: review setup instructions, taking into account that they should be self documenting in just -->
 
 ## Acknowledgements
 As a reference for this template, I used the following very nice projects:
 - [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
 - [drivendataorg/cookiecutter-data-science](https://github.com/drivendataorg/cookiecutter-data-science)
-
-<!-- TODO: at some point, may add what motivated me to do these changes
+<!-- TODO: at some point, may add what motivated me to do these changes, relative to the repos that already exist
 - Borrow ideas from both
 - Better dependency management with uv
 - Better linting and formatting with Ruff
@@ -86,11 +85,9 @@ As a reference for this template, I used the following very nice projects:
 - Learning exercise
 -->
 
-<!-- TODO: at some point, add links to good "best practices" reading -->
-
-<!-- TODO: add "checklist" on how to approach a new problem -->
-
-<!-- TODO: add extra libraries that can be used
-- nbautoexport for creating copies of notebooks
-- ...
--->
+<!-- ###########################################################################
+TODOS
+- TODO: add links to good "best practices" reading/watching material, as well as my own suggestions
+- TODO: add checklist on how to approach a new problem
+- TODO: add extra suggested libraries (nbautoexport, ...)
+############################################################################ -->
