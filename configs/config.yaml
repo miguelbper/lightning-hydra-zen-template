@@ -20,5 +20,5 @@ eval: True
 ckpt_path: null
 seed: null
 
-monitor: "val/acc"
+monitor: "val/MulticlassAccuracy"
 mode: "max"
