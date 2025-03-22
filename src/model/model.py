@@ -25,7 +25,7 @@ class Model(LightningModule):
         metric_collection: MetricCollection,
     ) -> None:
         super().__init__()
-        self.save_hyperparameters(logger=False)
+        self.save_hyperparameters(logger=False, ignore=["model", "loss_fn", "metric_collection"])
 
         self.model = model
         self.loss_fn = loss_fn

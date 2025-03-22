@@ -1,11 +1,12 @@
+import torch
 from lightning import LightningDataModule
-from torch import Generator, Tensor
+from torch import Generator
 from torch.utils.data import DataLoader, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import v2
 
-Input = Tensor
-Target = Tensor
+Input = torch.Tensor
+Target = torch.Tensor
 Batch = tuple[Input, Target]
 
 MNIST_NUM_TRAIN_EXAMPLES = 60000
@@ -30,7 +31,13 @@ class MNISTDataModule(LightningDataModule):
         self.pin_memory = pin_memory
         self.num_val_examples = num_val_examples
         self.num_train_examples = MNIST_NUM_TRAIN_EXAMPLES - num_val_examples
-        self.transform = v2.Compose([v2.ToTensor(), v2.Normalize((MNIST_MEAN,), (MNIST_STD,))])
+        self.transform = v2.Compose(
+            [
+                v2.ToImage(),
+                v2.ToDtype(torch.float32, scale=True),
+                v2.Normalize((MNIST_MEAN,), (MNIST_STD,)),
+            ]
+        )
 
     def prepare_data(self) -> None:
         MNIST(self.data_dir, train=True, download=True)
