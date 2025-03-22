@@ -55,7 +55,7 @@ def train(cfg: DictConfig) -> tuple[Metrics, Objects]:
     return metrics, objects
 
 
-@hydra.main(version_base="1.3", config_path="../configs", config_name="cfg.yaml")
+@hydra.main(version_base="1.3", config_path="../configs", config_name="config.yaml")
 def main(cfg: DictConfig) -> float | None:
     """Main function to train the model and return the specified metric.
 
