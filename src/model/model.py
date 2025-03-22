@@ -1,4 +1,5 @@
 from collections.abc import Callable, Iterator
+from typing import Any
 
 from lightning import LightningModule
 from lightning.pytorch.utilities.types import OptimizerLRSchedulerConfig
@@ -9,7 +10,9 @@ from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 from torchmetrics import MetricCollection
 
-from src.utils.types import Batch
+Input = Any
+Target = Tensor
+Batch = tuple[Input, Target]
 
 
 class Model(LightningModule):
