@@ -14,18 +14,6 @@ Target = Tensor
 Batch = tuple[Input, Target]
 
 
-# TODO: Debug metrics
-# a.reset(); a.average="micro"; print(a(logits, target))
-# tensor(0.1250, device='mps:0')
-# a.reset(); a.average="macro"; print(a(logits, target))
-# tensor(0.1400, device='mps:0')
-# a.reset(); a.average="weighted"; print(a(logits, target))
-# tensor(0.1250, device='mps:0')
-# a.reset(); a.average="none"; print(a(logits, target))
-# tensor([1.9038e-25, 0.0000e+00, 0.0000e+00, 0.0000e+00, 4.0000e-01, 1.0000e+00,
-#         0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00], device='mps:0')
-
-
 class Model(LightningModule):
     def __init__(
         self,
@@ -78,7 +66,7 @@ class Model(LightningModule):
                     "scheduler": scheduler,
                     "interval": "epoch",
                     "frequency": 1,
-                    "monitor": "val/loss",
+                    "monitor": "train/loss",
                 },
             }
             return optim_scheduler_cfg
