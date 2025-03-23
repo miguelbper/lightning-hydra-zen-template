@@ -1,0 +1,24 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - callbacks: default
+  - datamodule: mnist
+  - debug: null
+  - experiment: null
+  - hpo: null
+  - hydra: default
+  - logger: default
+  - metrics: default
+  - model: model
+  - paths: default
+  - trainer: default
+
+task_name: null
+train: True
+eval: True
+ckpt_path: null
+seed: null
+
+monitor: "val/MulticlassAccuracy"
+mode: "max"

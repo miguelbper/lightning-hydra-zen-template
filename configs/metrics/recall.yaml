@@ -1,0 +1,6 @@
+# https://lightning.ai/docs/torchmetrics/stable/classification/recall.html
+
+recall:
+  _target_: torchmetrics.classification.Recall
+  task: multiclass
+  num_classes: 10

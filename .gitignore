@@ -162,9 +162,12 @@ cython_debug/
 #.idea/
 
 # Extra additions
+.vscode/
+
 logs/*
 !logs/.gitkeep
-outputs/
-.vscode/
-.ruff_cache/
+
 data/
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep

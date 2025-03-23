@@ -3,7 +3,7 @@
 model_checkpoint:
   _target_: lightning.pytorch.callbacks.ModelCheckpoint
   dirpath: ${paths.output_dir}/checkpoints
-  monitor: ${metric}
+  monitor: ${monitor}
   save_last: True
   mode: ${mode}
   auto_insert_metric_name: False

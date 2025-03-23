@@ -1,15 +1,13 @@
 # Deep Learning Template
-[![python](https://img.shields.io/badge/-Python-blue?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![pytorch](https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
-[![lightning](https://img.shields.io/badge/-Lightning-792ee5?logo=lightning&logoColor=white)](https://pytorchlightning.ai/)
+[![Python](https://img.shields.io/badge/Python-3776ab?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![PyTorch](https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
+[![PyTorch Lightning](https://img.shields.io/badge/-Lightning-7e4fff?logo=lightning&logoColor=white)](https://pytorchlightning.ai/)
 [![hydra](https://img.shields.io/badge/-Hydra-89b8cd?logo=meta)](https://hydra.cc/)
-[![ruff](https://img.shields.io/badge/-Ruff-261230?logo=ruff&logoColor=261230&labelColor=d7ff64)](https://github.com/astral-sh/ruff)
-[![uv](https://img.shields.io/badge/-uv-261230?logo=astral&logoColor=261230&labelColor=de5fe9)](https://github.com/astral-sh/uv)
+[![ruff](https://img.shields.io/badge/Ruff-261230?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/badge/uv-de5fe9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv)
 [![license](https://img.shields.io/badge/license-MIT-green.svg?labelColor=gray)](https://github.com/miguelbper/deep-learning-template/blob/main/LICENSE)
-<!-- [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) -->
-<!-- [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/) -->
-<!-- add automatic tests passing -->
-<!-- add automatic code coverage -->
+<!-- TODO: add automatic tests passing -->
+<!-- TODO: add automatic code coverage -->
 
 
 
@@ -25,35 +23,72 @@ Template for deep learning projects, using
 - [uv](https://github.com/astral-sh/uv) - Dependency management
 
 
+## Directory structure
+```
+├── configs                 <- Configuration files for Hydra, containing model, training, and experiment settings
+│   └── ...
+│
+├── data                    <- Directory for datasets
+│   ├── interim             <- Intermediate results of dataset processing
+│   ├── processed           <- Datasets ready to be used by the modelling scripts
+│   └── raw                 <- Datasets as obtained from the source
+│
+├── logs                    <- Training logs, metrics, checkpoints, and experiment tracking data
+├── notebooks               <- Jupyter notebooks for experimentation
+├── scripts                 <- Shell scripts
+│
+├── src                     <- Source code for the project
+│   ├── datamodule          <- Lightning DataModules for handling datasets
+│   ├── model               <- Neural network model definitions and Lightning Modules
+│   ├── ...
+│   ├── test.py             <- Testing / evaluation script
+│   └── train.py            <- Training script
+│
+├── tests                   <- Automated tests
+│   └── ...
+│
+├── .envrc-example          <- Environment variables, automatically loaded with direnv
+├── .gitignore              <- Specifies which files Git should ignore
+├── .pre-commit-config.yaml <- Git pre-commit hooks
+├── .python-version         <- Python version that should be installed
+├── justfile                <- Project commands
+├── LICENSE                 <- MIT License file
+├── pyproject.toml          <- Project configuration file with dependencies and tool settings
+├── README.md               <- The top-level README for developers using this project
+└── uv.lock                 <- The requirements file for reproducing the environment
+```
+
 ## Setup
-1. Fork the repo or copy the code to the working directory of the new project. Move to the working directory.
+1. Click the green "Use this template" button on GitHub to start a new project.
 
 2. Install uv:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-3. Install python with uv:
-```bash
-uv python install
-```
-
-4. Install the virtual environment (this will create a venv folder in the working directory):
+3. Install the virtual environment (this will create a `.venv` folder in the working directory):
 ```bash
 uv sync
 ```
+<!-- TODO: review setup instructions, taking into account that they should be self documenting in just -->
 
-5. Install the package in editable mode:
-```bash
-uv pip install -e .
-```
+## Acknowledgements
+As a reference for this template, I used the following very nice projects:
+- [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)
+- [drivendataorg/cookiecutter-data-science](https://github.com/drivendataorg/cookiecutter-data-science)
+<!-- TODO: at some point, may add what motivated me to do these changes, relative to the repos that already exist
+- Borrow ideas from both
+- Better dependency management with uv
+- Better linting and formatting with Ruff
+- Better generic LightningModule, not adapted to dataset at hand
+- Add a justfile
+- Learning exercise
+-->
 
-6. Run the unit tests:
-```bash
-uv run pytest
-```
-
-
-## References
-
-Based on the very nice [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template).
+<!-- ###########################################################################
+TODOS
+- TODO: add HPO callbacks: automatic LearningRate, BatchSize
+- TODO: add links to good "best practices" reading/watching material, as well as my own suggestions
+- TODO: add checklist on how to approach a new problem
+- TODO: add extra suggested libraries (nbautoexport, ...)
+############################################################################ -->

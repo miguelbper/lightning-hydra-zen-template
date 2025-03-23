@@ -1,6 +1,3 @@
-# This file should list all available callbacks
-# The callbacks in use are specified in the trainer config
-
 defaults:
   - early_stopping
   - model_checkpoint
