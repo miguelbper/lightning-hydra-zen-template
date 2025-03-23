@@ -6,7 +6,12 @@ loss_fn:
 optimizer:
   _partial_: true
   _target_: torch.optim.Adam
-scheduler: null
+scheduler:
+  _partial_: true
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  mode: min
+  factor: 0.1
+  patience: 10
 metric_collection:
   _target_: torchmetrics.MetricCollection
   metrics:
