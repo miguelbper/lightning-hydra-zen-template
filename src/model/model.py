@@ -66,7 +66,7 @@ class Model(LightningModule):
                     "scheduler": scheduler,
                     "interval": "epoch",
                     "frequency": 1,
-                    "monitor": "val/loss",
+                    "monitor": "train/loss",
                 },
             }
             return optim_scheduler_cfg
