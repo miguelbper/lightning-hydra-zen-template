@@ -1,3 +1,14 @@
+"""Tests to understand how torchmetrics works.
+
+Based on the discussion in https://github.com/Lightning-AI/torchmetrics/issues/1717,
+the recommended averaging strategies for different metrics are:
+
+- Accuracy: average="micro"
+- Precision: average="macro"
+- Recall: average="macro"
+- F1Score: average="macro"
+"""
+
 import pytest
 import torch
 from pytest import FixtureRequest
