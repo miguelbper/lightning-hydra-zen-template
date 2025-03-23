@@ -88,36 +88,36 @@ def metrics_ungrouped() -> MetricCollection:
     )
 
 
-def test_all_correct(t_zeros: Tensor, p_zeros: Tensor) -> None:
-    assert accuracy(p_zeros, t_zeros) == 1.0
+class TestAccuracy:
+    def test_all_correct(self, t_zeros: Tensor, p_zeros: Tensor) -> None:
+        assert accuracy(p_zeros, t_zeros) == 1.0
 
+    def test_all_incorrect(self, t_zeros: Tensor, p_ones: Tensor) -> None:
+        assert accuracy(p_ones, t_zeros) == 0.0
 
-def test_all_incorrect(t_zeros: Tensor, p_ones: Tensor) -> None:
-    assert accuracy(p_ones, t_zeros) == 0.0
+    def test_functional(self, t_rand: Tensor, p_rand: Tensor) -> None:
+        a0 = accuracy(p_rand, t_rand)
+        a1 = multiclass_accuracy(p_rand, t_rand, num_classes=C, average="micro")
+        assert a0 == a1
 
+    def test_class(self, t_rand: Tensor, p_rand: Tensor, accuracy_metric: Metric) -> None:
+        a0 = accuracy(p_rand, t_rand)
+        a1 = accuracy_metric(p_rand, t_rand)
+        assert a0 == a1
 
-def test_functional(t_rand: Tensor, p_rand: Tensor) -> None:
-    a0 = accuracy(p_rand, t_rand)
-    a1 = multiclass_accuracy(p_rand, t_rand, num_classes=C, average="micro")
-    assert a0 == a1
+    def test_metric_collection(self, t_rand: Tensor, p_rand: Tensor, metrics_grouped: MetricCollection) -> None:
+        a0 = accuracy(p_rand, t_rand)
+        a1 = metrics_grouped(p_rand, t_rand)["MulticlassAccuracy"]
+        assert a0 == a1
 
-
-def test_class(t_rand: Tensor, p_rand: Tensor, accuracy_metric: Metric) -> None:
-    a0 = accuracy(p_rand, t_rand)
-    a1 = accuracy_metric(p_rand, t_rand)
-    assert a0 == a1
-
-
-def test_metric_collection(t_rand: Tensor, p_rand: Tensor, metrics_grouped: MetricCollection) -> None:
-    a0 = accuracy(p_rand, t_rand)
-    a1 = metrics_grouped(p_rand, t_rand)["MulticlassAccuracy"]
-    assert a0 == a1
-
-
-def test_compute_groups(
-    t_rand: Tensor, p_rand: Tensor, metrics_grouped: MetricCollection, metrics_ungrouped: MetricCollection
-) -> None:
-    a0 = metrics_grouped(p_rand, t_rand)
-    a1 = metrics_ungrouped(p_rand, t_rand)
-    for k in a0:
-        assert a0[k] == a1[k]
+    def test_compute_groups(
+        self,
+        t_rand: Tensor,
+        p_rand: Tensor,
+        metrics_grouped: MetricCollection,
+        metrics_ungrouped: MetricCollection,
+    ) -> None:
+        a0 = metrics_grouped(p_rand, t_rand)
+        a1 = metrics_ungrouped(p_rand, t_rand)
+        for k in a0:
+            assert a0[k] == a1[k]
