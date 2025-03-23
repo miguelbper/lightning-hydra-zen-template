@@ -4,3 +4,4 @@ recall:
   _target_: torchmetrics.classification.Recall
   task: multiclass
   num_classes: 10
+  average: macro

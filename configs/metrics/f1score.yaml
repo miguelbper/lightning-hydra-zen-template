@@ -4,3 +4,4 @@ f1_score:
   _target_: torchmetrics.classification.F1Score
   task: multiclass
   num_classes: 10
+  average: macro
