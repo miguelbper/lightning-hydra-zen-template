@@ -4,3 +4,4 @@ precision:
   _target_: torchmetrics.classification.Precision
   task: multiclass
   num_classes: 10
+  average: macro
