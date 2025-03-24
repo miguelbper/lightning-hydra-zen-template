@@ -8,7 +8,7 @@
 [![license](https://img.shields.io/badge/license-MIT-green.svg?labelColor=gray)](https://github.com/miguelbper/deep-learning-template/blob/main/LICENSE)
 [![Tests](https://github.com/miguelbper/deep-learning-template/actions/workflows/tests.yaml/badge.svg)](https://github.com/miguelbper/deep-learning-template/actions/workflows/tests.yaml)
 [![codecov](https://codecov.io/gh/miguelbper/deep-learning-template/branch/main/graph/badge.svg)](https://codecov.io/gh/miguelbper/deep-learning-template)
-
+<!-- TODO: badges working? -->
 
 
 Template for deep learning projects, using
