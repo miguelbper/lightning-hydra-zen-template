@@ -10,7 +10,7 @@ on:
 
 jobs:
   tests:
-    runs-on: macos-latest
+    runs-on: windows-latest
     name: Run unit tests
     steps:
       - uses: actions/checkout@v4
