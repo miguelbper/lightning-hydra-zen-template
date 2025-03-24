@@ -3,7 +3,7 @@ name = "deep-learning-template"
 version = "0.1.0"
 description = "A template for deep learning projects, using PyTorch Lightning and Hydra."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 license = {file = "LICENSE"}
 authors = [
     {name = "Miguel Pereira", email = "miguel.b.per@gmail.com"},
@@ -96,6 +96,6 @@ select = [
 venvPath = "."
 venv = ".venv"
 strict = ["**/*.py"]
-pythonVersion = "3.13"
+pythonVersion = "3.11"
 stubPath = "typings"
 ignore = ["typings/**"]
