@@ -39,16 +39,16 @@ dev = [
 
 [tool.uv.sources]
 torch = [
-    { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
-    { index = "pytorch-cuda", marker = "platform_system == 'Linux'" },
+    { index = "pytorch-cpu", marker = "sys_platform != 'linux'" },
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux'" },
 ]
 torchvision = [
-    { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
-    { index = "pytorch-cuda", marker = "platform_system == 'Linux'" },
+    { index = "pytorch-cpu", marker = "sys_platform != 'linux'" },
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux'" },
 ]
 torchaudio = [
-    { index = "pytorch-cpu", marker = "platform_system == 'Windows'" },
-    { index = "pytorch-cuda", marker = "platform_system == 'Linux'" },
+    { index = "pytorch-cpu", marker = "sys_platform != 'linux'" },
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux'" },
 ]
 
 [[tool.uv.index]]
