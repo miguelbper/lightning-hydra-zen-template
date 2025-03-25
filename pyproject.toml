@@ -90,12 +90,3 @@ select = [
     "UP",  # pyupgrade
     "SIM",  # flake8-simplify
 ]
-
-# Set of rules taken from https://rdrn.me/postmodern-python/
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-strict = ["**/*.py"]
-pythonVersion = "3.11"
-stubPath = "typings"
-ignore = ["typings/**"]

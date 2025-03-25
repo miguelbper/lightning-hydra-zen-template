@@ -39,7 +39,7 @@ def train(cfg: DictConfig) -> float | None:
     log.info("Training model...")
     trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
     metric: torch.Tensor | None = trainer.checkpoint_callback.best_model_score
-    ckpt_path: str = str(trainer.checkpoint_callback.best_model_path)  # type: ignore
+    ckpt_path: str = trainer.checkpoint_callback.best_model_path
 
     if cfg.get("evaluate") and ckpt_path:
         log.info("Validating model...")

@@ -41,20 +41,20 @@ class Model(LightningModule):
         inputs, target = batch
         logits = self.model(inputs)
         loss = self.loss_fn(logits, target)
-        self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True)  # type: ignore
+        self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True)
         return loss
 
     def validation_step(self, batch: Batch, batch_idx: int) -> None:
         inputs, target = batch
         logits = self.model(inputs)
         self.val_metrics.update(logits, target)
-        self.log_dict(self.val_metrics, on_step=True, on_epoch=True)  # type: ignore
+        self.log_dict(self.val_metrics, on_step=True, on_epoch=True)
 
     def test_step(self, batch: Batch, batch_idx: int) -> None:
         inputs, target = batch
         logits = self.model(inputs)
         self.test_metrics.update(logits, target)
-        self.log_dict(self.test_metrics, on_step=True, on_epoch=True)  # type: ignore
+        self.log_dict(self.test_metrics, on_step=True, on_epoch=True)
 
     def configure_optimizers(self) -> OptimizerConfig | OptimizerLRSchedulerConfig:
         optimizer: Optimizer = self.optimizer(self.parameters())

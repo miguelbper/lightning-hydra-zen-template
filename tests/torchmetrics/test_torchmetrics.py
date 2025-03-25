@@ -47,13 +47,13 @@ def p_ones() -> Tensor:
 
 @pytest.fixture(params=range(10))
 def t_rand(request: FixtureRequest) -> Tensor:
-    torch.manual_seed(request.param)  # type: ignore
+    torch.manual_seed(request.param)
     return torch.randint(0, C, t_shape, dtype=torch.int32)
 
 
 @pytest.fixture(params=range(10))
 def p_rand(request: FixtureRequest) -> Tensor:
-    torch.manual_seed(request.param)  # type: ignore
+    torch.manual_seed(request.param)
     return torch.rand(p_shape, dtype=torch.float32)
 
 
