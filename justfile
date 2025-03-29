@@ -51,4 +51,4 @@ test:
 # Run tests with coverage
 [group("testing")]
 test-cov:
-    uv run pytest --cov=. --cov-report=html
+    uv run pytest --cov=src --cov-report=html
