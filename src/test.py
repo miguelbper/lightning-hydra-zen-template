@@ -21,12 +21,16 @@ def test(cfg: DictConfig) -> None:
     Returns:
         None
     """
-    log.info("Instantiating objects...")
+    log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = instantiate(cfg.model)
+
+    log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = instantiate(cfg.datamodule)
+
+    log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = instantiate(cfg.trainer)
 
-    log.info("Testing model...")
+    log.info("Testing model")
     trainer.test(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
 
 
