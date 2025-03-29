@@ -1,3 +1,5 @@
+import os
+
 import pytest
 import torch
 from hydra.core.hydra_config import HydraConfig
@@ -10,6 +12,8 @@ from src.train import train
 @pytest.fixture(params=["cpu", "mps", "cuda"])
 def accelerator(request: FixtureRequest) -> str:
     device: str = request.param
+    if device != "cpu" and os.getenv("GITHUB_ACTIONS") == "true":
+        pytest.skip("Skipping GPU tests on GitHub Actions")
     if device == "cuda" and not torch.cuda.is_available():
         pytest.skip("CUDA is not available")
     if device == "mps" and not torch.backends.mps.is_available():
