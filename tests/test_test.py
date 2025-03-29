@@ -23,14 +23,16 @@ def test_train_and_test(cfg: DictConfig, accelerator: str):
 
     with open_dict(cfg):
         cfg.datamodule.batch_size = 2
+        cfg.trainer.accelerator = accelerator
         cfg.trainer.max_epochs = 1
         cfg.trainer.limit_train_batches = 1
         cfg.trainer.limit_val_batches = 1
         cfg.trainer.limit_test_batches = 1
-        cfg.trainer.accelerator = accelerator
         cfg.evaluate = False
+
     train(cfg)
 
     with open_dict(cfg):
         cfg.ckpt_path = f"{cfg.paths.output_dir}/checkpoints/last.ckpt"
+
     _test(cfg)
