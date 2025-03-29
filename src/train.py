@@ -8,7 +8,7 @@ from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
-rootutils.setup_root(search_from=__file__, indicator=".project-root", dotenv=False)
+rootutils.setup_root(search_from=__file__, dotenv=False)
 log = logging.getLogger(__name__)
 
 
