@@ -1,6 +1,6 @@
 [project]
 name = "deep-learning-template"
-version = "0.0.3"
+version = "0.0.4"
 description = "A template for deep learning projects, using PyTorch Lightning and Hydra."
 readme = "README.md"
 requires-python = ">=3.11"
