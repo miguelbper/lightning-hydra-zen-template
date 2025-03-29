@@ -51,4 +51,28 @@ test:
 # Run tests with coverage
 [group("testing")]
 test-cov:
-    uv run pytest --cov=. --cov-report=html
+    uv run pytest --cov=src --cov-report=html
+
+# Publish a new release on GitHub
+[group("packaging")]
+publish:
+    #!/usr/bin/env bash
+    # Get current version from pyproject.toml
+    CURRENT_VERSION=$(grep '^version = ' pyproject.toml | cut -d'"' -f2)
+
+    # Split version into major.minor.patch
+    IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+    # Increment patch version
+    NEW_PATCH=$((PATCH + 1))
+    NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+
+    # Update version in pyproject.toml
+    sed -i '' "s/^version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
+    uv sync
+
+    # Create git tag
+    git add pyproject.toml
+    git commit -m "Update version to $NEW_VERSION"
+    git tag -a "v$NEW_VERSION" -m "Release version $NEW_VERSION"
+    git push --follow-tags origin main

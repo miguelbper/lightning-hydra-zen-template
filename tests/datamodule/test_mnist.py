@@ -3,7 +3,7 @@ import rootutils
 
 from src.datamodule.mnist import MNISTDataModule
 
-ROOT_DIR = rootutils.setup_root(search_from=__file__, indicator=".project-root", dotenv=False)
+ROOT_DIR = rootutils.setup_root(search_from=__file__, dotenv=False)
 DATA_DIR = ROOT_DIR / "data" / "raw"
 C, H, W = 3, 32, 32
 

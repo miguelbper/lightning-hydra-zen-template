@@ -6,10 +6,9 @@ import rootutils
 import torch
 from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
-from lightning.pytorch.callbacks import ModelCheckpoint
 from omegaconf import DictConfig
 
-rootutils.setup_root(search_from=__file__, indicator=".project-root", dotenv=False)
+rootutils.setup_root(search_from=__file__, dotenv=False)
 log = logging.getLogger(__name__)
 
 
@@ -35,10 +34,6 @@ def train(cfg: DictConfig) -> float | None:
 
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = instantiate(cfg.trainer)
-
-    if trainer.checkpoint_callback is None or not isinstance(trainer.checkpoint_callback, ModelCheckpoint):
-        log.info("No checkpoint callback found. Providing a checkpoint callback is required for training.")
-        return None
 
     log.info("Training model")
     trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))

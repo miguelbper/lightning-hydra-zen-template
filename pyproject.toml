@@ -89,3 +89,8 @@ select = [
     "UP",  # pyupgrade
     "SIM",  # flake8-simplify
 ]
+
+[tool.coverage.report]
+exclude_also = [
+    "if __name__ == .__main__.:",
+]
