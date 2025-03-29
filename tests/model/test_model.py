@@ -7,8 +7,13 @@ from omegaconf import DictConfig
 
 from src.model.model import Model
 
-B, C, H, W = 32, 3, 32, 32
+B, C, H, W = 2, 3, 32, 32
 num_classes = 10
+
+
+@pytest.fixture(params=[1, 2])
+def batch_size(request: pytest.FixtureRequest) -> int:
+    return request.param
 
 
 @pytest.fixture
@@ -38,10 +43,14 @@ class TestModel:
         loss = model.training_step(batch, 0)
         assert isinstance(loss, torch.Tensor)
 
-    def test_validation_step(self, model: Model):
-        batch = (torch.randn(B, C, H, W), torch.randint(0, num_classes, (B,)))
-        model.validation_step(batch, 0)
+    def test_validation_step(self, model: Model, batch_size: int):
+        model.eval()
+        with torch.no_grad():
+            batch = (torch.randn(batch_size, C, H, W), torch.randint(0, num_classes, (batch_size,)))
+            model.validation_step(batch, 0)
 
-    def test_test_step(self, model: Model):
-        batch = (torch.randn(B, C, H, W), torch.randint(0, num_classes, (B,)))
-        model.test_step(batch, 0)
+    def test_test_step(self, model: Model, batch_size: int):
+        model.eval()
+        with torch.no_grad():
+            batch = (torch.randn(batch_size, C, H, W), torch.randint(0, num_classes, (batch_size,)))
+            model.test_step(batch, 0)

@@ -58,7 +58,7 @@ explicit = true
 
 [[tool.uv.index]]
 name = "pytorch-cuda"
-url = "https://download.pytorch.org/whl/cu126"
+url = "https://download.pytorch.org/whl/cu124"
 explicit = true
 
 # ------------------------------------------------------------------------------
@@ -78,7 +78,6 @@ packages = ["src"]
 
 [tool.ruff]
 line-length = 120
-exclude = ["typings"]
 
 # Set of rules taken from https://docs.astral.sh/ruff/linter/#rule-selection
 [tool.ruff.lint]

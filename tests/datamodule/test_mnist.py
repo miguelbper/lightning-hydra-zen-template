@@ -5,12 +5,17 @@ from src.datamodule.mnist import MNISTDataModule
 
 ROOT_DIR = rootutils.setup_root(search_from=__file__, indicator=".project-root", dotenv=False)
 DATA_DIR = ROOT_DIR / "data" / "raw"
-B, C, H, W = 32, 3, 32, 32
+C, H, W = 3, 32, 32
+
+
+@pytest.fixture(params=[1, 2])
+def batch_size(request: pytest.FixtureRequest) -> int:
+    return request.param
 
 
 @pytest.fixture
-def datamodule() -> MNISTDataModule:
-    dm = MNISTDataModule(data_dir=DATA_DIR)
+def datamodule(batch_size: int) -> MNISTDataModule:
+    dm = MNISTDataModule(data_dir=DATA_DIR, batch_size=batch_size)
     dm.prepare_data()
     dm.setup("fit")
     dm.setup("test")
@@ -18,23 +23,23 @@ def datamodule() -> MNISTDataModule:
 
 
 class TestMNISTDataModule:
-    def test_train_dataloader(self, datamodule: MNISTDataModule):
+    def test_train_dataloader(self, datamodule: MNISTDataModule, batch_size: int):
         train_dataloader = datamodule.train_dataloader()
         batch = next(iter(train_dataloader))
         images, labels = batch
-        assert images.shape == (B, C, H, W)
-        assert labels.shape == (B,)
+        assert images.shape == (batch_size, C, H, W)
+        assert labels.shape == (batch_size,)
 
-    def test_val_dataloader(self, datamodule: MNISTDataModule):
+    def test_val_dataloader(self, datamodule: MNISTDataModule, batch_size: int):
         val_dataloader = datamodule.val_dataloader()
         batch = next(iter(val_dataloader))
         images, labels = batch
-        assert images.shape == (B, C, H, W)
-        assert labels.shape == (B,)
+        assert images.shape == (batch_size, C, H, W)
+        assert labels.shape == (batch_size,)
 
-    def test_test_dataloader(self, datamodule: MNISTDataModule):
+    def test_test_dataloader(self, datamodule: MNISTDataModule, batch_size: int):
         test_dataloader = datamodule.test_dataloader()
         batch = next(iter(test_dataloader))
         images, labels = batch
-        assert images.shape == (B, C, H, W)
-        assert labels.shape == (B,)
+        assert images.shape == (batch_size, C, H, W)
+        assert labels.shape == (batch_size,)

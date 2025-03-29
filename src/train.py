@@ -27,25 +27,29 @@ def train(cfg: DictConfig) -> float | None:
     if cfg.get("seed"):
         L.seed_everything(cfg.seed, workers=True)
 
-    log.info("Instantiating objects...")
+    log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = instantiate(cfg.model)
+
+    log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = instantiate(cfg.datamodule)
+
+    log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
     trainer: Trainer = instantiate(cfg.trainer)
 
     if trainer.checkpoint_callback is None or not isinstance(trainer.checkpoint_callback, ModelCheckpoint):
         log.info("No checkpoint callback found. Providing a checkpoint callback is required for training.")
         return None
 
-    log.info("Training model...")
+    log.info("Training model")
     trainer.fit(model=model, datamodule=datamodule, ckpt_path=cfg.get("ckpt_path"))
     metric: torch.Tensor | None = trainer.checkpoint_callback.best_model_score
     ckpt_path: str = trainer.checkpoint_callback.best_model_path
 
     if cfg.get("evaluate") and ckpt_path:
-        log.info("Validating model...")
+        log.info("Validating model")
         trainer.validate(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
 
-        log.info("Testing model...")
+        log.info("Testing model")
         trainer.test(model=model, datamodule=datamodule, ckpt_path=ckpt_path)
 
     return metric.item() if metric is not None else None

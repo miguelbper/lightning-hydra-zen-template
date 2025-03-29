@@ -2,11 +2,14 @@ from hydra.core.hydra_config import HydraConfig
 from hydra.utils import instantiate
 from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
-from omegaconf import DictConfig
+from omegaconf import DictConfig, open_dict
 
 
 def test_cfg(cfg: DictConfig) -> None:
     HydraConfig().set_config(cfg)
+
+    with open_dict(cfg):
+        cfg.trainer.logger = [cfg.logger.csv]
 
     model = instantiate(cfg.model)
     datamodule = instantiate(cfg.datamodule)
