@@ -10,7 +10,7 @@ C, H, W = 3, 32, 32
 
 @pytest.fixture(params=[1, 2])
 def batch_size(request: pytest.FixtureRequest) -> int:
-    return request.param  # type: ignore
+    return request.param
 
 
 @pytest.fixture

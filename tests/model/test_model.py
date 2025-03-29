@@ -13,7 +13,7 @@ num_classes = 10
 
 @pytest.fixture(params=[1, 2])
 def batch_size(request: pytest.FixtureRequest) -> int:
-    return request.param  # type: ignore
+    return request.param
 
 
 @pytest.fixture
