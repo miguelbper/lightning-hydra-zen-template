@@ -24,6 +24,7 @@ class TestTrain:
         with open_dict(cfg):
             cfg.datamodule.batch_size = 2
             cfg.trainer.accelerator = accelerator
+            cfg.trainer.logger = False
             cfg.trainer.fast_dev_run = True
 
         train(cfg)
@@ -34,6 +35,7 @@ class TestTrain:
         with open_dict(cfg):
             cfg.datamodule.batch_size = 2
             cfg.trainer.accelerator = accelerator
+            cfg.trainer.logger = False
             cfg.trainer.max_epochs = 1
             cfg.trainer.limit_train_batches = 1
             cfg.trainer.limit_val_batches = 1
