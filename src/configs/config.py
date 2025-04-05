@@ -1,3 +1,4 @@
+import copy
 import logging
 from collections.abc import Callable
 from pathlib import Path
@@ -5,6 +6,7 @@ from typing import Any
 
 import rootutils
 from hydra.conf import HydraConf, RunDir, SweepDir
+from hydra.experimental.callback import Callback
 from hydra_zen import builds, make_config
 from lightning import Trainer
 from lightning.pytorch.callbacks import (
@@ -14,6 +16,7 @@ from lightning.pytorch.callbacks import (
     RichProgressBar,
 )
 from lightning.pytorch.loggers import CSVLogger, MLFlowLogger
+from omegaconf import DictConfig, OmegaConf, flag_override
 from torch import nn
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
@@ -39,6 +42,16 @@ def log_instantiation(Cfg: Any) -> Callable[..., Any]:
         return Cfg(*args, **kwargs)
 
     return wrapper
+
+
+class PrintConfigCallback(Callback):
+    def on_run_start(self, config: DictConfig, config_name: str | None) -> None:
+        if "hydra" in config:
+            config = copy.copy(config)
+            with flag_override(config, ["struct", "readonly"], [False, False]):
+                config.pop("hydra")
+        log.info("Printing composed config")
+        print(OmegaConf.to_yaml(config))
 
 
 DataModuleCfg = builds(
@@ -140,6 +153,7 @@ TrainerCfg = builds(
     check_val_every_n_epoch=1,
     deterministic=False,
     default_root_dir="${paths.output_dir}",
+    enable_model_summary=False,
     zen_wrappers=log_instantiation,
 )
 
@@ -158,6 +172,7 @@ HydraCfg = make_config(
         ),
         # Fix from this https://github.com/facebookresearch/hydra/pull/2242 PR, while there isn't a new release
         job_logging={"handlers": {"file": {"filename": str(Path("${hydra.runtime.output_dir}") / ".log")}}},
+        callbacks={"print_config": builds(PrintConfigCallback)},
     ),
 )
 
