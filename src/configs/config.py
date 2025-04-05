@@ -4,7 +4,7 @@ from typing import Any
 
 import rootutils
 from hydra.conf import HydraConf, RunDir, SweepDir
-from hydra_zen import builds, make_config, make_custom_builds_fn
+from hydra_zen import builds, make_config
 from lightning import Trainer
 from lightning.pytorch.callbacks import (
     EarlyStopping,
@@ -28,7 +28,6 @@ from src.datamodule.mnist import MNISTDataModule
 from src.model.model import Model
 from src.model.resnet import ResNet
 
-pbuilds = make_custom_builds_fn(zen_partial=True)
 root_dir = rootutils.find_root(search_from=__file__)
 log = logging.getLogger(__name__)
 
@@ -58,14 +57,16 @@ ModelCfg = builds(
     loss_fn=builds(
         nn.CrossEntropyLoss,
     ),
-    optimizer=pbuilds(
+    optimizer=builds(
         Adam,
+        zen_partial=True,
     ),
-    scheduler=pbuilds(
+    scheduler=builds(
         ReduceLROnPlateau,
         mode="min",
         factor=0.1,
         patience=10,
+        zen_partial=True,
     ),
     metric_collection=builds(
         MetricCollection,
