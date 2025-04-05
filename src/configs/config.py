@@ -11,8 +11,20 @@ from lightning.pytorch.callbacks import (
     RichProgressBar,
 )
 from lightning.pytorch.loggers import CSVLogger, MLFlowLogger
+from torch import nn
+from torch.optim import Adam
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torchmetrics import MetricCollection
+from torchmetrics.classification import (
+    Accuracy,
+    F1Score,
+    Precision,
+    Recall,
+)
 
 from src.datamodule.mnist import MNISTDataModule
+from src.model.model import Model
+from src.model.resnet import ResNet
 
 root_dir = rootutils.find_root(search_from=__file__)
 
@@ -81,6 +93,58 @@ RichModelSummaryCfg = builds(
 )
 
 
+ModelCfg = builds(
+    Model,
+    model=builds(
+        ResNet,
+        num_classes=10,
+    ),
+    loss_fn=builds(
+        nn.CrossEntropyLoss,
+    ),
+    optimizer=builds(
+        Adam,
+        _partial_=True,
+    ),
+    scheduler=builds(
+        ReduceLROnPlateau,
+        _partial_=True,
+        mode="min",
+        factor=0.1,
+        patience=10,
+    ),
+    metric_collection=builds(
+        MetricCollection,
+        metrics=[
+            builds(
+                Accuracy,
+                task="multiclass",
+                num_classes=10,
+                average="micro",
+            ),
+            builds(
+                F1Score,
+                task="multiclass",
+                num_classes=10,
+                average="macro",
+            ),
+            builds(
+                Precision,
+                task="multiclass",
+                num_classes=10,
+                average="macro",
+            ),
+            builds(
+                Recall,
+                task="multiclass",
+                num_classes=10,
+                average="macro",
+            ),
+        ],
+    ),
+)
+
+
 TrainerCfg = builds(
     Trainer,
     logger=[
@@ -114,6 +178,7 @@ Config = make_config(
     paths=Paths,
     hydra=HydraCfg,
     datamodule=DataModuleCfg,
+    model=ModelCfg,
     trainer=TrainerCfg,
     bases=(RunConfig,),
 )
