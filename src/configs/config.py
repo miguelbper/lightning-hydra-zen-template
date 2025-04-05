@@ -18,5 +18,3 @@ Config = make_config(
     seed=42,
     bases=(TrainerCfg,),
 )
-
-pass
