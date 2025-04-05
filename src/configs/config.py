@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -32,8 +33,7 @@ root_dir = rootutils.find_root(search_from=__file__)
 log = logging.getLogger(__name__)
 
 
-# TODO: improve types
-def instantiation_log(Cfg: Any) -> Any:
+def log_instantiation(Cfg: Any) -> Callable[..., Any]:
     def wrapper(*args, **kwargs):
         log.info(f"Instantiating <{Cfg.__name__}>")
         return Cfg(*args, **kwargs)
@@ -44,7 +44,7 @@ def instantiation_log(Cfg: Any) -> Any:
 DataModuleCfg = builds(
     MNISTDataModule,
     data_dir="${paths.data_dir}",
-    zen_wrappers=instantiation_log,
+    zen_wrappers=log_instantiation,
 )
 
 
@@ -97,7 +97,7 @@ ModelCfg = builds(
             ),
         ],
     ),
-    zen_wrappers=instantiation_log,
+    zen_wrappers=log_instantiation,
 )
 
 
@@ -140,7 +140,7 @@ TrainerCfg = builds(
     check_val_every_n_epoch=1,
     deterministic=False,
     default_root_dir="${paths.output_dir}",
-    zen_wrappers=instantiation_log,
+    zen_wrappers=log_instantiation,
 )
 
 
