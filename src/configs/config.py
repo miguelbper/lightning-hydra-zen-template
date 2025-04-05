@@ -26,71 +26,13 @@ from src.datamodule.mnist import MNISTDataModule
 from src.model.model import Model
 from src.model.resnet import ResNet
 
-root_dir = rootutils.find_root(search_from=__file__)
-
 pbuilds = make_custom_builds_fn(zen_partial=True)
-
-Paths = make_config(
-    root_dir=str(root_dir),
-    data_dir=str(root_dir / "data" / "processed"),
-    log_dir=str(root_dir / "logs"),
-    output_dir="${hydra:runtime.output_dir}",
-    work_dir="${hydra:runtime.cwd}",
-)
-
-
-HydraCfg = HydraConf(
-    run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
-    sweep=SweepDir(
-        dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
-        subdir="${hydra.job.num}",
-    ),
-)
+root_dir = rootutils.find_root(search_from=__file__)
 
 
 DataModuleCfg = builds(
     MNISTDataModule,
     data_dir="${paths.data_dir}",
-)
-
-
-CSVLoggerCfg = builds(
-    CSVLogger,
-    save_dir="${paths.output_dir}",
-    name="csv",
-)
-
-
-MLFlowLoggerCfg = builds(
-    MLFlowLogger,
-    tracking_uri=str(Path("${paths.log_dir}") / "mlflow" / "mlruns"),
-)
-
-
-EarlyStoppingCfg = builds(
-    EarlyStopping,
-    monitor="${monitor}",
-    patience=3,
-    mode="${mode}",
-)
-
-
-ModelCheckpointCfg = builds(
-    ModelCheckpoint,
-    dirpath=str(Path("${paths.output_dir}") / "checkpoints"),
-    monitor="${monitor}",
-    save_last=True,
-    mode="${mode}",
-    auto_insert_metric_name=False,
-)
-
-
-RichProgressBarCfg = builds(RichProgressBar)
-
-
-RichModelSummaryCfg = builds(
-    RichModelSummary,
-    max_depth=-1,
 )
 
 
@@ -147,20 +89,60 @@ ModelCfg = builds(
 TrainerCfg = builds(
     Trainer,
     logger=[
-        CSVLoggerCfg,
-        MLFlowLoggerCfg,
+        builds(
+            CSVLogger,
+            save_dir="${paths.output_dir}",
+            name="csv",
+        ),
+        builds(
+            MLFlowLogger,
+            tracking_uri=str(Path("${paths.log_dir}") / "mlflow" / "mlruns"),
+        ),
     ],
     callbacks=[
-        EarlyStoppingCfg,
-        ModelCheckpointCfg,
-        RichProgressBarCfg,
-        RichModelSummaryCfg,
+        builds(
+            EarlyStopping,
+            monitor="${monitor}",
+            patience=3,
+            mode="${mode}",
+        ),
+        builds(
+            ModelCheckpoint,
+            dirpath=str(Path("${paths.output_dir}") / "checkpoints"),
+            monitor="${monitor}",
+            save_last=True,
+            mode="${mode}",
+            auto_insert_metric_name=False,
+        ),
+        builds(RichProgressBar),
+        builds(
+            RichModelSummary,
+            max_depth=-1,
+        ),
     ],
     min_epochs=1,
     max_epochs=10,
     check_val_every_n_epoch=1,
     deterministic=False,
     default_root_dir="${paths.output_dir}",
+)
+
+
+HydraCfg = HydraConf(
+    run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
+    sweep=SweepDir(
+        dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
+        subdir="${hydra.job.num}",
+    ),
+)
+
+
+Paths = make_config(
+    root_dir=str(root_dir),
+    data_dir=str(root_dir / "data" / "processed"),
+    log_dir=str(root_dir / "logs"),
+    output_dir="${hydra:runtime.output_dir}",
+    work_dir="${hydra:runtime.cwd}",
 )
 
 
