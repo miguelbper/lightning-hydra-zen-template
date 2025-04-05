@@ -1,12 +1,13 @@
 import lightning as L
 from hydra_zen import ZenStore, to_yaml, zen
-from lightning import Trainer
+from lightning import LightningDataModule, Trainer
 
 from src.configs.config import Config
 
 
-def train_mock(trainer: Trainer) -> None:
+def train_mock(trainer: Trainer, datamodule: LightningDataModule) -> None:
     print(trainer)
+    print(datamodule)
 
 
 def main() -> None:
