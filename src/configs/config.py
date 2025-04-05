@@ -1,4 +1,6 @@
+import logging
 from pathlib import Path
+from typing import Any
 
 import rootutils
 from hydra.conf import HydraConf, RunDir, SweepDir
@@ -28,11 +30,22 @@ from src.model.resnet import ResNet
 
 pbuilds = make_custom_builds_fn(zen_partial=True)
 root_dir = rootutils.find_root(search_from=__file__)
+log = logging.getLogger(__name__)
+
+
+# TODO: improve types
+def instantiation_log(Cfg: Any) -> Any:
+    def wrapper(*args, **kwargs):
+        log.info(f"Instantiating <{Cfg.__name__}>")
+        return Cfg(*args, **kwargs)
+
+    return wrapper
 
 
 DataModuleCfg = builds(
     MNISTDataModule,
     data_dir="${paths.data_dir}",
+    zen_wrappers=instantiation_log,
 )
 
 
@@ -83,6 +96,7 @@ ModelCfg = builds(
             ),
         ],
     ),
+    zen_wrappers=instantiation_log,
 )
 
 
@@ -125,27 +139,25 @@ TrainerCfg = builds(
     check_val_every_n_epoch=1,
     deterministic=False,
     default_root_dir="${paths.output_dir}",
+    zen_wrappers=instantiation_log,
 )
 
 
-HydraCfg = HydraConf(
+HydraCfg = make_config(
     defaults=[
-        {"override job_logging": "colorlog"},
-        {"override hydra_logging": "colorlog"},
+        {"override hydra/job_logging": "colorlog"},
+        {"override hydra/hydra_logging": "colorlog"},
+        "_self_",
     ],
-    run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
-    sweep=SweepDir(
-        dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
-        subdir="${hydra.job.num}",
+    hydra=HydraConf(
+        run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
+        sweep=SweepDir(
+            dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
+            subdir="${hydra.job.num}",
+        ),
+        # Fix from this https://github.com/facebookresearch/hydra/pull/2242 PR, while there isn't a new release
+        job_logging={"handlers": {"file": {"filename": str(Path("${hydra.runtime.output_dir}") / ".log")}}},
     ),
-    # Fix from this https://github.com/facebookresearch/hydra/pull/2242 PR, while there isn't a new release
-    job_logging={
-        "handlers": {
-            "file": {
-                "filename": str(Path("${hydra.runtime.output_dir}") / ".log"),
-            }
-        }
-    },
 )
 
 
@@ -189,7 +201,6 @@ Config = make_config(
     datamodule=DataModuleCfg,
     model=ModelCfg,
     trainer=TrainerCfg,
-    hydra=HydraCfg,
     paths=Paths,
-    bases=(RunCfg,),
+    bases=(RunCfg, HydraCfg),
 )
