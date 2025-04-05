@@ -158,7 +158,25 @@ Paths = make_config(
 )
 
 
-RunConfig = make_config(
+BaseDebugConfig = make_config(
+    datamodule=make_config(
+        num_workers=0,
+        pin_memory=False,
+    ),
+    trainer=builds(
+        Trainer,
+        max_epochs=1,
+        accelerator="cpu",
+        devices=1,
+        detect_anomaly=True,
+        logger=None,
+        callbacks=None,
+    ),
+    hydra=HydraConf(job_logging={"root": {"level": "DEBUG"}}),
+)
+
+
+RunCfg = make_config(
     evaluate_after_train=True,
     ckpt_path=None,
     seed=42,
@@ -173,5 +191,5 @@ Config = make_config(
     trainer=TrainerCfg,
     hydra=HydraCfg,
     paths=Paths,
-    bases=(RunConfig,),
+    bases=(RunCfg,),
 )
