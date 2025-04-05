@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import rootutils
+from hydra.conf import HydraConf, RunDir, SweepDir
 from hydra_zen import builds, make_config
 from lightning import Trainer
 from lightning.pytorch.callbacks import (
@@ -18,18 +19,25 @@ root_dir = rootutils.find_root(search_from=__file__)
 
 Paths = make_config(
     root_dir=str(root_dir),
-    data_dir=str(root_dir / "data"),
-    raw_data_dir=str(root_dir / "data" / "raw"),
-    processed_data_dir=str(root_dir / "data" / "processed"),
+    data_dir=str(root_dir / "data" / "processed"),
     log_dir=str(root_dir / "logs"),
     output_dir="${hydra:runtime.output_dir}",
     work_dir="${hydra:runtime.cwd}",
 )
 
 
+HydraCfg = HydraConf(
+    run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
+    sweep=SweepDir(
+        dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
+        subdir="${hydra.job.num}",
+    ),
+)
+
+
 DataModuleCfg = builds(
     MNISTDataModule,
-    data_dir="${paths.processed_data_dir}",
+    data_dir="${paths.data_dir}",
 )
 
 
@@ -104,6 +112,7 @@ RunConfig = make_config(
 
 Config = make_config(
     paths=Paths,
+    hydra=HydraCfg,
     datamodule=DataModuleCfg,
     trainer=TrainerCfg,
     bases=(RunConfig,),

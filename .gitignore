@@ -164,8 +164,8 @@ cython_debug/
 # Extra additions
 .vscode/
 
-outputs/*
-!outputs/.gitkeep
+logs/*
+!logs/.gitkeep
 
 data/
 !data/raw/.gitkeep
