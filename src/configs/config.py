@@ -2,7 +2,7 @@ from pathlib import Path
 
 import rootutils
 from hydra.conf import HydraConf, RunDir, SweepDir
-from hydra_zen import builds, make_config
+from hydra_zen import builds, make_config, make_custom_builds_fn
 from lightning import Trainer
 from lightning.pytorch.callbacks import (
     EarlyStopping,
@@ -28,6 +28,7 @@ from src.model.resnet import ResNet
 
 root_dir = rootutils.find_root(search_from=__file__)
 
+pbuilds = make_custom_builds_fn(zen_partial=True)
 
 Paths = make_config(
     root_dir=str(root_dir),
@@ -102,13 +103,11 @@ ModelCfg = builds(
     loss_fn=builds(
         nn.CrossEntropyLoss,
     ),
-    optimizer=builds(
+    optimizer=pbuilds(
         Adam,
-        _partial_=True,
     ),
-    scheduler=builds(
+    scheduler=pbuilds(
         ReduceLROnPlateau,
-        _partial_=True,
         mode="min",
         factor=0.1,
         patience=10,
@@ -175,10 +174,10 @@ RunConfig = make_config(
 
 
 Config = make_config(
-    paths=Paths,
-    hydra=HydraCfg,
     datamodule=DataModuleCfg,
     model=ModelCfg,
     trainer=TrainerCfg,
+    hydra=HydraCfg,
+    paths=Paths,
     bases=(RunConfig,),
 )
