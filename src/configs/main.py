@@ -9,6 +9,7 @@ def train_mock(datamodule: LightningDataModule, model: LightningModule, trainer:
     print(datamodule)
     print(model)
     print(trainer)
+    # trainer.fit(model=model, datamodule=datamodule)
 
 
 def main() -> None:

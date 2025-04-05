@@ -129,11 +129,23 @@ TrainerCfg = builds(
 
 
 HydraCfg = HydraConf(
+    defaults=[
+        {"override job_logging": "colorlog"},
+        {"override hydra_logging": "colorlog"},
+    ],
     run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
     sweep=SweepDir(
         dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
         subdir="${hydra.job.num}",
     ),
+    # Fix from this https://github.com/facebookresearch/hydra/pull/2242 PR, while there isn't a new release
+    job_logging={
+        "handlers": {
+            "file": {
+                "filename": str(Path("${hydra.runtime.output_dir}") / ".log"),
+            }
+        }
+    },
 )
 
 
