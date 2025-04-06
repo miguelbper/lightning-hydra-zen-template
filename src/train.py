@@ -50,8 +50,8 @@ def seed_fn(seed: int) -> None:
 def main() -> None:
     store = ZenStore(deferred_hydra_store=False)
     store(Config, name="config")
-    task_fn = zen(train, pre_call=zen(seed_fn))
-    task_fn.hydra_main(config_path=None, config_name="config", version_base="1.3")
+    task_function = zen(train, pre_call=zen(seed_fn))
+    task_function.hydra_main(config_path=None, config_name="config", version_base="1.3")
 
 
 if __name__ == "__main__":
