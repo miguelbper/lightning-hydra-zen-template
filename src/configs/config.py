@@ -158,22 +158,15 @@ TrainerCfg = builds(
 )
 
 
-HydraCfg = make_config(
-    defaults=[
-        {"override hydra/job_logging": "colorlog"},
-        {"override hydra/hydra_logging": "colorlog"},
-        "_self_",
-    ],
-    hydra=HydraConf(
-        run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
-        sweep=SweepDir(
-            dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
-            subdir="${hydra.job.num}",
-        ),
-        # Fix from this https://github.com/facebookresearch/hydra/pull/2242 PR, while there isn't a new release
-        job_logging={"handlers": {"file": {"filename": str(Path("${hydra.runtime.output_dir}") / ".log")}}},
-        callbacks={"print_config": builds(PrintConfigCallback)},
+HydraCfg = HydraConf(
+    run=RunDir(str(Path("${paths.log_dir}") / "hydra" / "runs" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}")),
+    sweep=SweepDir(
+        dir=str(Path("${paths.log_dir}") / "hydra" / "multiruns" / "${now:%Y-%m-%d}" / "${now:%H-%M-%S}"),
+        subdir="${hydra.job.num}",
     ),
+    callbacks={"print_config": builds(PrintConfigCallback)},
+    # Fix from this https://github.com/facebookresearch/hydra/pull/2242 PR, while there isn't a new release
+    job_logging={"handlers": {"file": {"filename": str(Path("${hydra.runtime.output_dir}") / ".log")}}},
 )
 
 
@@ -183,24 +176,6 @@ Paths = make_config(
     log_dir=str(root_dir / "logs"),
     output_dir="${hydra:runtime.output_dir}",
     work_dir="${hydra:runtime.cwd}",
-)
-
-
-BaseDebugConfig = make_config(
-    datamodule=make_config(
-        num_workers=0,
-        pin_memory=False,
-    ),
-    trainer=builds(
-        Trainer,
-        max_epochs=1,
-        accelerator="cpu",
-        devices=1,
-        detect_anomaly=True,
-        logger=None,
-        callbacks=None,
-    ),
-    hydra=HydraConf(job_logging={"root": {"level": "DEBUG"}}),
 )
 
 
@@ -214,9 +189,15 @@ RunCfg = make_config(
 
 
 Config = make_config(
+    hydra_defaults=[
+        {"override hydra/job_logging": "colorlog"},
+        {"override hydra/hydra_logging": "colorlog"},
+        "_self_",
+    ],
     datamodule=DataModuleCfg,
     model=ModelCfg,
     trainer=TrainerCfg,
     paths=Paths,
-    bases=(RunCfg, HydraCfg),
+    hydra=HydraCfg,
+    bases=(RunCfg,),
 )
