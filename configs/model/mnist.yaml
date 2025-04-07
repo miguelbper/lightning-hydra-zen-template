@@ -1,6 +1,7 @@
 _target_: src.model.model.Model
 model:
   _target_: src.model.resnet.ResNet
+  num_classes: 10
 loss_fn:
   _target_: torch.nn.CrossEntropyLoss
 optimizer:
