@@ -567,7 +567,6 @@ dependencies = [
     { name = "hydra-colorlog" },
     { name = "hydra-core" },
     { name = "hydra-optuna-sweeper" },
-    { name = "hydra-zen" },
     { name = "ipykernel" },
     { name = "lightning" },
     { name = "mlflow" },
@@ -600,7 +599,6 @@ requires-dist = [
     { name = "hydra-colorlog", specifier = ">=1.2.0" },
     { name = "hydra-core", specifier = ">=1.3.2" },
     { name = "hydra-optuna-sweeper", specifier = ">=1.2.0" },
-    { name = "hydra-zen", specifier = ">=0.14.0" },
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "lightning", specifier = ">=2.5.1" },
     { name = "mlflow", specifier = ">=2.21.0" },
@@ -998,20 +996,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/38/64/018134a44a124f56e27245dd8154900a6adafb1459a38ddea0f81e22f8d7/hydra-optuna-sweeper-1.2.0.tar.gz", hash = "sha256:f20b56dfdc4db9f84f3b502c8e60a5269967197c4df4c28653cf17f71b2136ce", size = 7914 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/25/1eccad47c39da342988fe501b174652c37676ab539baeae9a73444932d13/hydra_optuna_sweeper-1.2.0-py3-none-any.whl", hash = "sha256:b012d94c1dc86edfc33dcf3c7f10e9d2ca6b27040dccb7fdccbb8888b1cd6eef", size = 8486 },
-]
-
-[[package]]
-name = "hydra-zen"
-version = "0.14.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "hydra-core" },
-    { name = "omegaconf" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/18/66/5f132bc98da203790c6f419af88bd2d8c19d90f9c26a4b23a9941ef495c9/hydra_zen-0.14.0.tar.gz", hash = "sha256:154b1d27dc0f02d5609789bad6a53c3871d5fc9720fd8b39c3f11152a07c325e", size = 1330362 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/9b/ec32766b1200e611c5821d36ad9f8a9d163f3cd14e6645786c2c60135acc/hydra_zen-0.14.0-py3-none-any.whl", hash = "sha256:ab24c0662f8fda16d47be572f4c7898516fddb8a4e6615bf28b414f48d7b9142", size = 104272 },
 ]
 
 [[package]]
