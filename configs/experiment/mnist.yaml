@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - datamodule: mnist
+  - model: mnist
+
+experiment_name: mnist
+evaluate: true
+ckpt_path: null
+seed: 42
+monitor: val/MulticlassAccuracy
+mode: max
