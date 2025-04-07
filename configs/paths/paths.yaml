@@ -1,5 +1,4 @@
-root_dir: ${oc.env:PROJECT_ROOT}  # Env variable PROJECT_ROOT is created by rootutils
+root_dir: ${oc.env:PROJECT_ROOT}  # Environment variable PROJECT_ROOT is created by rootutils at runtime
 data_dir: ${paths.root_dir}/data/
 log_dir: ${paths.root_dir}/logs/
 output_dir: ${hydra:runtime.output_dir}
-work_dir: ${hydra:runtime.cwd}

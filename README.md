@@ -101,4 +101,5 @@ TODOS
     - Better generic LightningModule, not adapted to dataset at hand
     - Add a justfile
     - Learning exercise
+- TODO: add torch.compile
 ############################################################################ -->

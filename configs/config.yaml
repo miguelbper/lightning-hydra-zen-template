@@ -9,7 +9,7 @@ defaults:
   - paths: paths
   - trainer: trainer
 
-task_name: null
+experiment_name: null
 evaluate: null
 ckpt_path: null
 seed: null
