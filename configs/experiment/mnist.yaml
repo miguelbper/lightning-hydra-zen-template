@@ -1,9 +1,10 @@
 # @package _global_
 
+# See https://hydra.cc/docs/patterns/configuring_experiments/ for how to configure an experiment
+
 defaults:
-  - _self_
-  - datamodule: mnist
-  - model: mnist
+  - override /datamodule: mnist
+  - override /model: mnist
 
 experiment_name: mnist
 evaluate: true

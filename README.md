@@ -102,4 +102,5 @@ TODOS
     - Add a justfile
     - Learning exercise
 - TODO: add torch.compile
+- TODO: add GOOD documentation. Ex: how to create a config file, etc. Focus on Why vs How
 ############################################################################ -->
