@@ -17,6 +17,6 @@ metric_collection:
   _target_: torchmetrics.MetricCollection
   metrics:
     - ${metrics.accuracy}
-    - ${metrics.f1_score}
+    - ${metrics.f1score}
     - ${metrics.precision}
     - ${metrics.recall}

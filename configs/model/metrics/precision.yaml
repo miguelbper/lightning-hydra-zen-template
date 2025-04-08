@@ -3,5 +3,5 @@
 precision:
   _target_: torchmetrics.classification.Precision
   task: multiclass
-  num_classes: ${model.model.num_classes}
+  num_classes: ${model.net.num_classes}
   average: macro
