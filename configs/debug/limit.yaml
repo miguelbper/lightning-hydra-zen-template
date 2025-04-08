@@ -6,7 +6,7 @@
 
 
 defaults:
-  - debug
+  - _debug
 
 trainer:
   max_epochs: 3

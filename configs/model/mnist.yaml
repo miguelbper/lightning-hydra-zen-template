@@ -1,5 +1,5 @@
 defaults:
-  - metrics: metrics
+  - metrics: _metrics
 
 _target_: src.model.model.Model
 net:

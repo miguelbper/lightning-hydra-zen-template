@@ -1,8 +1,8 @@
 # https://lightning.ai/docs/pytorch/stable/common/trainer.html
 
 defaults:
-  - logger: logger
-  - callbacks: callbacks
+  - logger: _logger
+  - callbacks: _callbacks
 
 _target_: lightning.pytorch.trainer.Trainer
 logger:
