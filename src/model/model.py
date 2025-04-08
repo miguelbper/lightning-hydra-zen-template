@@ -17,15 +17,15 @@ Batch = tuple[Input, Target]
 class Model(LightningModule):
     def __init__(
         self,
-        model: nn.Module,
+        net: nn.Module,
         loss_fn: nn.Module,
         optimizer: Callable[[ParamsT], Optimizer],
         scheduler: Callable[[Optimizer], LRScheduler] | None,
         metric_collection: MetricCollection,
     ) -> None:
         super().__init__()
-        self.save_hyperparameters(logger=False, ignore=["model", "loss_fn", "metric_collection"])
-        self.model = model
+        self.save_hyperparameters(logger=False, ignore=["net", "loss_fn", "metric_collection"])
+        self.net = net
         self.loss_fn = loss_fn
         self.optimizer = optimizer
         self.scheduler = scheduler
@@ -39,20 +39,20 @@ class Model(LightningModule):
 
     def training_step(self, batch: Batch, batch_idx: int) -> Tensor:
         inputs, target = batch
-        logits = self.model(inputs)
+        logits = self.net(inputs)
         loss = self.loss_fn(logits, target)
         self.log("train/loss", loss, on_step=True, on_epoch=True, prog_bar=True)
         return loss
 
     def validation_step(self, batch: Batch, batch_idx: int) -> None:
         inputs, target = batch
-        logits = self.model(inputs)
+        logits = self.net(inputs)
         self.val_metrics.update(logits, target)
         self.log_dict(self.val_metrics, on_step=True, on_epoch=True)
 
     def test_step(self, batch: Batch, batch_idx: int) -> None:
         inputs, target = batch
-        logits = self.model(inputs)
+        logits = self.net(inputs)
         self.test_metrics.update(logits, target)
         self.log_dict(self.test_metrics, on_step=True, on_epoch=True)
 
