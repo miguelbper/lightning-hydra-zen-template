@@ -1,0 +1,7 @@
+# @package metrics
+
+defaults:
+  - accuracy
+  - f1score
+  - precision
+  - recall

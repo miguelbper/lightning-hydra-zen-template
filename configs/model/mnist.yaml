@@ -1,5 +1,8 @@
+defaults:
+  - metrics: metrics
+
 _target_: src.model.model.Model
-model:
+net:
   _target_: src.model.resnet.ResNet
   num_classes: 10
 loss_fn:

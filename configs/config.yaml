@@ -2,7 +2,7 @@ defaults:
   - _self_
   - datamodule: null
   - debug: null
-  - experiment: null
+  # - experiment: null
   - hpo: null
   - hydra: hydra
   - model: null
