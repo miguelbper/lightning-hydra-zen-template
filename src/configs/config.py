@@ -9,7 +9,7 @@ from hydra.experimental.callback import Callback
 from hydra_zen import builds, make_config
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichModelSummary, RichProgressBar
-from lightning.pytorch.loggers import CSVLogger, MLFlowLogger
+from lightning.pytorch.loggers import CSVLogger, MLFlowLogger, TensorBoardLogger
 from omegaconf import DictConfig, OmegaConf, flag_override
 from rootutils import find_root
 
@@ -96,6 +96,7 @@ ModelCheckpointCfg = builds(
 
 CSVLoggerCfg = builds(CSVLogger, save_dir=output_dir, name="csv")
 MLFlowLoggerCfg = builds(MLFlowLogger, tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"))
+TensorBoardLoggerCfg = builds(TensorBoardLogger, save_dir=output_dir, name="tensorboard")
 
 
 # ------------------------------------------------------------------------------
@@ -122,7 +123,7 @@ TrainerCfg = builds(
     check_val_every_n_epoch=1,
     deterministic=False,
     default_root_dir=output_dir,
-    enable_model_summary=False,
+    enable_model_summary=False,  # TODO: Add model summary
     zen_wrappers=log_instantiation,
 )
 
@@ -133,18 +134,18 @@ TrainerCfg = builds(
 
 
 RunCfg = make_config(
-    task_name="mnist",
+    task_name="mnist",  # TODO: should be MISSING before experiment specification
     evaluate=True,
     ckpt_path=None,
     seed=42,
-    monitor="val/MulticlassAccuracy",
-    mode="max",
+    monitor="val/MulticlassAccuracy",  # TODO: should be MISSING before experiment specification
+    mode="max",  # TODO: should be MISSING before experiment specification
 )
 
 
 Config = make_config(
-    datamodule=None,
-    model=None,
+    datamodule=None,  # TODO: should be MISSING before experiment specification
+    model=None,  # TODO: should be MISSING before experiment specification
     trainer=TrainerCfg,
     bases=(HydraCfg, RunCfg),
 )
