@@ -14,6 +14,7 @@ Target = Tensor
 Batch = tuple[Input, Target]
 
 
+# TODO: Add option to compile the torch model with torch.compile()
 class Model(LightningModule):
     def __init__(
         self,
