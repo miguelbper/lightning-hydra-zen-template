@@ -1,5 +1,3 @@
-# @package _global_
-
 # example hyperparameter optimization of some experiment with Optuna:
 # python train.py -m hpo=mnist experiment=example
 

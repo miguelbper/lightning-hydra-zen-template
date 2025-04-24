@@ -3,5 +3,5 @@
 recall:
   _target_: torchmetrics.classification.Recall
   task: multiclass
-  num_classes: 10
+  num_classes: ${model.net.num_classes}
   average: macro

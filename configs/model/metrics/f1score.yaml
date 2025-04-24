@@ -1,7 +1,7 @@
 # https://lightning.ai/docs/torchmetrics/stable/classification/f1_score.html
 
-f1_score:
+f1score:
   _target_: torchmetrics.classification.F1Score
   task: multiclass
-  num_classes: 10
+  num_classes: ${model.net.num_classes}
   average: macro

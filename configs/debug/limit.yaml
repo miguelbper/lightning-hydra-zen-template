@@ -1,0 +1,15 @@
+# @package _global_
+
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html#limit-train-batches
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html#limit-val-batches
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html#limit-test-batches
+
+
+defaults:
+  - _debug
+
+trainer:
+  max_epochs: 3
+  limit_train_batches: 10
+  limit_val_batches: 10
+  limit_test_batches: 10

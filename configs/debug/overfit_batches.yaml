@@ -1,7 +1,9 @@
 # @package _global_
 
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html#overfit-batches
+
 defaults:
-  - default
+  - _debug
 
 trainer:
   max_epochs: 20
