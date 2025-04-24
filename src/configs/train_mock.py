@@ -9,11 +9,7 @@ from src.configs.config import Config
 log = logging.getLogger(__name__)
 
 
-def train_mock(
-    # datamodule: LightningDataModule,
-    # model: LightningModule,
-    trainer: Trainer,
-) -> None:
+def train_mock(datamodule: LightningDataModule, model: LightningModule, trainer: Trainer) -> None:
     log.info("Training model")
 
 

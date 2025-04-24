@@ -1,26 +1,27 @@
+import copy
 import logging
 import os
 
 from hydra.conf import HydraConf, RunDir, SweepDir
 from hydra.experimental.callback import Callback
 from hydra_zen import builds, make_config
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf, flag_override
 
 from src.configs.paths import log_dir, output_dir
 
 log = logging.getLogger(__name__)
 
-run_dir = os.path.join(log_dir, "hydra", "runs", "${now:%Y-%m-%d}", "${now:%H-%M-%S}")
-sweep_dir = os.path.join(log_dir, "hydra", "multiruns", "${now:%Y-%m-%d}", "${now:%H-%M-%S}")
+run_dir = os.path.join(log_dir, "${task_name}", "runs", "${now:%Y-%m-%d}", "${now:%H-%M-%S}")
+sweep_dir = os.path.join(log_dir, "${task_name}", "multiruns", "${now:%Y-%m-%d}", "${now:%H-%M-%S}")
 job_file = os.path.join(output_dir, ".log")
 
 
 class PrintConfigCallback(Callback):
     def on_run_start(self, config: DictConfig, config_name: str | None) -> None:
-        # if "hydra" in config:
-        #     config = copy.copy(config)
-        #     with flag_override(config, ["struct", "readonly"], [False, False]):
-        #         config.pop("hydra")
+        if "hydra" in config:
+            config = copy.copy(config)
+            with flag_override(config, ["struct", "readonly"], [False, False]):
+                config.pop("hydra")
         log.info("Printing composed config")
         print(OmegaConf.to_yaml(config))
 
