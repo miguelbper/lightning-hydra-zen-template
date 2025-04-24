@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 def train_mock(
     # datamodule: LightningDataModule,
     # model: LightningModule,
-    # trainer: Trainer,
+    trainer: Trainer,
 ) -> None:
     log.info("Training model")
 
