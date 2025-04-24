@@ -1,6 +1,6 @@
 from hydra_zen import make_config
 
-from src.configs.hydra_cfg import HydraCfg
+from src.configs.hydraconf import HydraCfg
 from src.configs.trainer import TrainerCfg
 
 RunCfg = make_config(
