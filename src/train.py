@@ -8,6 +8,8 @@ from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
+from src.utils.print_cfg import print_cfg
+
 rootutils.setup_root(search_from=__file__, dotenv=False)
 log = logging.getLogger(__name__)
 
@@ -23,6 +25,8 @@ def train(cfg: DictConfig) -> float | None:
     Returns:
         float | None: The value of the specified metric from the training process
     """
+    print_cfg(cfg)
+
     if cfg.get("seed"):
         log.info(f"Setting seed to {cfg.seed}")
         L.seed_everything(cfg.seed, workers=True, verbose=False)

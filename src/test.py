@@ -6,6 +6,8 @@ from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
+from src.utils.print_cfg import print_cfg
+
 rootutils.setup_root(search_from=__file__, dotenv=False)
 log = logging.getLogger(__name__)
 
@@ -21,6 +23,8 @@ def test(cfg: DictConfig) -> None:
     Returns:
         None
     """
+    print_cfg(cfg)
+
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = instantiate(cfg.datamodule)
 
