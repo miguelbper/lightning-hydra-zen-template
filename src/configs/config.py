@@ -46,11 +46,11 @@ class PrintConfigCallback(Callback):
 root_dir = str(find_root(search_from=__file__))
 data_dir = os.path.join(root_dir, "data", "processed")
 log_dir = os.path.join(root_dir, "logs")
-output_dir = "${hydra:runtime.output_dir}"
 
 run_dir = os.path.join(log_dir, "${task_name}", "runs", "${now:%Y-%m-%d}", "${now:%H-%M-%S}")
 sweep_dir = os.path.join(log_dir, "${task_name}", "multiruns", "${now:%Y-%m-%d}", "${now:%H-%M-%S}")
-job_file = os.path.join(output_dir, ".log")
+output_dir = "${hydra:runtime.output_dir}"
+job_file = os.path.join(output_dir, "${task_name}.log")
 
 # ------------------------------------------------------------------------------
 # Hydra
@@ -97,16 +97,6 @@ ModelCheckpointCfg = builds(
 CSVLoggerCfg = builds(CSVLogger, save_dir=output_dir, name="csv")
 TensorBoardLoggerCfg = builds(TensorBoardLogger, save_dir=output_dir, name="tensorboard")
 MLFlowLoggerCfg = builds(MLFlowLogger, tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"))
-
-
-# ------------------------------------------------------------------------------
-# Datamodule
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-# Model
-# ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------
