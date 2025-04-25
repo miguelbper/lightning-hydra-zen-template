@@ -17,7 +17,6 @@ from rootutils import find_root
 
 log = logging.getLogger(__name__)
 
-
 # ------------------------------------------------------------------------------
 # Utils
 # ------------------------------------------------------------------------------
@@ -55,7 +54,7 @@ def remove_types(x):
 
 
 global_store = store(package="_global_", to_config=remove_types)
-
+experiment_store = global_store(group="experiment")
 
 # ------------------------------------------------------------------------------
 # Paths
@@ -84,15 +83,21 @@ HydraCfg = HydraConf(
 
 store(HydraCfg)
 
-
 # ------------------------------------------------------------------------------
 # Callbacks
 # ------------------------------------------------------------------------------
 
-
 RichProgressBarCfg = builds(RichProgressBar)
-RichModelSummaryCfg = builds(RichModelSummary, max_depth=-1)
-EarlyStoppingCfg = builds(EarlyStopping, monitor="${monitor}", patience=3, mode="${mode}")
+RichModelSummaryCfg = builds(
+    RichModelSummary,
+    max_depth=-1,
+)
+EarlyStoppingCfg = builds(
+    EarlyStopping,
+    monitor="${monitor}",
+    patience=3,
+    mode="${mode}",
+)
 ModelCheckpointCfg = builds(
     ModelCheckpoint,
     dirpath=os.path.join(output_dir, "checkpoints"),
@@ -102,25 +107,42 @@ ModelCheckpointCfg = builds(
     auto_insert_metric_name=False,
 )
 
-
 # ------------------------------------------------------------------------------
 # Logger
 # ------------------------------------------------------------------------------
 
-CSVLoggerCfg = builds(CSVLogger, save_dir=output_dir, name="csv")
-TensorBoardLoggerCfg = builds(TensorBoardLogger, save_dir=output_dir, name="tensorboard")
-MLFlowLoggerCfg = builds(MLFlowLogger, tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"))
-
+CSVLoggerCfg = builds(
+    CSVLogger,
+    save_dir=output_dir,
+    name="csv",
+)
+TensorBoardLoggerCfg = builds(
+    TensorBoardLogger,
+    save_dir=output_dir,
+    name="tensorboard",
+)
+MLFlowLoggerCfg = builds(
+    MLFlowLogger,
+    tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"),
+)
 
 # ------------------------------------------------------------------------------
 # Trainer
 # ------------------------------------------------------------------------------
 
-
 TrainerCfg = builds(
     Trainer,
-    logger=[CSVLoggerCfg, TensorBoardLoggerCfg, MLFlowLoggerCfg],
-    callbacks=[EarlyStoppingCfg, ModelCheckpointCfg, RichProgressBarCfg, RichModelSummaryCfg],
+    logger=[
+        CSVLoggerCfg,
+        TensorBoardLoggerCfg,
+        MLFlowLoggerCfg,
+    ],
+    callbacks=[
+        EarlyStoppingCfg,
+        ModelCheckpointCfg,
+        RichProgressBarCfg,
+        RichModelSummaryCfg,
+    ],
     min_epochs=1,
     max_epochs=10,
     check_val_every_n_epoch=1,
@@ -128,13 +150,12 @@ TrainerCfg = builds(
     default_root_dir=output_dir,
     enable_model_summary=False,
     zen_wrappers=log_instantiation,
+    populate_full_signature=True,
 )
-
 
 # ------------------------------------------------------------------------------
 # Primary Config
 # ------------------------------------------------------------------------------
-
 
 Config = make_config(
     evaluate=True,
@@ -148,21 +169,56 @@ Config = make_config(
     trainer=TrainerCfg,
 )
 
-
-experiment_store = global_store(group="experiment")
-
-
 # ------------------------------------------------------------------------------
 # Debug
 # ------------------------------------------------------------------------------
 
-
 DebugCfg = make_config(
     task_name="debug",
+    datamodule=dict(
+        num_workers=0,
+        pin_memory=False,
+    ),
+    trainer=dict(
+        accelerator="cpu",
+        devices=1,
+        logger=None,
+        callbacks=None,
+        max_epochs=1,
+        detect_anomaly=True,
+    ),
     bases=(Config,),
 )
 
+FastDevRunCfg = make_config(
+    trainer=dict(fast_dev_run=True),
+    bases=(DebugCfg,),
+)
+LimitBatchesCfg = make_config(
+    trainer=dict(
+        max_epochs=3,
+        limit_train_batches=10,
+        limit_val_batches=10,
+        limit_test_batches=10,
+    ),
+    bases=(DebugCfg,),
+)
+OverfitBatchesCfg = make_config(
+    trainer=dict(
+        max_epochs=10,
+        overfit_batches=1,
+    ),
+    bases=(DebugCfg,),
+)
+ProfilerCfg = make_config(
+    trainer=dict(profiler="simple"),
+    bases=(DebugCfg,),
+)
 
 debug_store = global_store(group="debug")
 
 debug_store(DebugCfg, name="debug")
+debug_store(FastDevRunCfg, name="fdr")
+debug_store(LimitBatchesCfg, name="limit")
+debug_store(OverfitBatchesCfg, name="overfit")
+debug_store(ProfilerCfg, name="profiler")
