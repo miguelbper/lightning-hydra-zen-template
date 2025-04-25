@@ -2,11 +2,13 @@ import copy
 import logging
 import os
 from collections.abc import Callable
+from dataclasses import is_dataclass
 from typing import Any
 
 from hydra.conf import HydraConf, RunDir, SweepDir
 from hydra.experimental.callback import Callback
 from hydra_zen import MISSING, builds, make_config, store
+from hydra_zen.wrapper import default_to_config
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichModelSummary, RichProgressBar
 from lightning.pytorch.loggers import CSVLogger, MLFlowLogger, TensorBoardLogger
@@ -37,6 +39,22 @@ class PrintConfigCallback(Callback):
                 config.pop("hydra")
         log.info("Printing composed config")
         print(OmegaConf.to_yaml(config))
+
+
+# From https://github.com/mit-ll-responsible-ai/hydra-zen/discussions/621
+# Purpose: have multiple _global_ configs which can be used simultaneously
+# Example: at the same time, specify experiment and debug configs
+def remove_types(x):
+    x = default_to_config(x)
+    if is_dataclass(x):
+        # recursively converts:
+        # dataclass -> omegaconf-dict (backed by dataclass types)
+        #           -> dict -> omegaconf dict (no types)
+        return OmegaConf.create(OmegaConf.to_container(OmegaConf.create(x)))  # type: ignore
+    return x
+
+
+global_store = store(package="_global_", to_config=remove_types)
 
 
 # ------------------------------------------------------------------------------
@@ -114,20 +132,15 @@ TrainerCfg = builds(
 
 
 # ------------------------------------------------------------------------------
-# Debug
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
 # Primary Config
 # ------------------------------------------------------------------------------
 
 
 Config = make_config(
-    task_name=MISSING,
     evaluate=True,
     ckpt_path=None,
     seed=42,
+    task_name=MISSING,
     monitor=MISSING,
     mode=MISSING,
     datamodule=MISSING,
@@ -136,4 +149,20 @@ Config = make_config(
 )
 
 
-experiment_store = store(group="experiment", package="_global_")
+experiment_store = global_store(group="experiment")
+
+
+# ------------------------------------------------------------------------------
+# Debug
+# ------------------------------------------------------------------------------
+
+
+DebugCfg = make_config(
+    task_name="debug",
+    bases=(Config,),
+)
+
+
+debug_store = global_store(group="debug")
+
+debug_store(DebugCfg, name="debug")
