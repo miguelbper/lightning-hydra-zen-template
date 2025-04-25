@@ -4,7 +4,7 @@ import lightning as L
 from hydra_zen import store, zen
 from lightning import LightningDataModule, LightningModule, Trainer
 
-from src.configs.config import Config
+from src.hydrazen.config import Config
 
 log = logging.getLogger(__name__)
 

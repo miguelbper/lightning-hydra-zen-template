@@ -10,8 +10,8 @@ from torchmetrics.classification import (
     Recall,
 )
 
-from src.configs.config import Config, data_dir, experiment_store, log_instantiation
 from src.datamodule.mnist import MNISTDataModule
+from src.hydrazen.config import Config, data_dir, experiment_store, log_instantiation
 from src.model.model import Model
 from src.model.resnet import ResNet
 
