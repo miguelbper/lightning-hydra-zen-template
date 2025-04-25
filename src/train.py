@@ -24,7 +24,8 @@ def train(cfg: DictConfig) -> float | None:
         float | None: The value of the specified metric from the training process
     """
     if cfg.get("seed"):
-        L.seed_everything(cfg.seed, workers=True)
+        log.info(f"Setting seed to {cfg.seed}")
+        L.seed_everything(cfg.seed, workers=True, verbose=False)
 
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = instantiate(cfg.datamodule)
