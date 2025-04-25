@@ -4,6 +4,7 @@ _target_: lightning.pytorch.trainer.Trainer
 logger:
   - ${logger.csv}
   - ${logger.mlflow}
+  - ${logger.tensorboard}
 callbacks:
   - ${callbacks.early_stopping}
   - ${callbacks.model_checkpoint}
