@@ -95,8 +95,8 @@ ModelCheckpointCfg = builds(
 # ------------------------------------------------------------------------------
 
 CSVLoggerCfg = builds(CSVLogger, save_dir=output_dir, name="csv")
-MLFlowLoggerCfg = builds(MLFlowLogger, tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"))
 TensorBoardLoggerCfg = builds(TensorBoardLogger, save_dir=output_dir, name="tensorboard")
+MLFlowLoggerCfg = builds(MLFlowLogger, tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"))
 
 
 # ------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ TensorBoardLoggerCfg = builds(TensorBoardLogger, save_dir=output_dir, name="tens
 
 TrainerCfg = builds(
     Trainer,
-    logger=[CSVLoggerCfg, MLFlowLoggerCfg],
+    logger=[CSVLoggerCfg, TensorBoardLoggerCfg, MLFlowLoggerCfg],
     callbacks=[EarlyStoppingCfg, ModelCheckpointCfg, RichProgressBarCfg, RichModelSummaryCfg],
     min_epochs=1,
     max_epochs=10,
@@ -126,6 +126,11 @@ TrainerCfg = builds(
     enable_model_summary=False,  # TODO: Add model summary
     zen_wrappers=log_instantiation,
 )
+
+
+# ------------------------------------------------------------------------------
+# Debug
+# ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------

@@ -81,3 +81,5 @@ publish:
 [group("cleanup")]
 clean-logs:
     rm -rf logs/* && touch logs/.gitkeep
+
+# TODO: add command to update minimal versions in pyproject.toml
