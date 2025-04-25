@@ -76,3 +76,10 @@ publish:
     git commit -m "Update version to $NEW_VERSION"
     git tag -a "v$NEW_VERSION" -m "Release version $NEW_VERSION"
     git push --follow-tags origin main
+
+# Clean logs directory
+[group("cleanup")]
+clean-logs:
+    rm -rf logs/* && touch logs/.gitkeep
+
+# TODO: add command to update minimal versions in pyproject.toml
