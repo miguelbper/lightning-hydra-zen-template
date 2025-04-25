@@ -6,7 +6,7 @@ from typing import Any
 
 from hydra.conf import HydraConf, RunDir, SweepDir
 from hydra.experimental.callback import Callback
-from hydra_zen import builds, make_config
+from hydra_zen import builds, make_config, store
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichModelSummary, RichProgressBar
 from lightning.pytorch.loggers import CSVLogger, MLFlowLogger, TensorBoardLogger
@@ -56,20 +56,15 @@ job_file = os.path.join(output_dir, "${task_name}.log")
 # Hydra
 # ------------------------------------------------------------------------------
 
-HydraCfg = make_config(
-    hydra_defaults=[
-        {"override hydra/job_logging": "colorlog"},
-        {"override hydra/hydra_logging": "colorlog"},
-        "_self_",
-    ],
-    hydra=HydraConf(
-        run=RunDir(run_dir),
-        sweep=SweepDir(dir=sweep_dir, subdir="${hydra:job.num}"),
-        callbacks={"print_config": builds(PrintConfigCallback)},
-        # Fix from PR https://github.com/facebookresearch/hydra/pull/2242, while there isn't a new release
-        job_logging={"handlers": {"file": {"filename": job_file}}},
-    ),
+HydraCfg = HydraConf(
+    run=RunDir(run_dir),
+    sweep=SweepDir(dir=sweep_dir, subdir="${hydra:job.num}"),
+    callbacks={"print_config": builds(PrintConfigCallback)},
+    # Fix from PR https://github.com/facebookresearch/hydra/pull/2242, while there isn't a new release
+    job_logging={"handlers": {"file": {"filename": job_file}}},
 )
+
+store(HydraCfg)
 
 
 # ------------------------------------------------------------------------------
@@ -128,19 +123,23 @@ TrainerCfg = builds(
 # ------------------------------------------------------------------------------
 
 
-RunCfg = make_config(
+Config = make_config(
     task_name="mnist",  # TODO: should be MISSING before experiment specification
     evaluate=True,
     ckpt_path=None,
     seed=42,
     monitor="val/MulticlassAccuracy",  # TODO: should be MISSING before experiment specification
     mode="max",  # TODO: should be MISSING before experiment specification
-)
-
-
-Config = make_config(
     datamodule=None,  # TODO: should be MISSING before experiment specification
     model=None,  # TODO: should be MISSING before experiment specification
     trainer=TrainerCfg,
-    bases=(HydraCfg, RunCfg),
 )
+
+
+ExperimentCfg = make_config(
+    task_name="mnist_override",
+    bases=(Config,),
+)
+
+experiment_store = store(group="experiment", package="_global_")
+experiment_store(ExperimentCfg, name="exp")
