@@ -1,13 +1,10 @@
 # @package _global_
 
-# overfits to 3 batches
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html#overfit-batches
 
 defaults:
-  - default
+  - base
 
 trainer:
-  max_epochs: 20
-  overfit_batches: 3
-
-# model ckpt and early stopping need to be disabled during overfitting
-callbacks: null
+  max_epochs: 10
+  overfit_batches: 1

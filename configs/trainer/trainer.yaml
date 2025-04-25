@@ -1,19 +1,15 @@
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html
+
 _target_: lightning.pytorch.trainer.Trainer
-
-default_root_dir: ${paths.output_dir}
-
-min_epochs: 1 # prevents early stopping
+logger:
+  - ${logger.csv}
+  - ${logger.mlflow}
+callbacks:
+  - ${callbacks.early_stopping}
+  - ${callbacks.model_checkpoint}
+  - ${callbacks.rich_progress_bar}
+  - ${callbacks.rich_model_summary}
+min_epochs: 1
 max_epochs: 10
-
-accelerator: cpu
-devices: 1
-
-# mixed precision for extra speed-up
-# precision: 16
-
-# perform a validation loop every N training epochs
-check_val_every_n_epoch: 1
-
-# set True to to ensure deterministic results
-# makes training slower but gives more reproducibility than just setting seeds
-deterministic: False
+deterministic: null
+default_root_dir: ${paths.output_dir}

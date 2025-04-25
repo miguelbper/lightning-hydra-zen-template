@@ -1,4 +1,5 @@
 # https://mlflow.org
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.loggers.mlflow.html
 
 mlflow:
   _target_: lightning.pytorch.loggers.mlflow.MLFlowLogger

@@ -1,25 +1,34 @@
-_target_: src.models.mnist_module.MNISTLitModule
-
+_target_: src.model.model.Model
+net:
+  _target_: src.model.resnet.ResNet
+  num_classes: 10
+loss_fn:
+  _target_: torch.nn.CrossEntropyLoss
 optimizer:
+  _partial_: true
   _target_: torch.optim.Adam
-  _partial_: true
-  lr: 0.001
-  weight_decay: 0.0
-
 scheduler:
-  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
   _partial_: true
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
   mode: min
   factor: 0.1
   patience: 10
-
-net:
-  _target_: src.models.components.simple_dense_net.SimpleDenseNet
-  input_size: 784
-  lin1_size: 64
-  lin2_size: 128
-  lin3_size: 64
-  output_size: 10
-
-# compile model for faster training with pytorch 2.0
-compile: false
+metric_collection:
+  _target_: torchmetrics.MetricCollection
+  metrics:
+    - _target_: torchmetrics.classification.Accuracy
+      task: multiclass
+      num_classes: ${model.net.num_classes}
+      average: micro
+    - _target_: torchmetrics.classification.F1Score
+      task: multiclass
+      num_classes: ${model.net.num_classes}
+      average: macro
+    - _target_: torchmetrics.classification.Recall
+      task: multiclass
+      num_classes: ${model.net.num_classes}
+      average: macro
+    - _target_: torchmetrics.classification.Precision
+      task: multiclass
+      num_classes: ${model.net.num_classes}
+      average: macro
