@@ -6,7 +6,7 @@ from typing import Any
 
 from hydra.conf import HydraConf, RunDir, SweepDir
 from hydra.experimental.callback import Callback
-from hydra_zen import builds, make_config, store
+from hydra_zen import MISSING, builds, make_config, store
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichModelSummary, RichProgressBar
 from lightning.pytorch.loggers import CSVLogger, MLFlowLogger, TensorBoardLogger
@@ -108,7 +108,7 @@ TrainerCfg = builds(
     check_val_every_n_epoch=1,
     deterministic=False,
     default_root_dir=output_dir,
-    enable_model_summary=False,  # TODO: Add model summary
+    enable_model_summary=False,
     zen_wrappers=log_instantiation,
 )
 
@@ -124,22 +124,16 @@ TrainerCfg = builds(
 
 
 Config = make_config(
-    task_name="mnist",  # TODO: should be MISSING before experiment specification
+    task_name=MISSING,
     evaluate=True,
     ckpt_path=None,
     seed=42,
-    monitor="val/MulticlassAccuracy",  # TODO: should be MISSING before experiment specification
-    mode="max",  # TODO: should be MISSING before experiment specification
-    datamodule=None,  # TODO: should be MISSING before experiment specification
-    model=None,  # TODO: should be MISSING before experiment specification
+    monitor=MISSING,
+    mode=MISSING,
+    datamodule=MISSING,
+    model=MISSING,
     trainer=TrainerCfg,
 )
 
 
-ExperimentCfg = make_config(
-    task_name="mnist_override",
-    bases=(Config,),
-)
-
 experiment_store = store(group="experiment", package="_global_")
-experiment_store(ExperimentCfg, name="exp")
