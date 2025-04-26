@@ -14,7 +14,6 @@ def cfg(tmp_path: Path) -> DictConfig:
         cfg = compose(config_name="config", overrides=["experiment=mnist"], return_hydra_config=True)
 
         with open_dict(cfg):
-            cfg.task_name = "unit_tests"
             cfg.hydra.runtime.output_dir = str(tmp_path)
             cfg.hydra.job.num = 1
             cfg.trainer.callbacks = None
