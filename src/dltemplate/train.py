@@ -2,19 +2,19 @@ import logging
 
 import hydra
 import lightning as L
-import rootutils
 import torch
 from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
+from rootutils import setup_root
 
 from dltemplate.utils.print_cfg import print_cfg
 
-rootutils.setup_root(search_from=__file__, dotenv=False)
+root_dir = setup_root(search_from=__file__, dotenv=False, project_root_env_var=True)
 log = logging.getLogger(__name__)
 
 
-@hydra.main(version_base="1.3", config_path="../configs", config_name="config.yaml")
+@hydra.main(version_base="1.3", config_path=str(root_dir / "configs"), config_name="config.yaml")
 def train(cfg: DictConfig) -> float | None:
     """Train a model from a configuration object and return the specified
     metric.
