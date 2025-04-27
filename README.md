@@ -34,6 +34,7 @@ A template for deep learning projects, using
 - [uv](https://github.com/astral-sh/uv) - Dependency management
 
 ## Directory structure
+<!-- TODO: update this with tree -->
 ```
 ├── configs                 <- Configuration files for Hydra, containing model, training, and experiment settings
 │   └── ...
@@ -86,7 +87,7 @@ A template for deep learning projects, using
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
-This template borrows a lot from [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template). Another very nice template for data science projects is [drivendataorg/cookiecutter-data-science](https://github.com/drivendataorg/cookiecutter-data-science).
+This template is heavily inspired by [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) and it is my personal take on that idea. Another very nice template for data science projects is [drivendataorg/cookiecutter-data-science](https://github.com/drivendataorg/cookiecutter-data-science).
 
 <!-- ###########################################################################
 TODOS

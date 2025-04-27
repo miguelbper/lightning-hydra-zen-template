@@ -1,5 +1,4 @@
-# @package logger
-
 defaults:
   - csv
   - mlflow
+  - tensorboard

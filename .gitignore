@@ -170,3 +170,6 @@ logs/*
 data/
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+
+.envrc
+.DS_Store

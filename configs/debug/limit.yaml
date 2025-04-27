@@ -4,9 +4,8 @@
 # https://lightning.ai/docs/pytorch/stable/common/trainer.html#limit-val-batches
 # https://lightning.ai/docs/pytorch/stable/common/trainer.html#limit-test-batches
 
-
 defaults:
-  - _debug
+  - base
 
 trainer:
   max_epochs: 3

@@ -1,9 +1,9 @@
 import pytest
-import rootutils
+from rootutils import find_root
 
-from src.datamodule.mnist import MNISTDataModule
+from dltemplate.datamodule.mnist import MNISTDataModule
 
-ROOT_DIR = rootutils.setup_root(search_from=__file__, dotenv=False)
+ROOT_DIR = find_root()
 DATA_DIR = ROOT_DIR / "data" / "raw"
 C, H, W = 3, 32, 32
 

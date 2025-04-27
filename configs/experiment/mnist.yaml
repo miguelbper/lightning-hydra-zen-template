@@ -1,14 +1,15 @@
 # @package _global_
 
-# See https://hydra.cc/docs/patterns/configuring_experiments/ for how to configure an experiment
+# to execute this experiment run:
+# python train.py experiment=example
 
 defaults:
   - override /datamodule: mnist
   - override /model: mnist
 
-experiment_name: mnist
-evaluate: true
-ckpt_path: null
-seed: 42
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+task_name: "mnist"
 monitor: val/MulticlassAccuracy
 mode: max

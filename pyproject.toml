@@ -1,6 +1,6 @@
 [project]
 name = "deep-learning-template"
-version = "0.0.4"
+dynamic = ["version"]  # Version is managed by git tags
 description = "A template for deep learning projects, using PyTorch Lightning and Hydra."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -14,25 +14,25 @@ dependencies = [
     "hydra-optuna-sweeper>=1.2.0",
     "hydra-zen>=0.14.0",
     "ipykernel>=6.29.5",
-    "lightning>=2.5.1",
-    "mlflow>=2.21.0",
+    "lightning>=2.5.1.post0",
+    "mlflow>=2.22.0",
     "omegaconf>=2.3.0",
     "optuna>=2.10.1",
-    "rich>=13.9.4",
+    "rich>=14.0.0",
     "rootutils>=1.0.7",
     "tensorboard>=2.19.0",
     "torch>=2.6.0",
     "torchaudio>=2.6.0",
-    "torchmetrics>=1.7.0",
+    "torchmetrics>=1.7.1",
     "torchvision>=0.21.0",
 ]
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.1.0",
-    "pytest-cov>=6.0.0",
-    "pytest>=8.3.5",
-    "pyright>=1.1.397",
+    "pre-commit>=4.2.0",  # Git hooks for code quality
+    "pytest>=8.3.5",      # Testing framework
+    "pytest-cov>=6.1.1",  # Test coverage reporting
+    "ruff>=0.11.7",       # Linter and formatter
 ]
 
 # ------------------------------------------------------------------------------
@@ -68,30 +68,45 @@ explicit = true
 # ------------------------------------------------------------------------------
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["src/dltemplate"]
+
+# Version management using git tags
+[tool.hatch.version]
+source = "vcs"
+
+# https://docs.astral.sh/uv/concepts/projects/config/#project-packaging
+# will force a project to be built and installed into the project environment
+[tool.uv]
+package = true
 
 # ------------------------------------------------------------------------------
 # Linting
 # ------------------------------------------------------------------------------
 
 [tool.ruff]
+target-version = "py311"
 line-length = 120
 
 # Set of rules taken from https://docs.astral.sh/ruff/linter/#rule-selection
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle
-    "F",  # Pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "UP",  # pyupgrade
-    "SIM",  # flake8-simplify
+    "E",   # pycodestyle - Python style guide
+    "F",   # Pyflakes - Python linter
+    "I",   # isort - Import sorting
+    "B",   # flake8-bugbear - Bug detection
+    "UP",  # pyupgrade - Python upgrade tool
+    "SIM", # flake8-simplify - Code simplification
 ]
 
+# Tell Ruff/isort that dltemplate is first party, so that it puts it last in the imports
+[tool.ruff.lint.isort]
+known-first-party = ["dltemplate"]
+
+# Ignore lines in the main block for coverage purposes
 [tool.coverage.report]
 exclude_also = [
     "if __name__ == .__main__.:",

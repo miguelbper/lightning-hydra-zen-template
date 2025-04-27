@@ -3,10 +3,8 @@
 # https://lightning.ai/docs/pytorch/stable/common/trainer.html#overfit-batches
 
 defaults:
-  - _debug
+  - base
 
 trainer:
-  max_epochs: 20
+  max_epochs: 10
   overfit_batches: 1
-
-callbacks: null

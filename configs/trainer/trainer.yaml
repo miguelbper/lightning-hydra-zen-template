@@ -1,13 +1,10 @@
 # https://lightning.ai/docs/pytorch/stable/common/trainer.html
 
-defaults:
-  - logger: _logger
-  - callbacks: _callbacks
-
 _target_: lightning.pytorch.trainer.Trainer
 logger:
   - ${logger.csv}
   - ${logger.mlflow}
+  - ${logger.tensorboard}
 callbacks:
   - ${callbacks.early_stopping}
   - ${callbacks.model_checkpoint}

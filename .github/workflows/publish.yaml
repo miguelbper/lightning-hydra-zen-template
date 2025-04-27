@@ -34,3 +34,4 @@ jobs:
           body: "Automated release for version ${{ github.ref_name }}"
           draft: false
           prerelease: false
+          files: dist/*

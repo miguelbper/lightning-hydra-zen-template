@@ -1,7 +1,0 @@
-# https://lightning.ai/docs/torchmetrics/stable/classification/accuracy.html
-
-accuracy:
-  _target_: torchmetrics.classification.Accuracy
-  task: multiclass
-  num_classes: ${model.net.num_classes}
-  average: micro
