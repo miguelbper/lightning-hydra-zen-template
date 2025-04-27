@@ -172,3 +172,4 @@ data/
 !data/processed/.gitkeep
 
 .envrc
+.DS_Store
