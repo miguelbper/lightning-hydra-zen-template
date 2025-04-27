@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from src.model.resnet import ResNet
+from dl.model.resnet import ResNet
 
 B, C, H, W = 32, 3, 32, 32
 num_classes = 10
