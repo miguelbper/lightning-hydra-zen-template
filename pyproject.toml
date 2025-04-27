@@ -30,7 +30,6 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pre-commit>=4.2.0",  # Git hooks for code quality
-    "pyright>=1.1.400",   # Static type checker
     "pytest>=8.3.5",      # Testing framework
     "pytest-cov>=6.1.1",  # Test coverage reporting
     "ruff>=0.11.7",       # Linter and formatter
@@ -106,12 +105,6 @@ select = [
 # Tell Ruff/isort that dltemplate is first party, so that it puts it last in the imports
 [tool.ruff.lint.isort]
 known-first-party = ["dltemplate"]
-
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-strict = ["**/*.py"]
-pythonVersion = "3.11"  # Choose same version as in `requires-python`
 
 # Ignore lines in the main block for coverage purposes
 [tool.coverage.report]

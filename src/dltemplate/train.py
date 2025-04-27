@@ -1,4 +1,5 @@
 import logging
+import os
 
 import hydra
 import lightning as L
@@ -11,10 +12,11 @@ from rootutils import setup_root
 from dltemplate.utils.print_cfg import print_cfg
 
 root_dir = setup_root(search_from=__file__, dotenv=False, project_root_env_var=True)
+config_dir = os.path.join(root_dir, "configs")
 log = logging.getLogger(__name__)
 
 
-@hydra.main(version_base="1.3", config_path=str(root_dir / "configs"), config_name="config.yaml")
+@hydra.main(version_base="1.3", config_path=config_dir, config_name="config.yaml")
 def train(cfg: DictConfig) -> float | None:
     """Train a model from a configuration object and return the specified
     metric.
