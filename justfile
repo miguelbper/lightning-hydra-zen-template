@@ -5,9 +5,9 @@ default:
 # Check that all programs are installed
 [group("installation")]
 check-versions:
-    uv --version
-    just --version
-    direnv --version
+    uv --version  # https://docs.astral.sh/uv/
+    just --version  # https://github.com/casey/just
+    direnv --version  # https://direnv.net/
 
 # Allow direnv to load environment variables
 [group("installation")]
@@ -53,29 +53,36 @@ test:
 test-cov:
     uv run pytest --cov=src --cov-report=html
 
-# Publish a new release on GitHub (via GitHub actions)
+# Create a new version tag (will trigger publish.yaml workflow)
 [group("packaging")]
 publish:
     #!/usr/bin/env bash
-    # Get current version from pyproject.toml
-    CURRENT_VERSION=$(grep '^version = ' pyproject.toml | cut -d'"' -f2)
+    # Get last tag from git
+    CURRENT_VERSION=$(git describe --tags --abbrev=0)
+    echo "Current version: $CURRENT_VERSION"
+
+    # Remove 'v' prefix if it exists
+    VERSION_NUMBER=$(echo $CURRENT_VERSION | sed 's/^v//')
 
     # Split version into major.minor.patch
-    IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+    IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NUMBER"
 
     # Increment patch version
     NEW_PATCH=$((PATCH + 1))
     NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
 
-    # Update version in pyproject.toml
-    sed -i '' "s/^version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
-    uv sync
+    # Create git tag (always with 'v' prefix)
+    NEW_TAG="v$NEW_VERSION"
+    echo "New version: $NEW_TAG"
 
-    # Create git tag
-    git add pyproject.toml uv.lock
-    git commit -m "Update version to $NEW_VERSION"
-    git tag -a "v$NEW_VERSION" -m "Release version $NEW_VERSION"
-    git push --follow-tags origin main
+    # Create and push the new tag
+    git tag -a "$NEW_TAG" -m "Release version $NEW_VERSION"
+    git push origin "$NEW_TAG"
+
+# Print tree of the project (requires installing tree)
+[group("tools")]
+tree:
+    tree -a -I ".venv|.git|.pytest_cache|.coverage|dist|__pycache__" --dirsfirst
 
 # Clean logs directory
 [group("cleanup")]
