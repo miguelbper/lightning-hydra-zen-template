@@ -34,6 +34,7 @@ A template for deep learning projects, using
 - [uv](https://github.com/astral-sh/uv) - Dependency management
 
 ## Directory structure
+<!-- TODO: update this with tree -->
 ```
 ├── configs                 <- Configuration files for Hydra, containing model, training, and experiment settings
 │   └── ...
