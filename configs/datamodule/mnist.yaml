@@ -1,2 +1,2 @@
-_target_: dl.datamodule.mnist.MNISTDataModule
+_target_: dltemplate.datamodule.mnist.MNISTDataModule
 data_dir: ${paths.data_dir}/raw

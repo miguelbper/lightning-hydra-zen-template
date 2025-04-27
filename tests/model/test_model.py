@@ -5,7 +5,7 @@ from hydra.utils import instantiate
 from lightning import LightningModule
 from omegaconf import DictConfig
 
-from dl.model.model import Model
+from dltemplate.model.model import Model
 
 B, C, H, W = 2, 3, 32, 32
 num_classes = 10

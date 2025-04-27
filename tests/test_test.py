@@ -6,8 +6,8 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig, open_dict
 from pytest import FixtureRequest
 
-from dl.test import test as evaluate
-from dl.train import train
+from dltemplate.test import test as evaluate
+from dltemplate.train import train
 
 
 @pytest.fixture(params=["cpu", "mps", "cuda"])

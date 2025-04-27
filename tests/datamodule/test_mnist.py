@@ -1,7 +1,7 @@
 import pytest
 from rootutils import find_root
 
-from dl.datamodule.mnist import MNISTDataModule
+from dltemplate.datamodule.mnist import MNISTDataModule
 
 ROOT_DIR = find_root()
 DATA_DIR = ROOT_DIR / "data" / "raw"

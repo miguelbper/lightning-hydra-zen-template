@@ -73,7 +73,7 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/dl"]
+packages = ["src/dltemplate"]
 
 # Version management using git tags
 [tool.hatch.version]
@@ -103,9 +103,9 @@ select = [
     "SIM", # flake8-simplify - Code simplification
 ]
 
-# Tell Ruff/isort that dl is first party, so that it puts it last in the imports
+# Tell Ruff/isort that dltemplate is first party, so that it puts it last in the imports
 [tool.ruff.lint.isort]
-known-first-party = ["dl"]
+known-first-party = ["dltemplate"]
 
 [tool.pyright]
 venvPath = "."

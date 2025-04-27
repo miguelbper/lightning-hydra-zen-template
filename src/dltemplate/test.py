@@ -6,7 +6,7 @@ from hydra.utils import instantiate
 from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 
-from dl.utils.print_cfg import print_cfg
+from dltemplate.utils.print_cfg import print_cfg
 
 rootutils.setup_root(search_from=__file__, dotenv=False)
 log = logging.getLogger(__name__)
