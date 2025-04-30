@@ -7,7 +7,7 @@ from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 from rootutils import setup_root
 
-from dltemplate.utils.print_cfg import print_cfg
+from dltemplate.utils.print_cfg import save_and_print_cfg
 
 root_dir = setup_root(search_from=__file__, dotenv=False, project_root_env_var=True)
 config_dir = os.path.join(root_dir, "configs")
@@ -25,7 +25,7 @@ def test(cfg: DictConfig) -> None:
     Returns:
         None
     """
-    print_cfg(cfg)
+    save_and_print_cfg(cfg)
 
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = instantiate(cfg.datamodule)

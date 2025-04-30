@@ -10,11 +10,12 @@ from omegaconf import DictConfig, OmegaConf, flag_override
 log = logging.getLogger(__name__)
 
 
-def print_cfg(cfg: DictConfig) -> None:
-    file_path = os.path.join(cfg.paths.output_dir, "resolved_config.log")
+def save_and_print_cfg(cfg: DictConfig) -> None:
+    file_path = os.path.join(cfg.paths.output_dir, "resolved_config.yaml")
     log.info(f"Saving config to {file_path}")
-
     cfg = OmegaConf.create(OmegaConf.to_container(cfg, resolve=True))
+    with open(file_path, "w") as file:
+        file.write(OmegaConf.to_yaml(cfg))
 
     remove_packages = ["hydra", "paths", "logger", "callbacks"]
     for package in remove_packages:
@@ -33,5 +34,3 @@ def print_cfg(cfg: DictConfig) -> None:
         branch.add(rich.syntax.Syntax(branch_content, "yaml", theme="gruvbox-dark"))
 
     rich.print(tree)
-    with open(file_path, "w") as file:
-        rich.print(tree, file=file)

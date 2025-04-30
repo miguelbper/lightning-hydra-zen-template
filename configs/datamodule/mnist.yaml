@@ -1,2 +1,6 @@
 _target_: dltemplate.datamodule.mnist.MNISTDataModule
 data_dir: ${paths.data_dir}/raw
+batch_size: 32
+num_workers: 0
+pin_memory: false
+num_val_examples: 5000
