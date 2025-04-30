@@ -6,7 +6,7 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig, open_dict
 from pytest import FixtureRequest
 
-from lightning_hydra_zen_template.test import test as evaluate
+from lightning_hydra_zen_template.eval import evaluate
 from lightning_hydra_zen_template.train import train
 
 

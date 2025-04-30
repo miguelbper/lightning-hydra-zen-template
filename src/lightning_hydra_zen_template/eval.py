@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 @hydra.main(version_base="1.3", config_path=config_dir, config_name="config.yaml")
-def test(cfg: DictConfig) -> None:
+def evaluate(cfg: DictConfig) -> None:
     """Test a model from a configuration object (which should include a
     checkpoint).
 
@@ -41,4 +41,4 @@ def test(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
-    test()
+    evaluate()
