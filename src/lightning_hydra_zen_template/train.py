@@ -9,7 +9,7 @@ from lightning import LightningDataModule, LightningModule, Trainer
 from omegaconf import DictConfig
 from rootutils import setup_root
 
-from dltemplate.utils.print_cfg import save_and_print_cfg
+from lightning_hydra_zen_template.utils.print_cfg import save_and_print_cfg
 
 root_dir = setup_root(search_from=__file__, dotenv=False, project_root_env_var=True)
 config_dir = os.path.join(root_dir, "configs")
