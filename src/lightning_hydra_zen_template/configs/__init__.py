@@ -1,14 +1,14 @@
 import importlib
-import os
 import pkgutil
 
+from lightning_hydra_zen_template.configs.train import Config
 
-def import_all_configs():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-
-    for package in pkgutil.walk_packages([current_dir]):
-        if not package.ispkg:
-            importlib.import_module(package.name)
+packages = list(pkgutil.walk_packages(path=__path__, prefix=__name__ + "."))
+modules = [module for module in packages if not module.ispkg]
 
 
-import_all_configs()
+for module in modules:
+    importlib.import_module(name=f"{module.name}", package=__package__)
+
+
+__all__ = ["Config"]
