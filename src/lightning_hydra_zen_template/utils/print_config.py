@@ -1,4 +1,5 @@
 import copy
+import logging
 import os
 
 import rich
@@ -7,9 +8,7 @@ import rich.tree
 from lightning_utilities.core.rank_zero import rank_zero_only
 from omegaconf import DictConfig, OmegaConf, flag_override
 
-from lightning_hydra_zen_template.utils.ranked_logger import RankedLogger
-
-log = RankedLogger(__name__, rank_zero_only=True)
+log = logging.getLogger(__name__)
 
 
 @rank_zero_only
@@ -20,24 +19,22 @@ def print_config(cfg: DictConfig) -> None:
     with open(file_path, "w") as file:
         file.write(OmegaConf.to_yaml(cfg))
 
-    remove_packages = ["hydra", "paths", "logger", "callbacks"]
+    remove_packages = ["hydra"]
     for package in remove_packages:
         if package in cfg:
             cfg = copy.copy(cfg)
             with flag_override(cfg, ["struct", "readonly"], [False, False]):
                 cfg.pop(package)
 
-    tree = rich.tree.Tree("CONFIG")
+    tree = rich.tree.Tree("config")
 
-    print_order = ["data", "model", "trainer"]
     queue = []
-
+    print_order = ["datamodule", "model", "trainer"]
     for field in print_order:
         if field in cfg:
             queue.append(field)
         else:
             log.warning(f"Field '{field}' not found in config. Skipping '{field}' config printing...")
-
     for field in cfg:
         if field not in queue:
             queue.append(field)

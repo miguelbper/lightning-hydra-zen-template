@@ -1,11 +1,12 @@
+import logging
+
 import lightning as L
 from hydra_zen import store, zen
 
 from lightning_hydra_zen_template.configs.config import TrainCfg
 from lightning_hydra_zen_template.utils.print_config import print_config
-from lightning_hydra_zen_template.utils.ranked_logger import RankedLogger
 
-log = RankedLogger(__name__, rank_zero_only=True)
+log = logging.getLogger(__name__)
 
 
 def train() -> None:
