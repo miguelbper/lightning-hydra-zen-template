@@ -29,7 +29,7 @@ def print_config(cfg: DictConfig) -> None:
     tree = rich.tree.Tree("config")
 
     queue = []
-    print_order = ["datamodule", "model", "trainer"]
+    print_order = ["data", "model", "trainer"]
     for field in print_order:
         if field in cfg:
             queue.append(field)

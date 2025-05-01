@@ -23,7 +23,7 @@ from torchmetrics.classification import (
     Recall,
 )
 
-from lightning_hydra_zen_template.datamodule.mnist import MNISTDataModule
+from lightning_hydra_zen_template.data.mnist import MNISTDataModule
 from lightning_hydra_zen_template.model.components.resnet import ResNet
 from lightning_hydra_zen_template.model.model import Model
 
@@ -147,6 +147,7 @@ DataModuleCfg = builds(
     zen_wrappers=log_instantiation,
 )
 
+store(DataModuleCfg, name="mnist", group="data")
 
 # ------------------------------------------------------------------------------
 # Model
@@ -206,6 +207,7 @@ ModelCfg = builds(
     zen_wrappers=log_instantiation,
 )
 
+store(ModelCfg, name="mnist", group="model")
 
 # ------------------------------------------------------------------------------
 # Trainer
@@ -240,12 +242,14 @@ TrainerCfg = builds(
 TrainCfg = make_config(
     hydra_defaults=[
         "_self_",
+        {"data": "mnist"},
+        {"model": "mnist"},
         {"override hydra/hydra_logging": "colorlog"},
         {"override hydra/job_logging": "colorlog"},
     ],
     # Main 3 components
-    datamodule=DataModuleCfg,
-    model=ModelCfg,
+    data=None,
+    model=None,
     trainer=TrainerCfg,
     # Run config
     paths=PathsCfg,
