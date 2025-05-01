@@ -83,6 +83,8 @@ PathsCfg = make_config(
     work_dir=work_dir,
 )
 
+store(PathsCfg, name="default", group="paths")
+
 # ------------------------------------------------------------------------------
 # Hydra
 # ------------------------------------------------------------------------------
@@ -307,22 +309,29 @@ store(TrainerDDPCfg, name="ddp", group="trainer")
 TrainCfg = make_config(
     hydra_defaults=[
         "_self_",
+        #
         {"data": "mnist"},
         {"model": "mnist"},
         {"callbacks": "default"},
         {"logger": "default"},
         {"trainer": "default"},
+        {"paths": "default"},
+        #
+        {"experiment": None},
+        {"hparams_search": None},
+        {"debug": None},
+        #
         {"override hydra/hydra_logging": "colorlog"},
         {"override hydra/job_logging": "colorlog"},
     ],
-    # Main 3 components
+    #
     data=None,
     model=None,
     callbacks=None,
     logger=None,
     trainer=None,
-    # Run config
-    paths=PathsCfg,
+    paths=None,
+    #
     task_name="train",
     tags=["dev"],
     evaluate=True,
