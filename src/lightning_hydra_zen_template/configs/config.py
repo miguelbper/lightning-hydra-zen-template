@@ -116,7 +116,19 @@ ModelCheckpointCfg = builds(
     mode="${mode}",
     auto_insert_metric_name=False,
 )
+CallbacksDefaultCfg = make_config(
+    rich_progress_bar=RichProgressBarCfg,
+    rich_model_summary=RichModelSummaryCfg,
+    early_stopping=EarlyStoppingCfg,
+    model_checkpoint=ModelCheckpointCfg,
+)
 
+callbacks_store = store(group="callbacks")
+callbacks_store(RichProgressBarCfg, name="rich_progress_bar")
+callbacks_store(RichModelSummaryCfg, name="rich_model_summary")
+callbacks_store(EarlyStoppingCfg, name="early_stopping")
+callbacks_store(ModelCheckpointCfg, name="model_checkpoint")
+callbacks_store(CallbacksDefaultCfg, name="default")
 
 # ------------------------------------------------------------------------------
 # Logger
@@ -136,6 +148,18 @@ MLFlowLoggerCfg = builds(
     MLFlowLogger,
     tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"),
 )
+
+LoggerDefaultCfg = make_config(
+    csv=CSVLoggerCfg,
+    tensorboard=TensorBoardLoggerCfg,
+    mlflow=MLFlowLoggerCfg,
+)
+
+logger_store = store(group="logger")
+logger_store(CSVLoggerCfg, name="csv")
+logger_store(TensorBoardLoggerCfg, name="tensorboard")
+logger_store(MLFlowLoggerCfg, name="mlflow")
+logger_store(LoggerDefaultCfg, name="default")
 
 # ------------------------------------------------------------------------------
 # DataModule
@@ -216,15 +240,15 @@ store(ModelCfg, name="mnist", group="model")
 TrainerCfg = builds(
     Trainer,
     logger=[
-        CSVLoggerCfg,
-        TensorBoardLoggerCfg,
-        MLFlowLoggerCfg,
+        "${logger.csv}",
+        "${logger.tensorboard}",
+        "${logger.mlflow}",
     ],
     callbacks=[
-        RichProgressBarCfg,
-        RichModelSummaryCfg,
-        EarlyStoppingCfg,
-        ModelCheckpointCfg,
+        "${callbacks.rich_progress_bar}",
+        "${callbacks.rich_model_summary}",
+        "${callbacks.early_stopping}",
+        "${callbacks.model_checkpoint}",
     ],
     min_epochs=1,
     max_epochs=10,
@@ -244,12 +268,16 @@ TrainCfg = make_config(
         "_self_",
         {"data": "mnist"},
         {"model": "mnist"},
+        {"callbacks": "default"},
+        {"logger": "default"},
         {"override hydra/hydra_logging": "colorlog"},
         {"override hydra/job_logging": "colorlog"},
     ],
     # Main 3 components
     data=None,
     model=None,
+    callbacks=None,
+    logger=None,
     trainer=TrainerCfg,
     # Run config
     paths=PathsCfg,
