@@ -83,7 +83,7 @@ PathsCfg = make_config(
     work_dir=work_dir,
 )
 
-store(PathsCfg, name="default", group="paths")
+# store(PathsCfg, name="default", group="paths")
 
 # ------------------------------------------------------------------------------
 # Hydra
@@ -118,19 +118,19 @@ ModelCheckpointCfg = builds(
     mode="${mode}",
     auto_insert_metric_name=False,
 )
-CallbacksDefaultCfg = make_config(
-    rich_progress_bar=RichProgressBarCfg,
-    rich_model_summary=RichModelSummaryCfg,
-    early_stopping=EarlyStoppingCfg,
-    model_checkpoint=ModelCheckpointCfg,
-)
+# CallbacksDefaultCfg = make_config(
+#     rich_progress_bar=RichProgressBarCfg,
+#     rich_model_summary=RichModelSummaryCfg,
+#     early_stopping=EarlyStoppingCfg,
+#     model_checkpoint=ModelCheckpointCfg,
+# )
 
-callbacks_store = store(group="callbacks")
-callbacks_store(RichProgressBarCfg, name="rich_progress_bar")
-callbacks_store(RichModelSummaryCfg, name="rich_model_summary")
-callbacks_store(EarlyStoppingCfg, name="early_stopping")
-callbacks_store(ModelCheckpointCfg, name="model_checkpoint")
-callbacks_store(CallbacksDefaultCfg, name="default")
+# callbacks_store = store(group="callbacks")
+# callbacks_store(RichProgressBarCfg, name="rich_progress_bar")
+# callbacks_store(RichModelSummaryCfg, name="rich_model_summary")
+# callbacks_store(EarlyStoppingCfg, name="early_stopping")
+# callbacks_store(ModelCheckpointCfg, name="model_checkpoint")
+# callbacks_store(CallbacksDefaultCfg, name="default")
 
 # ------------------------------------------------------------------------------
 # Logger
@@ -151,17 +151,17 @@ MLFlowLoggerCfg = builds(
     tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"),
 )
 
-LoggerDefaultCfg = make_config(
-    csv=CSVLoggerCfg,
-    tensorboard=TensorBoardLoggerCfg,
-    mlflow=MLFlowLoggerCfg,
-)
+# LoggerDefaultCfg = make_config(
+#     csv=CSVLoggerCfg,
+#     tensorboard=TensorBoardLoggerCfg,
+#     mlflow=MLFlowLoggerCfg,
+# )
 
-logger_store = store(group="logger")
-logger_store(CSVLoggerCfg, name="csv")
-logger_store(TensorBoardLoggerCfg, name="tensorboard")
-logger_store(MLFlowLoggerCfg, name="mlflow")
-logger_store(LoggerDefaultCfg, name="default")
+# logger_store = store(group="logger")
+# logger_store(CSVLoggerCfg, name="csv")
+# logger_store(TensorBoardLoggerCfg, name="tensorboard")
+# logger_store(MLFlowLoggerCfg, name="mlflow")
+# logger_store(LoggerDefaultCfg, name="default")
 
 # ------------------------------------------------------------------------------
 # DataModule
@@ -242,15 +242,22 @@ store(ModelCfg, name="mnist", group="model")
 TrainerDefaultCfg = builds(
     Trainer,
     logger=[
-        "${logger.csv}",
-        "${logger.tensorboard}",
-        "${logger.mlflow}",
+        CSVLoggerCfg,
+        TensorBoardLoggerCfg,
+        MLFlowLoggerCfg,
+        # "${logger.csv}",
+        # "${logger.tensorboard}",
+        # "${logger.mlflow}",
     ],
     callbacks=[
-        "${callbacks.rich_progress_bar}",
-        "${callbacks.rich_model_summary}",
-        "${callbacks.early_stopping}",
-        "${callbacks.model_checkpoint}",
+        RichProgressBarCfg,
+        RichModelSummaryCfg,
+        EarlyStoppingCfg,
+        ModelCheckpointCfg,
+        # "${callbacks.rich_progress_bar}",
+        # "${callbacks.rich_model_summary}",
+        # "${callbacks.early_stopping}",
+        # "${callbacks.model_checkpoint}",
     ],
     min_epochs=1,
     max_epochs=10,
@@ -303,6 +310,87 @@ store(TrainerDDPSimCfg, name="ddp_sim", group="trainer")
 store(TrainerDDPCfg, name="ddp", group="trainer")
 
 # ------------------------------------------------------------------------------
+# Debug
+# ------------------------------------------------------------------------------
+
+DebugDefaultCfg = make_config(
+    task_name="debug",
+    # callbacks=None,
+    # logger=None,
+    hydra=dict(
+        job_logging=dict(
+            root=dict(
+                level="DEBUG",
+            ),
+        ),
+    ),
+    trainer=dict(
+        logger=None,
+        callbacks=None,
+        max_epochs=1,
+        accelerator="cpu",
+        devices=1,
+        detect_anomaly=True,
+    ),
+    data=dict(
+        num_workers=0,
+        pin_memory=False,
+    ),
+)
+
+DebugLimitCfg = make_config(
+    hydra_defaults=[
+        "default",
+        "_self_",
+    ],
+    trainer=dict(
+        max_epochs=3,
+        limit_train_batches=0.01,
+        limit_val_batches=0.05,
+        limit_test_batches=0.05,
+    ),
+)
+
+DebugOverfitCfg = make_config(
+    hydra_defaults=[
+        "default",
+        "_self_",
+    ],
+    trainer=dict(
+        max_epochs=20,
+        overfit_batches=3,
+    ),
+)
+
+DebugProfilerCfg = make_config(
+    hydra_defaults=[
+        "default",
+        "_self_",
+    ],
+    trainer=dict(
+        max_epochs=1,
+        profiler="simple",
+    ),
+)
+
+DebugFDRCfg = make_config(
+    hydra_defaults=[
+        "default",
+        "_self_",
+    ],
+    trainer=dict(
+        fast_dev_run=True,
+    ),
+)
+
+debug_store = store(group="debug", package="_global_", to_config=remove_types)
+debug_store(DebugDefaultCfg, name="default")
+debug_store(DebugLimitCfg, name="limit")
+debug_store(DebugOverfitCfg, name="overfit")
+debug_store(DebugProfilerCfg, name="profiler")
+debug_store(DebugFDRCfg, name="fdr")
+
+# ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
 
@@ -312,10 +400,10 @@ TrainCfg = make_config(
         #
         {"data": "mnist"},
         {"model": "mnist"},
-        {"callbacks": "default"},
-        {"logger": "default"},
+        # {"callbacks": "default"},
+        # {"logger": "default"},
         {"trainer": "default"},
-        {"paths": "default"},
+        # {"paths": "default"},
         #
         {"experiment": None},
         {"hparams_search": None},
@@ -327,10 +415,11 @@ TrainCfg = make_config(
     #
     data=None,
     model=None,
-    callbacks=None,
-    logger=None,
+    # callbacks=None,
+    # logger=None,
     trainer=None,
-    paths=None,
+    # paths=None,
+    paths=PathsCfg,
     #
     task_name="train",
     tags=["dev"],
