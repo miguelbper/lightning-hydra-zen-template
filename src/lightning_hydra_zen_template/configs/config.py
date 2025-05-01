@@ -391,6 +391,92 @@ debug_store(DebugProfilerCfg, name="profiler")
 debug_store(DebugFDRCfg, name="fdr")
 
 # ------------------------------------------------------------------------------
+# Experiment
+# ------------------------------------------------------------------------------
+
+ExperimentExampleCfg = make_config(
+    hydra_defaults=[
+        {"override /data": "mnist"},
+        {"override /model": "mnist"},
+    ],
+    tags=["mnist", "simple_dense_net"],
+    seed=12345,
+    trainer=dict(
+        min_epochs=10,
+        max_epochs=10,
+        gradient_clip_val=0.5,
+    ),
+    model=dict(
+        optimizer=dict(
+            lr=0.002,
+        ),
+    ),
+    data=dict(
+        batch_size=64,
+    ),
+)
+
+experiment_store = store(group="experiment", package="_global_", to_config=remove_types)
+experiment_store(ExperimentExampleCfg, name="example")
+
+# ------------------------------------------------------------------------------
+# Hyperparameter Search: https://github.com/mit-ll-responsible-ai/hydra-zen/issues/563
+# ------------------------------------------------------------------------------
+
+# HparamsSearchOptunaCfg = make_config(
+#     hydra_defaults=[
+#         {"override /hydra/sweeper": "optuna"},
+#     ],
+#     optimized_metric="${monitor}",
+#     hydra=make_config(
+#         mode="MULTIRUN",
+#         sweeper=builds(
+#             OptunaSweeper,
+#             storage=None,
+#             study_name=None,
+#             n_jobs=1,
+#             direction="${mode}imize",
+#             n_trials=20,
+#             sampler=builds(
+#                 TPESampler,
+#                 seed=1234,
+#                 n_startup_trials=10,
+#             ),
+#             params=dict(
+#                 model=dict(
+#                     optimizer=dict(
+#                         lr="interval(0.0001, 0.1)",
+#                     ),
+#                 ),
+#                 data=dict(
+#                     batch_size="choice(32, 64, 128, 256)",
+#                 ),
+#             ),
+#         ),
+#         hydra=dict(
+#             _target_="hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper",
+#             storage=None,
+#             study_name=None,
+#             n_jobs=1,
+#             direction="${mode}imize",
+#             n_trials=20,
+#             sampler=dict(
+#                 _target_="optuna.samplers.TPESampler",
+#                 seed=1234,
+#                 n_startup_trials=10,
+#             ),
+#             params=dict(
+#                 model_optimizer_lr="interval(0.0001, 0.1)",
+#                 data_batch_size="choice(32, 64, 128, 256)",
+#             ),
+#         ),
+#     ),
+# )
+
+# hparams_search_store = store(group="hparams_search", package="_global_", to_config=remove_types)
+# hparams_search_store(HparamsSearchOptunaCfg, name="mnist_optuna")
+
+# ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
 
