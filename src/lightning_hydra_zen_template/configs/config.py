@@ -237,7 +237,7 @@ store(ModelCfg, name="mnist", group="model")
 # Trainer
 # ------------------------------------------------------------------------------
 
-TrainerCfg = builds(
+TrainerDefaultCfg = builds(
     Trainer,
     logger=[
         "${logger.csv}",
@@ -259,6 +259,47 @@ TrainerCfg = builds(
     zen_wrappers=log_instantiation,
 )
 
+TrainerCPUCfg = make_config(
+    accelerator="cpu",
+    devices=1,
+    bases=(TrainerDefaultCfg,),
+)
+
+TrainerGPUCfg = make_config(
+    accelerator="gpu",
+    devices=1,
+    bases=(TrainerDefaultCfg,),
+)
+
+TrainerMPSCfg = make_config(
+    accelerator="mps",
+    devices=1,
+    bases=(TrainerDefaultCfg,),
+)
+
+TrainerDDPSimCfg = make_config(
+    accelerator="cpu",
+    devices=2,
+    strategy="ddp_spawn",
+    bases=(TrainerDefaultCfg,),
+)
+
+TrainerDDPCfg = make_config(
+    strategy="ddp",
+    accelerator="gpu",
+    devices=4,
+    num_nodes=1,
+    sync_batchnorm=True,
+    bases=(TrainerDefaultCfg,),
+)
+
+store(TrainerDefaultCfg, name="default", group="trainer")
+store(TrainerCPUCfg, name="cpu", group="trainer")
+store(TrainerGPUCfg, name="gpu", group="trainer")
+store(TrainerMPSCfg, name="mps", group="trainer")
+store(TrainerDDPSimCfg, name="ddp_sim", group="trainer")
+store(TrainerDDPCfg, name="ddp", group="trainer")
+
 # ------------------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------------------
@@ -270,6 +311,7 @@ TrainCfg = make_config(
         {"model": "mnist"},
         {"callbacks": "default"},
         {"logger": "default"},
+        {"trainer": "default"},
         {"override hydra/hydra_logging": "colorlog"},
         {"override hydra/job_logging": "colorlog"},
     ],
@@ -278,7 +320,7 @@ TrainCfg = make_config(
     model=None,
     callbacks=None,
     logger=None,
-    trainer=TrainerCfg,
+    trainer=None,
     # Run config
     paths=PathsCfg,
     task_name="train",
