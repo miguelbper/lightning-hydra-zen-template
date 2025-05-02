@@ -5,48 +5,49 @@ import os
 import rich
 import rich.syntax
 import rich.tree
-from lightning_utilities.core.rank_zero import rank_zero_only
-from omegaconf import DictConfig, OmegaConf, flag_override
+from omegaconf import DictConfig, ListConfig, OmegaConf, flag_override
 
 log = logging.getLogger(__name__)
 
 
-@rank_zero_only
 def print_config(cfg: DictConfig) -> None:
     cfg = OmegaConf.create(OmegaConf.to_container(cfg, resolve=True))
-    log.info(f"Output directory: {cfg.paths.output_dir}")
+    log.info(f"Output directory is {cfg.paths.output_dir}")
+    config_file = os.path.join(cfg.paths.output_dir, "config_tree.log")
 
-    file_path = os.path.join(cfg.paths.output_dir, "resolved_config.yaml")
-    log.info(f"Saving config to {file_path}")
-    with open(file_path, "w") as file:
-        file.write(OmegaConf.to_yaml(cfg))
+    cfg = remove_packages(cfg)
+    tree = cfg_to_tree(cfg)
 
-    remove_packages = ["hydra", "paths"]
-    for package in remove_packages:
+    log.info(f"Saving config to {config_file}")
+    with open(config_file, "w") as file:
+        rich.print(tree, file=file)
+    rich.print(tree)
+
+
+def remove_packages(cfg: DictConfig, packages: tuple[str, ...] = ("hydra", "paths")) -> DictConfig:
+    for package in packages:
         if package in cfg:
             cfg = copy.copy(cfg)
             with flag_override(cfg, ["struct", "readonly"], [False, False]):
                 cfg.pop(package)
+    return cfg
+
+
+def cfg_to_tree(cfg: DictConfig) -> rich.tree.Tree:
+    def add_to_tree(tree: rich.tree.Tree, level: int, cfg: DictConfig) -> None:
+        colors = ["red", "cyan", "blue", "green"]
+        color = colors[min(level, len(colors) - 1)]
+        for key, value in cfg.items():
+            key_format = f"[bold {color}]{key}[/bold {color}]"
+            if isinstance(value, DictConfig):
+                sub_tree = tree.add(key_format)
+                add_to_tree(sub_tree, level + 1, value)
+            elif isinstance(value, ListConfig):
+                sub_tree = tree.add(key_format)
+                add_to_tree(sub_tree, level + 1, OmegaConf.create({str(i): item for i, item in enumerate(value)}))
+            else:
+                tree.add(f"{key_format}: {value}")
 
     tree = rich.tree.Tree("config")
-
-    queue = []
-    print_order = ["data", "model", "trainer"]
-    for field in print_order:
-        if field in cfg:
-            queue.append(field)
-        else:
-            log.warning(f"Field '{field}' not found in config. Skipping '{field}' config printing...")
-    for field in cfg:
-        if field not in queue:
-            queue.append(field)
-
-    for key in queue:
-        value = cfg[key]
-        is_dict = isinstance(value, DictConfig)
-        convert_fn = OmegaConf.to_yaml if is_dict else str
-        branch_content = convert_fn(value)
-        branch = tree.add(key)
-        branch.add(rich.syntax.Syntax(branch_content, "yaml", theme="gruvbox-dark"))
-
-    rich.print(tree)
+    add_to_tree(tree, 0, cfg)
+    return tree
