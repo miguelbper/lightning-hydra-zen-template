@@ -398,6 +398,7 @@ ExperimentExampleCfg = make_config(
     hydra_defaults=[
         {"override /data": "mnist"},
         {"override /model": "mnist"},
+        "_self_",
     ],
     tags=["mnist", "simple_dense_net"],
     seed=12345,

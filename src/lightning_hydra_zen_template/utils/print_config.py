@@ -13,13 +13,15 @@ log = logging.getLogger(__name__)
 
 @rank_zero_only
 def print_config(cfg: DictConfig) -> None:
+    cfg = OmegaConf.create(OmegaConf.to_container(cfg, resolve=True))
+    log.info(f"Output directory: {cfg.paths.output_dir}")
+
     file_path = os.path.join(cfg.paths.output_dir, "resolved_config.yaml")
     log.info(f"Saving config to {file_path}")
-    cfg = OmegaConf.create(OmegaConf.to_container(cfg, resolve=True))
     with open(file_path, "w") as file:
         file.write(OmegaConf.to_yaml(cfg))
 
-    remove_packages = ["hydra"]
+    remove_packages = ["hydra", "paths"]
     for package in remove_packages:
         if package in cfg:
             cfg = copy.copy(cfg)
