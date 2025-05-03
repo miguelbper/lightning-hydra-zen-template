@@ -3,7 +3,7 @@ import logging
 import lightning as L
 from hydra_zen import store, zen
 
-from lightning_hydra_zen_template._config import TrainCfg
+from lightning_hydra_zen_template.configs import TrainCfg
 from lightning_hydra_zen_template.utils.print_config import print_config
 
 log = logging.getLogger(__name__)
