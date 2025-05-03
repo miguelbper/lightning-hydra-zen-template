@@ -16,13 +16,7 @@ from rootutils import find_root
 from torch import nn
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-from torchmetrics import MetricCollection
-from torchmetrics.classification import (
-    Accuracy,
-    F1Score,
-    Precision,
-    Recall,
-)
+from torchmetrics import Accuracy, F1Score, MetricCollection, Precision, Recall
 
 from lightning_hydra_zen_template.data.mnist import MNISTDataModule
 from lightning_hydra_zen_template.model.components.resnet import ResNet
