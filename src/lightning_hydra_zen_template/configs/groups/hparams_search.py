@@ -10,10 +10,10 @@ TPESamplerCfg = make_config(
     seed=1234,
     n_startup_trials=10,
 )
-store(TPESamplerCfg, group="hydra/sweeper/sampler", name="tpe")
+store(TPESamplerCfg, group="hydra/sweeper/sampler", name="custom_tpe")
 
 OptunaSweeperCfg = make_config(
-    hydra_defaults=["_self_", {"sampler": "tpe"}],
+    hydra_defaults=["_self_", {"sampler": "custom_tpe"}],
     bases=(OptunaSweeperConf,),
     storage=None,
     study_name=None,
@@ -25,10 +25,10 @@ OptunaSweeperCfg = make_config(
         "data.batch_size": "choice(32, 64, 128, 256)",
     },
 )
-store(OptunaSweeperCfg, group="hydra/sweeper", name="optuna")
+store(OptunaSweeperCfg, group="hydra/sweeper", name="custom_optuna")
 
 HparamsSearchOptunaCfg = make_config(
-    hydra_defaults=["_self_", {"override /hydra/sweeper": "optuna"}],
+    hydra_defaults=["_self_", {"override /hydra/sweeper": "custom_optuna"}],
     hydra=dict(mode="MULTIRUN"),
 )
 hparams_store = store(group="hparams_search", package="_global_", to_config=remove_types)
