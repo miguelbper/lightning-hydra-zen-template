@@ -9,8 +9,9 @@ from lightning_hydra_zen_template.utils.print_config import print_config
 log = logging.getLogger(__name__)
 
 
-def train() -> None:
+def train() -> float:
     log.info("Training model")
+    return 1
 
 
 def seed_fn(seed: int) -> None:

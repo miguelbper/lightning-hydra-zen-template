@@ -5,6 +5,7 @@ from dataclasses import is_dataclass
 from typing import Any
 
 from hydra.conf import HydraConf, RunDir, SweepDir
+from hydra_plugins.hydra_optuna_sweeper.config import OptunaSweeperConf, TPESamplerConfig
 from hydra_zen import make_config, make_custom_builds_fn, store
 from hydra_zen.wrapper import default_to_config
 from lightning.pytorch import Trainer
@@ -423,6 +424,70 @@ experiment_store(ExperimentExampleCfg, name="example")
 # ------------------------------------------------------------------------------
 # Hyperparameter Search: https://github.com/mit-ll-responsible-ai/hydra-zen/issues/563
 # ------------------------------------------------------------------------------
+
+TPESamplerCfg = make_config(
+    bases=(TPESamplerConfig,),
+    seed=1234,
+    n_startup_trials=10,
+)
+store(TPESamplerCfg, name="custom_tpe", group="hydra/sweeper/sampler")
+
+OptunaSweeperCfg = make_config(
+    hydra_defaults=[
+        "_self_",
+        {"sampler": "custom_tpe"},
+    ],
+    bases=(OptunaSweeperConf,),
+    storage=None,
+    study_name=None,
+    n_jobs=1,
+    direction="${mode}imize",
+    n_trials=20,
+    params={
+        "model.optimizer.lr": "interval(0.0001, 0.1)",
+        "data.batch_size": "choice(32, 64, 128, 256)",
+    },
+)
+store(OptunaSweeperCfg, name="custom_optuna", group="hydra/sweeper")
+
+HparamsSearchOptunaCfg = make_config(
+    hydra_defaults=[
+        "_self_",
+        # {"hydra/mode": "MULTIRUN"},
+        {"override /hydra/sweeper": "custom_optuna"},
+    ],
+    hydra=dict(
+        mode="MULTIRUN",
+    ),
+)
+store(HparamsSearchOptunaCfg, name="mnist_optuna", group="hparams_search", package="_global_", to_config=remove_types)
+
+
+# HparamsSearchOptunaCfg = make_config(
+#     hydra=dict(
+#         mode="MULTIRUN",
+#         sweeper=make_config(
+#             bases=(OptunaSweeperConf,),
+#             storage=None,
+#             study_name=None,
+#             n_jobs=1,
+#             direction="${mode}imize",
+#             n_trials=20,
+#             sampler=make_config(
+#                 bases=(TPESamplerConfig,),
+#                 seed=1234,
+#                 n_startup_trials=10,
+#             ),
+#             params={
+#                 "model.optimizer.lr": "interval(0.0001, 0.1)",
+#                 "data.batch_size": "choice(32, 64, 128, 256)",
+#             },
+#         ),
+#     ),
+# )
+
+# hparams_search_store = store(group="hparams_search", package="_global_", to_config=remove_types)
+# hparams_search_store(HparamsSearchOptunaCfg, name="mnist_optuna")
 
 # HparamsSearchOptunaCfg = make_config(
 #     hydra_defaults=[
