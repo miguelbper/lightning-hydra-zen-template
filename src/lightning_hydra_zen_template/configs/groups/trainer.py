@@ -34,37 +34,37 @@ TrainerDefaultCfg = fbuilds(
 )
 
 TrainerCPUCfg = make_config(
+    bases=(TrainerDefaultCfg,),
     accelerator="cpu",
     devices=1,
-    bases=(TrainerDefaultCfg,),
 )
 
 TrainerGPUCfg = make_config(
+    bases=(TrainerDefaultCfg,),
     accelerator="gpu",
     devices=1,
-    bases=(TrainerDefaultCfg,),
 )
 
 TrainerMPSCfg = make_config(
+    bases=(TrainerDefaultCfg,),
     accelerator="mps",
     devices=1,
-    bases=(TrainerDefaultCfg,),
 )
 
 TrainerDDPSimCfg = make_config(
+    bases=(TrainerDefaultCfg,),
     accelerator="cpu",
     devices=2,
     strategy="ddp_spawn",
-    bases=(TrainerDefaultCfg,),
 )
 
 TrainerDDPCfg = make_config(
+    bases=(TrainerDefaultCfg,),
     strategy="ddp",
     accelerator="gpu",
     devices=4,
     num_nodes=1,
     sync_batchnorm=True,
-    bases=(TrainerDefaultCfg,),
 )
 
 trainer_store = store(group="trainer")

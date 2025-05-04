@@ -25,6 +25,16 @@ DebugDefaultCfg = make_config(
     ),
 )
 
+DebugFDRCfg = make_config(
+    hydra_defaults=[
+        "default",
+        "_self_",
+    ],
+    trainer=dict(
+        fast_dev_run=True,
+    ),
+)
+
 DebugLimitCfg = make_config(
     hydra_defaults=[
         "default",
@@ -45,7 +55,7 @@ DebugOverfitCfg = make_config(
     ],
     trainer=dict(
         max_epochs=20,
-        overfit_batches=3,
+        overfit_batches=1,
     ),
 )
 
@@ -60,19 +70,9 @@ DebugProfilerCfg = make_config(
     ),
 )
 
-DebugFDRCfg = make_config(
-    hydra_defaults=[
-        "default",
-        "_self_",
-    ],
-    trainer=dict(
-        fast_dev_run=True,
-    ),
-)
-
 debug_store = store(group="debug", package="_global_", to_config=remove_types)
 debug_store(DebugDefaultCfg, name="default")
+debug_store(DebugFDRCfg, name="fdr")
 debug_store(DebugLimitCfg, name="limit")
 debug_store(DebugOverfitCfg, name="overfit")
 debug_store(DebugProfilerCfg, name="profiler")
-debug_store(DebugFDRCfg, name="fdr")

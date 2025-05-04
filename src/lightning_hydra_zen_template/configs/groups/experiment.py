@@ -8,7 +8,7 @@ ExperimentExampleCfg = make_config(
         {"override /model": "mnist"},
         "_self_",
     ],
-    tags=["mnist", "simple_dense_net"],
+    tags=["mnist"],
     seed=12345,
     trainer=dict(
         min_epochs=10,

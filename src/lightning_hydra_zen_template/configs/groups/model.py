@@ -21,6 +21,7 @@ ModelCfg = fbuilds(
     ),
     optimizer=fbuilds(
         Adam,
+        lr=0.001,
         zen_partial=True,
     ),
     scheduler=fbuilds(
