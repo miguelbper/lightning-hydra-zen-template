@@ -17,7 +17,17 @@ def train(
     trainer: Trainer,
     ckpt_path: str | None = None,
     evaluate: bool | None = True,
+    matmul_precision: str | None = None,
+    compile: bool | None = True,
 ) -> float:
+    if matmul_precision:
+        log.info(f"Setting matmul precision to {matmul_precision}")
+        torch.set_float32_matmul_precision(matmul_precision)
+
+    if compile:
+        log.info("Compiling model")
+        model = torch.compile(model)
+
     log.info("Training model")
     trainer.fit(model=model, datamodule=data, ckpt_path=ckpt_path)
     metric: torch.Tensor | None = trainer.checkpoint_callback.best_model_score

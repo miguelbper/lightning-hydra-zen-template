@@ -32,4 +32,6 @@ TrainCfg = make_config(
     seed=42,
     monitor="val/MulticlassAccuracy",
     mode="max",
+    matmul_precision=None,
+    compile=None,
 )
