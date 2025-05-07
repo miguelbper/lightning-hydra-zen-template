@@ -6,6 +6,7 @@ from typing import Any
 from hydra_zen import make_custom_builds_fn
 from hydra_zen.wrapper import default_to_config
 from omegaconf import DictConfig, OmegaConf
+from toolz.functoolz import compose
 
 log = logging.getLogger(__name__)
 
@@ -23,12 +24,8 @@ def log_instantiation(cfg: DictConfig) -> Callable[..., Any]:
 # Example: at the same time, specify experiment and debug configs
 def remove_types(cfg: DictConfig) -> DictConfig:
     cfg = default_to_config(cfg)
-    if is_dataclass(cfg):
-        # recursively converts:
-        # dataclass -> omegaconf-dict (backed by dataclass types)
-        #           -> dict -> omegaconf dict (no types)
-        return OmegaConf.create(OmegaConf.to_container(OmegaConf.create(cfg)))
-    return cfg
+    untype = compose(OmegaConf.create, OmegaConf.to_container, OmegaConf.create)
+    return untype(cfg) if is_dataclass(cfg) else cfg
 
 
 fbuilds = make_custom_builds_fn(populate_full_signature=True)
