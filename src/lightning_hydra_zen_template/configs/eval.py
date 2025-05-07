@@ -1,6 +1,5 @@
-from dataclasses import MISSING
-
 from hydra_zen import make_config
+from omegaconf import MISSING
 
 from lightning_hydra_zen_template.configs.groups.paths import PathsCfg
 
