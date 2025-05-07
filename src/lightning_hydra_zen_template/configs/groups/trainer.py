@@ -1,29 +1,11 @@
 from hydra_zen import make_config, store
 from lightning.pytorch import Trainer
 
-from lightning_hydra_zen_template.configs.groups.callbacks import (
-    EarlyStoppingCfg,
-    ModelCheckpointCfg,
-    RichModelSummaryCfg,
-    RichProgressBarCfg,
-)
-from lightning_hydra_zen_template.configs.groups.logger import CSVLoggerCfg, MLFlowLoggerCfg, TensorBoardLoggerCfg
 from lightning_hydra_zen_template.configs.groups.paths import output_dir
 from lightning_hydra_zen_template.configs.utils.utils import fbuilds, log_instantiation
 
 TrainerDefaultCfg = fbuilds(
     Trainer,
-    logger=[
-        CSVLoggerCfg,
-        TensorBoardLoggerCfg,
-        MLFlowLoggerCfg,
-    ],
-    callbacks=[
-        RichProgressBarCfg,
-        RichModelSummaryCfg,
-        EarlyStoppingCfg,
-        ModelCheckpointCfg,
-    ],
     min_epochs=1,
     max_epochs=10,
     check_val_every_n_epoch=1,

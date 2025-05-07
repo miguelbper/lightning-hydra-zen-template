@@ -10,6 +10,7 @@ EvalCfg = make_config(
         {"data": "mnist"},
         {"model": "mnist"},
         {"trainer": "default"},
+        {"callbacks": "eval"},
         # Colored logging
         {"override hydra/hydra_logging": "colorlog"},
         {"override hydra/job_logging": "colorlog"},

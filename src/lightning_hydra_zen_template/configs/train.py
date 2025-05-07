@@ -9,6 +9,8 @@ TrainCfg = make_config(
         {"data": "mnist"},
         {"model": "mnist"},
         {"trainer": "default"},
+        {"logger": "default"},
+        {"callbacks": "default"},
         # Overrides to main components
         {"experiment": None},
         {"hparams_search": None},
