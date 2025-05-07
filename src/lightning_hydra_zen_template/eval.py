@@ -9,12 +9,7 @@ from lightning_hydra_zen_template.utils.print_config import print_config
 log = logging.getLogger(__name__)
 
 
-def evaluate(
-    data: LightningDataModule,
-    model: LightningModule,
-    trainer: Trainer,
-    ckpt_path: str,
-) -> None:
+def evaluate(data: LightningDataModule, model: LightningModule, trainer: Trainer, ckpt_path: str) -> None:
     """Test a model from a configuration object (which should include a
     checkpoint).
 
