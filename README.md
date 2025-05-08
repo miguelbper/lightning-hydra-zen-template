@@ -1,6 +1,6 @@
 <div align="center">
 
-# Deep Learning Template
+# Lightning hydra-zen Template
 [![Python](https://img.shields.io/badge/Python-3776ab?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![PyTorch](https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
 [![PyTorch Lightning](https://img.shields.io/badge/-Lightning-7e4fff?logo=lightning&logoColor=white)](https://pytorchlightning.ai/)
@@ -12,7 +12,7 @@
 [![codecov](https://codecov.io/gh/miguelbper/deep-learning-template/branch/main/graph/badge.svg)](https://codecov.io/gh/miguelbper/deep-learning-template)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/miguelbper/deep-learning-template/blob/main/LICENSE)
 
-A template for deep learning projects using PyTorch Lightning and Hydra
+A template for deep learning projects using PyTorch Lightning and hydra-zen
 
 <!-- TODO: add an image -->
 ![img.png](img.png)
