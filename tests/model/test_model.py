@@ -1,11 +1,10 @@
 import pytest
 import torch
-from hydra.core.hydra_config import HydraConfig
-from hydra.utils import instantiate
+from hydra_zen import instantiate
 from lightning import LightningModule
-from omegaconf import DictConfig
 
-from dltemplate.model.model import Model
+from lightning_hydra_zen_template.configs.groups.model import ModelCfg
+from lightning_hydra_zen_template.model.model import Model
 
 B, C, H, W = 2, 3, 32, 32
 num_classes = 10
@@ -17,10 +16,8 @@ def batch_size(request: pytest.FixtureRequest) -> int:
 
 
 @pytest.fixture
-def model(cfg: DictConfig) -> Model:
-    HydraConfig().set_config(cfg)
-    model = instantiate(cfg.model)
-    return model
+def model() -> Model:
+    return instantiate(ModelCfg)
 
 
 class TestModel:

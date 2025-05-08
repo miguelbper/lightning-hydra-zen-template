@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from dltemplate.model.resnet import ResNet
+from lightning_hydra_zen_template.model.components.resnet import ResNet
 
 B, C, H, W = 32, 3, 32, 32
 num_classes = 10

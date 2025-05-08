@@ -1,16 +1,26 @@
-from hydra.core.hydra_config import HydraConfig
-from hydra.utils import instantiate
+from hydra_zen import launch, store, zen
 from lightning import LightningDataModule, LightningModule, Trainer
-from omegaconf import DictConfig
+
+from lightning_hydra_zen_template.configs import EvalCfg, TrainCfg
+
+store.add_to_hydra_store()
 
 
-def test_cfg(cfg: DictConfig) -> None:
-    HydraConfig().set_config(cfg)
+def mock(
+    data: LightningDataModule,
+    model: LightningModule,
+    trainer: Trainer,
+    ckpt_path: str | None = None,
+    evaluate: bool | None = True,
+    matmul_precision: str | None = None,
+    compile: bool | None = True,
+) -> float:
+    pass
 
-    model = instantiate(cfg.model)
-    datamodule = instantiate(cfg.datamodule)
-    trainer = instantiate(cfg.trainer)
 
-    assert isinstance(model, LightningModule)
-    assert isinstance(datamodule, LightningDataModule)
-    assert isinstance(trainer, Trainer)
+def test_train_config() -> None:
+    launch(TrainCfg, zen(mock), version_base="1.3")
+
+
+def test_evaluate_config() -> None:
+    launch(EvalCfg, zen(mock), version_base="1.3", ckpt_path="")
