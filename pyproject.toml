@@ -3,7 +3,7 @@ name = "lightning-hydra-zen-template"
 dynamic = ["version"]  # Version is managed by git tags
 description = "A template for deep learning projects, using PyTorch Lightning and Hydra."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = {file = "LICENSE"}
 authors = [
     {name = "Miguel Pereira", email = "miguel.b.per@gmail.com"},
