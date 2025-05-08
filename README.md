@@ -7,10 +7,10 @@
 [![hydra](https://img.shields.io/badge/-Hydra-89b8cd?logo=meta)](https://hydra.cc/)
 [![ruff](https://img.shields.io/badge/Ruff-261230?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
 [![uv](https://img.shields.io/badge/uv-de5fe9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv) <br>
-[![Code Quality](https://github.com/miguelbper/deep-learning-template/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/miguelbper/deep-learning-template/actions/workflows/code-quality.yaml)
-[![Unit Tests](https://github.com/miguelbper/deep-learning-template/actions/workflows/tests.yaml/badge.svg)](https://github.com/miguelbper/deep-learning-template/actions/workflows/tests.yaml)
-[![codecov](https://codecov.io/gh/miguelbper/deep-learning-template/branch/main/graph/badge.svg)](https://codecov.io/gh/miguelbper/deep-learning-template)
-[![License](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/miguelbper/deep-learning-template/blob/main/LICENSE)
+[![Code Quality](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/code-quality.yaml)
+[![Unit Tests](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/tests.yaml/badge.svg)](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/tests.yaml)
+[![codecov](https://codecov.io/gh/miguelbper/lightning-hydra-zen-template/branch/main/graph/badge.svg)](https://codecov.io/gh/miguelbper/lightning-hydra-zen-template)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray)](https://github.com/miguelbper/lightning-hydra-zen-template/blob/main/LICENSE)
 
 A template for deep learning projects using PyTorch Lightning and hydra-zen
 
