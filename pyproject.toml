@@ -1,9 +1,9 @@
 [project]
-name = "deep-learning-template"
+name = "lightning-hydra-zen-template"
 dynamic = ["version"]  # Version is managed by git tags
 description = "A template for deep learning projects, using PyTorch Lightning and Hydra."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 license = {file = "LICENSE"}
 authors = [
     {name = "Miguel Pereira", email = "miguel.b.per@gmail.com"},
@@ -90,7 +90,6 @@ package = true
 # ------------------------------------------------------------------------------
 
 [tool.ruff]
-target-version = "py311"
 line-length = 120
 
 # Set of rules taken from https://docs.astral.sh/ruff/linter/#rule-selection
