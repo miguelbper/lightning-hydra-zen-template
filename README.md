@@ -14,7 +14,6 @@
 
 A template for deep learning projects using PyTorch Lightning and hydra-zen
 
-<!-- TODO: add an image -->
 ![img.png](img.png)
 
 </div>
@@ -30,43 +29,75 @@ A template for deep learning projects, using
 - [Optuna](https://github.com/optuna/optuna) - Hyperparameter optimization
 - [MLflow](https://github.com/mlflow/mlflow) - Experiment tracking
 - [Hydra](https://github.com/facebookresearch/hydra) - Configuration files
+- [hydra-zen](https://github.com/mit-ll-responsible-ai/hydra-zen) - Wrapper for Hydra
 - [Ruff](https://github.com/astral-sh/ruff) - Linting and formatting
 - [uv](https://github.com/astral-sh/uv) - Dependency management
 
 ## Directory structure
 <!-- TODO: update this with tree -->
 ```
-├── configs                 <- Configuration files for Hydra, containing model, training, and experiment settings
-│   └── ...
+├── .github/                           <- GitHub Actions workflows
+│   └── workflows/
+│       ├── code-quality.yaml
+│       ├── coverage.yaml
+│       ├── publish.yaml
+│       └── tests.yaml
 │
-├── data                    <- Directory for datasets
-│   ├── interim             <- Intermediate results of dataset processing
-│   ├── processed           <- Datasets ready to be used by the modelling scripts
-│   └── raw                 <- Datasets as obtained from the source
+├── data/                              <- Directory for datasets
+│   ├── external/                      <- External data sources
+│   ├── interim/                       <- Intermediate results of dataset processing
+│   ├── processed/                     <- Datasets ready to be used by the modelling scripts
+│   └── raw/                           <- Datasets as obtained from the source
 │
-├── logs                    <- Training logs, metrics, checkpoints, and experiment tracking data
-├── notebooks               <- Jupyter notebooks for experimentation
-├── scripts                 <- Shell scripts
+├── logs/                              <- Training logs, artifacts, metrics, checkpoints, and experiment tracking data
 │
-├── src                     <- Source code for the project
-│   ├── datamodule          <- Lightning DataModules for handling datasets
-│   ├── model               <- Neural network model definitions and Lightning Modules
-│   ├── ...
-│   ├── test.py             <- Testing / evaluation script
-│   └── train.py            <- Training script
+├── notebooks/                         <- Jupyter notebooks for experimentation
 │
-├── tests                   <- Automated tests
-│   └── ...
+├── scripts/                           <- Shell scripts
 │
-├── .envrc                  <- Environment variables, automatically loaded with direnv
-├── .gitignore              <- Specifies which files Git should ignore
-├── .pre-commit-config.yaml <- Git pre-commit hooks
-├── .python-version         <- Python version that should be installed
-├── justfile                <- Project commands
-├── LICENSE                 <- MIT License file
-├── pyproject.toml          <- Project configuration file with dependencies and tool settings
-├── README.md               <- The top-level README for developers using this project
-└── uv.lock                 <- The requirements file for reproducing the environment
+├── src/                               <- Source code for the project
+│   └── lightning_hydra_zen_template/  <- Main package directory
+│       ├── configs/                   <- Configuration files for Hydra
+│       │   ├── groups/
+│       │   │   ├── __init__.py
+│       │   │   ├── callbacks.py       <- Callback configurations
+│       │   │   ├── data.py            <- Data module configurations
+│       │   │   ├── debug.py           <- Debug configurations
+│       │   │   ├── experiment.py      <- Experiment configurations
+│       │   │   ├── hparams_search.py  <- Hyperparameter search configurations
+│       │   │   ├── hydra_conf.py      <- Hydra configuration settings
+│       │   │   ├── logger.py          <- Logger configurations
+│       │   │   ├── model.py           <- Model configurations
+│       │   │   ├── paths.py           <- Path configurations
+│       │   │   └── trainer.py         <- Trainer configurations
+│       │   │
+│       │   ├── utils/                 <- Utility functions for configurations
+│       │   ├── __init__.py
+│       │   ├── eval.py                <- Main configuration for evaluation
+│       │   └── train.py               <- Main configuration for training
+│       │
+│       ├── data/                      <- LightningDataModules for handling datasets
+│       │
+│       ├── model/                     <- LightningModules
+│       │
+│       ├── utils/                     <- Utility functions
+│       │
+│       ├── __init__.py
+│       ├── eval.py                    <- Main testing / evaluation script
+│       └── train.py                   <- Main training script
+│
+├── tests/                             <- Automated tests
+│
+├── .envrc.example                     <- Example environment variables file (rename to .envrc)
+├── .gitignore
+├── .pre-commit-config.yaml
+├── .python-version                    <- Python version that will be installed
+├── img.png
+├── justfile                           <- Project commands
+├── LICENSE
+├── pyproject.toml                     <- Project configuration file with dependencies and tool settings
+├── README.md
+└── uv.lock                            <- The requirements file for reproducing the environment
 ```
 
 

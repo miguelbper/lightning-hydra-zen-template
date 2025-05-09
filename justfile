@@ -82,7 +82,7 @@ publish:
 # Print tree of the project (requires installing tree)
 [group("tools")]
 tree:
-    tree -a -I ".venv|.git|.pytest_cache|.coverage|dist|__pycache__" --dirsfirst
+    tree -a -I ".venv|.git|.pytest_cache|.coverage|dist|__pycache__|.vscode|.ruff_cache" --dirsfirst
 
 # Clean logs directory
 [group("cleanup")]
