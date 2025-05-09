@@ -10,20 +10,27 @@ log = logging.getLogger(__name__)
 
 
 def evaluate(data: LightningDataModule, model: LightningModule, trainer: Trainer, ckpt_path: str) -> None:
-    """Test a model from a configuration object (which should include a
-    checkpoint).
+    """Evaluate a trained model using a checkpoint.
+
+    This function loads a model from a checkpoint and runs evaluation on the test set
+    using the provided data module and trainer.
 
     Args:
-        data (LightningDataModule): The data module to use for evaluation
-        model (LightningModule): The model to evaluate
-        trainer (Trainer): The trainer to use for evaluation
-        ckpt_path (str): Path to the checkpoint to load
+        data (LightningDataModule): The data module containing test data.
+        model (LightningModule): The PyTorch Lightning model to evaluate.
+        trainer (Trainer): The PyTorch Lightning trainer instance.
+        ckpt_path (str): Path to the checkpoint file to load the model from.
     """
     log.info("Testing model")
     trainer.test(model=model, datamodule=data, ckpt_path=ckpt_path)
 
 
 def main() -> None:
+    """Main entry point for the evaluation script.
+
+    Sets up Hydra configuration and runs the evaluation task with the
+    specified configuration.
+    """
     store(EvalCfg, name="config")
     store.add_to_hydra_store()
     task_fn = zen(evaluate, pre_call=print_config)
