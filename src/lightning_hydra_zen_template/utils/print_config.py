@@ -16,6 +16,15 @@ log = logging.getLogger(__name__)
 
 
 def print_config(cfg: DictConfig) -> None:
+    """Print and save the configuration tree to a file.
+
+    This function takes a Hydra configuration object, removes specified packages,
+    converts it to a rich tree structure, and saves it to a config_tree.log file
+    in the output directory.
+
+    Args:
+        cfg (DictConfig): The Hydra configuration object to print and save.
+    """
     cfg = OmegaConf.create(OmegaConf.to_container(cfg, resolve=True))
     log.info(f"Output directory is {cfg.paths.output_dir}")
     config_file = os.path.join(cfg.paths.output_dir, "config_tree.log")
@@ -30,6 +39,16 @@ def print_config(cfg: DictConfig) -> None:
 
 
 def remove_packages(cfg: DictConfig, packages: tuple[str, ...] = ("hydra", "paths")) -> DictConfig:
+    """Remove specified packages from the configuration object.
+
+    Args:
+        cfg (DictConfig): The configuration object to modify.
+        packages (tuple[str, ...], optional): Tuple of package names to remove.
+            Defaults to ("hydra", "paths").
+
+    Returns:
+        DictConfig: A copy of the configuration object with specified packages removed.
+    """
     for package in packages:
         if package in cfg:
             cfg = copy.copy(cfg)
@@ -39,6 +58,15 @@ def remove_packages(cfg: DictConfig, packages: tuple[str, ...] = ("hydra", "path
 
 
 def cfg_to_tree(cfg: DictConfig) -> rich.tree.Tree:
+    """Convert a configuration object to a rich tree structure.
+
+    Args:
+        cfg (DictConfig): The configuration object to convert.
+
+    Returns:
+        rich.tree.Tree: A rich tree structure representing the configuration.
+    """
+
     def add_to_tree(tree: rich.tree.Tree, level: int, cfg: DictConfig) -> None:
         colors = ["red", "cyan", "blue", "green"]
         color = colors[min(level, len(colors) - 1)]
@@ -59,7 +87,23 @@ def cfg_to_tree(cfg: DictConfig) -> rich.tree.Tree:
 
 
 class LogConfigToMLflow(Callback):
+    """A PyTorch Lightning callback that logs configuration files to MLflow.
+
+    This callback logs all configuration files from the output directory and
+    .hydra directory to MLflow when training starts. It requires an MLflow
+    logger to be present in the trainer's loggers.
+
+    Attributes:
+        None
+    """
+
     def on_train_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
+        """Log configuration files to MLflow when training starts.
+
+        Args:
+            trainer (Trainer): The PyTorch Lightning trainer instance.
+            pl_module (LightningModule): The PyTorch Lightning module being trained.
+        """
         mlf_logger: MLFlowLogger | None = next((lg for lg in trainer.loggers if isinstance(lg, MLFlowLogger)), None)
         if mlf_logger is None:
             log.warning("No MLflow logger found, skipping logging to MLflow")

@@ -17,6 +17,22 @@ MNIST_STD = 0.3081
 
 
 class MNISTDataModule(LightningDataModule):
+    """A PyTorch Lightning DataModule for the MNIST dataset.
+
+    This class handles downloading, preprocessing, and loading of the MNIST dataset.
+    It splits the training data into training and validation sets, and provides
+    separate dataloaders for training, validation, and testing.
+
+    Attributes:
+        data_dir (str | Path): Directory where MNIST dataset is stored.
+        batch_size (int): Number of samples per batch.
+        num_workers (int): Number of subprocesses for data loading.
+        pin_memory (bool): Whether to pin memory in CPU for faster GPU transfer.
+        num_val_examples (int): Number of examples to use for validation.
+        num_train_examples (int): Number of examples to use for training.
+        transform (v2.Compose): Image transformations to apply to the data.
+    """
+
     def __init__(
         self,
         data_dir: str | Path,
@@ -25,6 +41,15 @@ class MNISTDataModule(LightningDataModule):
         pin_memory: bool = False,
         num_val_examples: int = 5000,
     ) -> None:
+        """Initialize the MNIST DataModule.
+
+        Args:
+            data_dir (str | Path): Directory where MNIST dataset is stored.
+            batch_size (int, optional): Number of samples per batch. Defaults to 32.
+            num_workers (int, optional): Number of subprocesses for data loading. Defaults to 0.
+            pin_memory (bool, optional): Whether to pin memory in CPU. Defaults to False.
+            num_val_examples (int, optional): Number of validation examples. Defaults to 5000.
+        """
         super().__init__()
         self.save_hyperparameters()
         self.data_dir = data_dir
@@ -44,10 +69,16 @@ class MNISTDataModule(LightningDataModule):
         )
 
     def prepare_data(self) -> None:
+        """Download MNIST dataset if it doesn't exist."""
         MNIST(self.data_dir, train=True, download=True)
         MNIST(self.data_dir, train=False, download=True)
 
     def setup(self, stage: str) -> None:
+        """Set up the datasets for training, validation, or testing.
+
+        Args:
+            stage (str): Either 'fit' (training) or 'test'.
+        """
         if stage == "fit":
             dataset: Dataset[Batch] = MNIST(self.data_dir, train=True, transform=self.transform)
             lengths: list[int] = [self.num_train_examples, self.num_val_examples]
@@ -59,6 +90,11 @@ class MNISTDataModule(LightningDataModule):
             self.mnist_test: Dataset[Batch] = MNIST(self.data_dir, train=False, transform=self.transform)
 
     def train_dataloader(self) -> DataLoader[Batch]:
+        """Create and return the training dataloader.
+
+        Returns:
+            DataLoader[Batch]: Dataloader for training data with shuffling enabled.
+        """
         return DataLoader(
             self.mnist_train,
             batch_size=self.batch_size,
@@ -68,6 +104,11 @@ class MNISTDataModule(LightningDataModule):
         )
 
     def val_dataloader(self) -> DataLoader[Batch]:
+        """Create and return the validation dataloader.
+
+        Returns:
+            DataLoader[Batch]: Dataloader for validation data with shuffling disabled.
+        """
         return DataLoader(
             self.mnist_val,
             batch_size=self.batch_size,
@@ -77,6 +118,11 @@ class MNISTDataModule(LightningDataModule):
         )
 
     def test_dataloader(self) -> DataLoader[Batch]:
+        """Create and return the test dataloader.
+
+        Returns:
+            DataLoader[Batch]: Dataloader for test data with shuffling disabled.
+        """
         return DataLoader(
             self.mnist_test,
             batch_size=self.batch_size,
