@@ -4,9 +4,9 @@
 [![Python](https://img.shields.io/badge/Python-3776ab?logo=python&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![PyTorch](https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
 [![PyTorch Lightning](https://img.shields.io/badge/-Lightning-7e4fff?logo=lightning&logoColor=white)](https://pytorchlightning.ai/)
-[![hydra](https://img.shields.io/badge/-Hydra-89b8cd?logo=meta)](https://hydra.cc/)
-[![ruff](https://img.shields.io/badge/Ruff-261230?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
-[![uv](https://img.shields.io/badge/uv-de5fe9?logo=uv&logoColor=white)](https://github.com/astral-sh/uv) <br>
+[![hydra](https://img.shields.io/badge/Configs-Hydra-89b8cd)](https://hydra.cc/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv) <br>
 [![Code Quality](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/code-quality.yaml)
 [![Unit Tests](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/tests.yaml/badge.svg)](https://github.com/miguelbper/lightning-hydra-zen-template/actions/workflows/tests.yaml)
 [![codecov](https://codecov.io/gh/miguelbper/lightning-hydra-zen-template/branch/main/graph/badge.svg)](https://codecov.io/gh/miguelbper/lightning-hydra-zen-template)
