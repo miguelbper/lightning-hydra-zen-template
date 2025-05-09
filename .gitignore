@@ -164,23 +164,14 @@ cython_debug/
 # Extra additions
 .vscode/
 
-logs/*
-!logs/.gitkeep
+logs/**
+!logs/**/
+!logs/**/.gitkeep
 
 # Ignore everything under data/
 data/**
-
-# But not these subdirectories
-!data/external/
-!data/interim/
-!data/processed/
-!data/raw/
-
-# And specifically keep the .gitkeep files inside them
-!data/external/.gitkeep
-!data/interim/.gitkeep
-!data/processed/.gitkeep
-!data/raw/.gitkeep
+!data/**/
+!data/**/.gitkeep
 
 .envrc
 .DS_Store
