@@ -24,7 +24,7 @@ Click on [<kbd>Use this template</kbd>](https://github.com/miguelbper/lightning-
 <!-- TODO: add better description -->
 ## Description
 
-A template for Deep Learning projects, using modern tooling and practices. Implements the features which are common across different Deep Learning problems (logging, checkpointing, experiment tracking, training and evaluation scripts...) so that you can focus on the specifics of you problem: data analysis and modeling.
+A template for Deep Learning projects, using modern tooling and practices. Implements the features which are common across different Deep Learning problems (logging, checkpointing, experiment tracking, training and evaluation scripts...) so that you can focus on the specifics of your problem: data analysis and modeling.
 
 Goals of this template:
 - Have a low amount of code relative to the functionality being offered
@@ -113,11 +113,11 @@ Tech Stack:
 
 One of the goals of this template is to help users in creating **correct** and **reproducible** ML code.
 
-Libraries like Hydra and hydra-zen help with this objective.
-- We can create configuration files which are hierarchical and composable/overridable
-- With hydra-zen we can automatically create configurations for the full signature of an object without code duplication
-- This results in a resolved configuration with full information about the experiment that was run
-- The hierarchy of the configuration completely mirrors that of the classes being used, which makes it easy to understand
+Libraries like Hydra and hydra-zen help with this objective:
+- We can create configuration files which are hierarchical and composable/overridable.
+- With hydra-zen we can automatically create configurations for the full signature of an object without code duplication.
+- This results in a resolved configuration with full information about the experiment that was run.
+- The hierarchy of the configuration completely mirrors that of the classes being used, which makes it easy to understand.
 
 Here is an example of a resolved config file (that is printed to the terminal and the `logs/` directory).
 
@@ -381,22 +381,22 @@ uv run pytest
 To train or evaluate a model on MNIST, do:
 ```bash
 # Train
-uv run uv run src/lightning_hydra_zen_template/train.py
+uv run src/lightning_hydra_zen_template/train.py
 
 # Evaluate
 uv run src/lightning_hydra_zen_template/eval.py ckpt_path=...
 ```
 
-To define a new experiment, it is necessary to
+To define a new experiment, it is necessary to:
 - Define the dataset, by creating a `LightningDataModule` in `data/`
 - Define the model, by creating a `LightningModule` in `model/`
 - Define a configuration for this experiment, by adding new config group options to `configs/groups/data.py` and `configs/groups/model.py`
 - Or, create a new experiment config in `configs/groups/experiment.py` by adding the group options defined above to this new experiment
 
-With this done, you can train with the data and model specified above by overriding the corresponding groups from the command line
+With this done, you can train with the data and model specified above by overriding the corresponding groups from the command line:
 ```bash
 # Override data and model groups individually
-uv run uv run src/lightning_hydra_zen_template/train.py data=new_datamodule model=new_model
+uv run src/lightning_hydra_zen_template/train.py data=new_datamodule model=new_model
 
 # Or, override with a new experiment config
 uv run src/lightning_hydra_zen_template/train.py experiment=new_experiment
