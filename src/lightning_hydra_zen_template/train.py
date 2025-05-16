@@ -6,7 +6,7 @@ from hydra_zen import store, zen
 from lightning import LightningDataModule, LightningModule, Trainer
 
 from lightning_hydra_zen_template.configs import TrainCfg
-from lightning_hydra_zen_template.utils.logging import print_config
+from lightning_hydra_zen_template.utils.logging import log_git_status, log_python_env, print_config
 
 log = logging.getLogger(__name__)
 
@@ -75,7 +75,7 @@ def main() -> None:
     """
     store(TrainCfg, name="config")
     store.add_to_hydra_store()
-    task_fn = zen(train, pre_call=[zen(seed_fn), print_config])
+    task_fn = zen(train, pre_call=[log_git_status, log_python_env, zen(seed_fn), print_config])
     task_fn.hydra_main(config_path=None, config_name="config", version_base="1.3")
 
 
