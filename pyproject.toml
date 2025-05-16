@@ -18,17 +18,16 @@ dependencies = [
     "mlflow>=2.22.0",
     "omegaconf>=2.3.0",
     "optuna>=2.10.1",
-    "optuna-dashboard>=0.14.0",
     "rich>=14.0.0",
     "rootutils>=1.0.7",
-    "sqlalchemy<2.0.0",
+    "sqlalchemy==1.4.54",
     "standard-imghdr>=3.13.0",
     "tensorboard>=2.19.0",
     "toolz>=1.0.0",
-    "torch>=2.6.0",
-    "torchaudio>=2.6.0",
+    "torch==2.6.0",
+    "torchaudio==2.6.0",
     "torchmetrics>=1.7.1",
-    "torchvision>=0.21.0",
+    "torchvision==0.21.0",
 ]
 
 [dependency-groups]
