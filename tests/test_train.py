@@ -79,6 +79,13 @@ class TestTrain:
         store.add_to_hydra_store()
         launch(TrainCfg, zen(train), version_base="1.3", overrides=matrix_overrides)
 
+    def test_train_with_callbacks(self, overrides: OverrideDict) -> None:
+        store.add_to_hydra_store()
+        overrides = overrides.copy()
+        overrides.pop("trainer.callbacks")
+        overrides.pop("trainer.logger")
+        launch(TrainCfg, zen(train), version_base="1.3", overrides=overrides)
+
     def test_main(self, overrides: OverrideDict) -> None:
         def value_to_str(value: Any) -> str:
             if value is None:
