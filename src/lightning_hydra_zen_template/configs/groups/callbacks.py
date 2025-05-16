@@ -5,7 +5,7 @@ from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichMode
 
 from lightning_hydra_zen_template.configs.groups.paths import output_dir
 from lightning_hydra_zen_template.configs.utils.utils import fbuilds, remove_types
-from lightning_hydra_zen_template.utils.print_config import LogConfigToMLflow
+from lightning_hydra_zen_template.utils.logging import LogConfigToMLflow
 
 RichProgressBarCfg = fbuilds(
     RichProgressBar,

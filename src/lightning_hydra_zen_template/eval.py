@@ -4,7 +4,7 @@ from hydra_zen import store, zen
 from lightning import LightningDataModule, LightningModule, Trainer
 
 from lightning_hydra_zen_template.configs import EvalCfg
-from lightning_hydra_zen_template.utils.print_config import print_config
+from lightning_hydra_zen_template.utils.logging import print_config
 
 log = logging.getLogger(__name__)
 
