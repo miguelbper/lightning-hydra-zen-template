@@ -124,28 +124,11 @@ def log_git_status(cfg: DictConfig) -> None:
     git_status_file: str = os.path.join(output_dir, "git_status.log")
     log.info(f"Logging git status to {git_status_file}")
 
-    try:
-        repo = Repo(search_parent_directories=True)
-        with open(git_status_file, "w") as file:
-            # Write commit hash
-            file.write(f"Commit hash: {repo.head.commit.hexsha}\n\n")
-
-            # Get diff for all changes
-            diff = repo.git.diff()
-            if diff:
-                file.write("Changes (diff):\n")
-                file.write(diff)
-            else:
-                file.write("No changes detected\n")
-
-            # Write status summary
-            file.write("\nStatus summary:\n")
-            file.write(repo.git.status())
-    except Exception as e:
-        log.warning(f"Failed to log git status: {str(e)}")
-        with open(git_status_file, "w") as file:
-            file.write("Failed to get git status information\n")
-            file.write(f"Error: {str(e)}")
+    repo = Repo(search_parent_directories=True)
+    with open(git_status_file, "w") as file:
+        file.write(f"Commit hash: {repo.head.commit.hexsha}\n\n")
+        file.write(repo.git.diff() + "\n\n")
+        file.write(repo.git.status())
 
 
 class LogConfigToMLflow(Callback):
