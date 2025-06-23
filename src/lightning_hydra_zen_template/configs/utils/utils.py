@@ -52,4 +52,20 @@ def remove_types(cfg: DictConfig) -> DictConfig:
     return untype(cfg) if is_dataclass(cfg) else cfg
 
 
+def add_colorlog(hydra_defaults: list[str | dict[str, str]]) -> list[str | dict[str, str]]:
+    """Add colorlog to the hydra defaults.
+
+    Args:
+        hydra_defaults (list[str | dict[str, str]]): The hydra defaults to process.
+
+    Returns:
+        list[str | dict[str, str]]: The hydra defaults with colorlog added.
+    """
+    colorlog: dict[str, str] = {
+        "override hydra/hydra_logging": "colorlog",
+        "override hydra/job_logging": "colorlog",
+    }
+    return hydra_defaults + [colorlog]
+
+
 fbuilds = make_custom_builds_fn(populate_full_signature=True)

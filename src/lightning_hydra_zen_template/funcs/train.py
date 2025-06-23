@@ -12,9 +12,9 @@ def train(
     model: LightningModule,
     trainer: Trainer,
     ckpt_path: str | None = None,
-    evaluate: bool | None = True,
+    evaluate: bool = True,
     matmul_precision: str | None = None,
-    compile: bool | None = True,
+    compile: bool = False,
 ) -> float:
     """Train, validate and test a PyTorch Lightning model.
 

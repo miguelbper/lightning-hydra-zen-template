@@ -1,37 +1,20 @@
 from hydra_zen import make_config
 
-from lightning_hydra_zen_template.configs.groups.paths import PathsCfg
+from lightning_hydra_zen_template.configs.utils.utils import add_colorlog, fbuilds
+from lightning_hydra_zen_template.funcs.train import train
 
 TrainCfg = make_config(
-    hydra_defaults=[
-        "_self_",
-        # Main components
-        {"data": "mnist"},
-        {"model": "mnist"},
-        {"trainer": "default"},
-        {"logger": "default"},
-        {"callbacks": "default"},
-        # Overrides to main components
-        {"experiment": None},
-        {"hparams_search": None},
-        {"debug": None},
-        # Colored logging
-        {"override hydra/hydra_logging": "colorlog"},
-        {"override hydra/job_logging": "colorlog"},
-    ],
-    # Main components
-    data=None,
-    model=None,
-    trainer=None,
-    # Run configs
-    paths=PathsCfg,
-    task_name="train",
-    tags=["dev"],
-    evaluate=True,
-    ckpt_path=None,
+    bases=(fbuilds(train),),
+    hydra_defaults=add_colorlog(
+        [
+            "_self_",
+            {"data": "mnist"},
+            {"model": "mnist"},
+            {"trainer": "default"},
+        ]
+    ),
     seed=42,
+    task_name="train",  # TODO: rename to experiment_name
     monitor="val/MulticlassAccuracy",
     mode="max",
-    matmul_precision=None,
-    compile=None,
 )
