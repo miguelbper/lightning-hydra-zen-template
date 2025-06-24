@@ -1,9 +1,9 @@
 import copy
 import logging
 import os
+from importlib.metadata import distributions
 from itertools import chain
 
-import pkg_resources
 import rich
 import rich.syntax
 import rich.tree
@@ -101,7 +101,7 @@ def log_python_env(cfg: DictConfig) -> None:
     """
     python_env_file: str = os.path.join(cfg.output_dir, "python_env.log")
     log.info(f"Logging Python environment to {python_env_file}")
-    installed_packages = sorted(f"{dist.key}=={dist.version}\n" for dist in pkg_resources.working_set)
+    installed_packages = sorted(f"{dist.key}=={dist.version}\n" for dist in distributions())
     with open(python_env_file, "w") as file:
         file.writelines(installed_packages)
 
