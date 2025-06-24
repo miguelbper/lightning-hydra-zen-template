@@ -1,19 +1,25 @@
+import os
 from pathlib import Path
 
 import torch
 from lightning import LightningDataModule
+from lightning.fabric.utilities.data import suggested_max_num_workers
 from torch import Generator
 from torch.utils.data import DataLoader, Dataset, Subset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import v2
 
+from lightning_hydra_zen_template.configs.utils.paths import data_dir
+
 Input = torch.Tensor
 Target = torch.Tensor
 Batch = tuple[Input, Target]
 
-MNIST_NUM_TRAIN_EXAMPLES = 60000
-MNIST_MEAN = 0.1307
-MNIST_STD = 0.3081
+MNIST_NUM_TRAIN_EXAMPLES: int = 60000
+MNIST_MEAN: float = 0.1307
+MNIST_STD: float = 0.3081
+
+raw_data_dir: str = os.path.join(data_dir, "raw")
 
 
 class MNISTDataModule(LightningDataModule):
@@ -35,26 +41,30 @@ class MNISTDataModule(LightningDataModule):
 
     def __init__(
         self,
-        data_dir: str | Path,
-        batch_size: int = 32,
-        num_workers: int = 0,
-        pin_memory: bool = False,
+        data_dir: str | Path = raw_data_dir,
         num_val_examples: int = 5000,
+        batch_size: int = 32,
+        num_workers: int | None = 0,
+        num_devices: int | None = None,
+        pin_memory: bool = False,
     ) -> None:
         """Initialize the MNIST DataModule.
 
         Args:
             data_dir (str | Path): Directory where MNIST dataset is stored.
+            num_val_examples (int, optional): Number of validation examples. Defaults to 5000.
             batch_size (int, optional): Number of samples per batch. Defaults to 32.
             num_workers (int, optional): Number of subprocesses for data loading. Defaults to 0.
+            num_devices (int, optional): Number of devices in trainer. Only relevant if num_workers is not None, to do
+                automatic computation of num_workers.
             pin_memory (bool, optional): Whether to pin memory in CPU. Defaults to False.
-            num_val_examples (int, optional): Number of validation examples. Defaults to 5000.
         """
         super().__init__()
         self.save_hyperparameters()
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.num_workers = num_workers
+        self.num_workers = suggested_max_num_workers(num_devices) if num_workers is None else num_workers
+        self.num_devices = num_devices
         self.pin_memory = pin_memory
         self.num_val_examples = num_val_examples
         self.num_train_examples = MNIST_NUM_TRAIN_EXAMPLES - num_val_examples
