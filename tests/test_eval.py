@@ -9,8 +9,8 @@ from hydra_zen._launch import OverrideDict
 from rootutils import find_root
 
 from lightning_hydra_zen_template.configs import EvalCfg, TrainCfg
-from lightning_hydra_zen_template.eval import evaluate
-from lightning_hydra_zen_template.train import train
+from lightning_hydra_zen_template.funcs.eval import evaluate
+from lightning_hydra_zen_template.funcs.train import train
 
 
 @pytest.fixture()

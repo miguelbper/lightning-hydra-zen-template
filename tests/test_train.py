@@ -12,7 +12,7 @@ from pytest import FixtureRequest
 from rootutils import find_root
 
 from lightning_hydra_zen_template.configs import TrainCfg
-from lightning_hydra_zen_template.train import train
+from lightning_hydra_zen_template.funcs.train import train
 
 
 @pytest.fixture(params=["cpu", "mps", "cuda"])
@@ -29,11 +29,6 @@ def accelerator(request: FixtureRequest) -> str:
 
 @pytest.fixture(params=[None, "high"])
 def matmul_precision(request: FixtureRequest) -> str:
-    return request.param
-
-
-@pytest.fixture(params=[None, True])
-def compile(request: FixtureRequest) -> bool:
     return request.param
 
 
@@ -61,12 +56,10 @@ def matrix_overrides(
     overrides: OverrideDict,
     accelerator: str,
     matmul_precision: str | None,
-    compile: bool | None,
 ) -> OverrideDict:
     overrides = overrides.copy()
     overrides.update(
         {
-            "compile": compile,
             "matmul_precision": matmul_precision,
             "trainer.accelerator": accelerator,
         }
