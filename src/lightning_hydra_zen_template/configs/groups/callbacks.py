@@ -14,7 +14,6 @@ EarlyStoppingCfg = fbuilds(EarlyStopping, monitor="${monitor}", patience=3, mode
 ModelCheckpointCfg = fbuilds(
     ModelCheckpoint,
     dirpath=os.path.join(output_dir, "checkpoints"),
-    filename="epoch_{epoch:03d}",
     monitor="${monitor}",
     save_last=True,
     mode="${mode}",

@@ -101,7 +101,7 @@ def log_python_env(cfg: DictConfig) -> None:
     """
     python_env_file: str = os.path.join(cfg.output_dir, "python_env.log")
     log.info(f"Logging Python environment to {python_env_file}")
-    installed_packages = sorted(f"{dist.key}=={dist.version}\n" for dist in distributions())
+    installed_packages = sorted(f"{dist.metadata['Name']}=={dist.version}\n" for dist in distributions())
     with open(python_env_file, "w") as file:
         file.writelines(installed_packages)
 

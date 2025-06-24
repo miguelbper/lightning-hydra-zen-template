@@ -44,7 +44,7 @@ class MNISTDataModule(LightningDataModule):
         data_dir: str | Path = raw_data_dir,
         num_val_examples: int = 5000,
         batch_size: int = 32,
-        num_workers: int | None = 0,
+        num_workers: int | None = None,
         num_devices: int | None = None,
         pin_memory: bool = False,
     ) -> None:
@@ -54,7 +54,8 @@ class MNISTDataModule(LightningDataModule):
             data_dir (str | Path): Directory where MNIST dataset is stored.
             num_val_examples (int, optional): Number of validation examples. Defaults to 5000.
             batch_size (int, optional): Number of samples per batch. Defaults to 32.
-            num_workers (int, optional): Number of subprocesses for data loading. Defaults to 0.
+            num_workers (int, optional): Number of subprocesses for data loading. Defaults to 0. If None, the number of
+                workers is automatically computed based on the number of devices.
             num_devices (int, optional): Number of devices in trainer. Only relevant if num_workers is not None, to do
                 automatic computation of num_workers.
             pin_memory (bool, optional): Whether to pin memory in CPU. Defaults to False.
@@ -63,8 +64,8 @@ class MNISTDataModule(LightningDataModule):
         self.save_hyperparameters()
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.num_workers = suggested_max_num_workers(num_devices) if num_workers is None else num_workers
-        self.num_devices = num_devices
+        self.num_devices = num_devices or 1
+        self.num_workers = suggested_max_num_workers(self.num_devices) if num_workers is None else num_workers
         self.pin_memory = pin_memory
         self.num_val_examples = num_val_examples
         self.num_train_examples = MNIST_NUM_TRAIN_EXAMPLES - num_val_examples

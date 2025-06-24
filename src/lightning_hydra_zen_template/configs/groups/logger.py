@@ -8,7 +8,7 @@ from lightning_hydra_zen_template.configs.utils.utils import fbuilds, remove_typ
 
 CSVLoggerCfg = fbuilds(CSVLogger, save_dir=output_dir, name="csv")
 TensorBoardLoggerCfg = fbuilds(TensorBoardLogger, save_dir=output_dir, name="tensorboard")
-MLFlowLoggerCfg = fbuilds(MLFlowLogger, tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"))
+MLFlowLoggerCfg = fbuilds(MLFlowLogger, tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"), log_model=True)
 
 LoggerTrainCfg = make_config(logger=[CSVLoggerCfg, TensorBoardLoggerCfg, MLFlowLoggerCfg])
 

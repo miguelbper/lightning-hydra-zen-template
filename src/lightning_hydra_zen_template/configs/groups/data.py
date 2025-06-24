@@ -5,8 +5,6 @@ from lightning_hydra_zen_template.data.mnist import MNISTDataModule
 
 MNISTDataModuleCfg = fbuilds(
     MNISTDataModule,
-    num_workers=None,
-    num_devices=1,
     zen_wrappers=log_instantiation,
 )
 
