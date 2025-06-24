@@ -1,26 +1,19 @@
 from hydra_zen import make_config
 from omegaconf import MISSING
 
-from lightning_hydra_zen_template.configs.groups.paths import PathsCfg
+from lightning_hydra_zen_template.configs.utils.utils import add_colorlog, fbuilds
+from lightning_hydra_zen_template.funcs.eval import evaluate
 
 EvalCfg = make_config(
-    hydra_defaults=[
-        "_self_",
-        # Main components
-        {"data": "mnist"},
-        {"model": "mnist"},
-        {"trainer": "default"},
-        {"callbacks": "eval"},
-        # Colored logging
-        {"override hydra/hydra_logging": "colorlog"},
-        {"override hydra/job_logging": "colorlog"},
-    ],
-    # Main components
-    data=None,
-    model=None,
-    trainer=None,
-    # Run configs
-    paths=PathsCfg,
+    bases=(fbuilds(evaluate),),
+    hydra_defaults=add_colorlog(
+        [
+            "_self_",
+            {"data": "mnist"},
+            {"model": "mnist"},
+            {"trainer": "default"},
+        ]
+    ),
     task_name="eval",
     tags=["dev"],
     ckpt_path=MISSING,
