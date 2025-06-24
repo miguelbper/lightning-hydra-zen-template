@@ -12,6 +12,7 @@ EvalCfg = make_config(
             {"data": "mnist"},
             {"model": "mnist"},
             {"trainer": "default"},
+            {"callbacks": "eval"},
         ]
     ),
     task_name="eval",

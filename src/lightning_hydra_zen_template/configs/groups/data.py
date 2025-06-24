@@ -2,7 +2,7 @@ import os
 
 from hydra_zen import store
 
-from lightning_hydra_zen_template.configs.groups.paths import root_dir
+from lightning_hydra_zen_template.configs.utils.paths import root_dir
 from lightning_hydra_zen_template.configs.utils.utils import fbuilds, log_instantiation
 from lightning_hydra_zen_template.data.mnist import MNISTDataModule
 

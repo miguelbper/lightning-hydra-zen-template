@@ -11,6 +11,8 @@ TrainCfg = make_config(
             {"data": "mnist"},
             {"model": "mnist"},
             {"trainer": "default"},
+            {"callbacks": "train"},
+            {"logger": "train"},
         ]
     ),
     seed=42,
