@@ -15,6 +15,5 @@ EvalCfg = make_config(
         ]
     ),
     task_name="eval",
-    tags=["dev"],
     ckpt_path=MISSING,
 )
