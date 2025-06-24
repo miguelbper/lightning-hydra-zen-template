@@ -28,8 +28,9 @@ def print_config(cfg: DictConfig) -> None:
         cfg (DictConfig): The Hydra configuration object to print and save.
     """
     cfg = OmegaConf.create(OmegaConf.to_container(cfg, resolve=True))
-    log.info(f"Output directory is {cfg.paths.output_dir}")
-    config_file = os.path.join(cfg.paths.output_dir, "config_tree.log")
+    output_dir: str = cfg.output_dir
+    log.info(f"Output directory is {output_dir}")
+    config_file = os.path.join(output_dir, "config_tree.log")
 
     cfg = remove_packages(cfg)
     tree = cfg_to_tree(cfg)
@@ -98,8 +99,7 @@ def log_python_env(cfg: DictConfig) -> None:
     Args:
         cfg (DictConfig): The configuration object containing output directory path.
     """
-    output_dir: str = cfg.paths.output_dir
-    python_env_file: str = os.path.join(output_dir, "python_env.log")
+    python_env_file: str = os.path.join(cfg.output_dir, "python_env.log")
     log.info(f"Logging Python environment to {python_env_file}")
     installed_packages = sorted(f"{dist.key}=={dist.version}\n" for dist in pkg_resources.working_set)
     with open(python_env_file, "w") as file:
@@ -120,8 +120,7 @@ def log_git_status(cfg: DictConfig) -> None:
     Args:
         cfg (DictConfig): The configuration object containing output directory path.
     """
-    output_dir: str = cfg.paths.output_dir
-    git_status_file: str = os.path.join(output_dir, "git_status.log")
+    git_status_file: str = os.path.join(cfg.output_dir, "git_status.log")
     log.info(f"Logging git status to {git_status_file}")
 
     repo = Repo(search_parent_directories=True)
