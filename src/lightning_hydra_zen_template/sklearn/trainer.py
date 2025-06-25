@@ -1,6 +1,12 @@
+from collections.abc import Callable
+from typing import Literal
+
+from lightning.pytorch.utilities.types import _EVALUATE_OUTPUT
+from numpy.typing import ArrayLike
 from rich.console import Console
 from rich.table import Table
 
+from lightning_hydra_zen_template.sklearn.checkpoint import SKLearnCheckpoint
 from lightning_hydra_zen_template.sklearn.datamodule import DataModule
 from lightning_hydra_zen_template.sklearn.module import Module
 from lightning_hydra_zen_template.utils.types import Metrics, Path_
@@ -19,6 +25,9 @@ class SKLearnTrainer:
     load models from saved checkpoints for evaluation.
     """
 
+    def __init__(self, checkpoint_callback: SKLearnCheckpoint) -> None:
+        self.checkpoint_callback = checkpoint_callback
+
     def fit(self, model: Module, datamodule: DataModule, ckpt_path: Path_ | None = None) -> None:
         """Train a model using the provided datamodule.
 
@@ -29,10 +38,11 @@ class SKLearnTrainer:
         """
         X, y = datamodule.train_set()
         model.train(X, y)
-        if ckpt_path:
-            model.save(ckpt_path)
+        self.checkpoint_callback.save(model=model, datamodule=datamodule)
 
-    def validate(self, model: Module | None, datamodule: DataModule, ckpt_path: Path_ | None = None) -> Metrics:
+    def validate(
+        self, model: Module | None, datamodule: DataModule, ckpt_path: Path_ | None = None
+    ) -> _EVALUATE_OUTPUT:
         """Evaluate the model on validation data.
 
         Args:
@@ -48,7 +58,7 @@ class SKLearnTrainer:
         """
         return self.evaluate(model, datamodule, ckpt_path, "validation")
 
-    def test(self, model: Module | None, datamodule: DataModule, ckpt_path: Path_ | None = None) -> Metrics:
+    def test(self, model: Module | None, datamodule: DataModule, ckpt_path: Path_ | None = None) -> _EVALUATE_OUTPUT:
         """Evaluate the model on test data.
 
         Args:
@@ -64,7 +74,13 @@ class SKLearnTrainer:
         """
         return self.evaluate(model, datamodule, ckpt_path, "test")
 
-    def evaluate(self, model: Module | None, datamodule: DataModule, ckpt_path: Path_ | None, split: str) -> Metrics:
+    def evaluate(
+        self,
+        model: Module | None,
+        datamodule: DataModule,
+        ckpt_path: Path_ | None,
+        split: Literal["validation", "test"],
+    ) -> _EVALUATE_OUTPUT:
         """Common evaluation logic for validation and test.
 
         Args:
@@ -79,23 +95,25 @@ class SKLearnTrainer:
         Raises:
             ValueError: If neither model nor ckpt_path is provided, or if model is not trained
         """
-        if model is None and ckpt_path is None:
-            raise ValueError("Either model or ckpt_path must be provided")
-        if ckpt_path:
-            model = Module.load(ckpt_path)
-        if not model.trained:
-            raise ValueError("Model must be trained before evaluation")
+        checkpoint_attr: str = "val_metrics" if split == "validation" else "test_metrics"
+        metrics: Metrics = getattr(self.checkpoint_callback, checkpoint_attr)
 
-        if split == "validation":
-            X, y = datamodule.validation_set()
-            metrics = model.validate(X, y)
-            print_metrics(metrics, "Validation")
-        else:  # test
-            X, y = datamodule.test_set()
-            metrics = model.test(X, y)
-            print_metrics(metrics, "Test")
+        if not metrics:
+            if model is None and ckpt_path is None:
+                raise ValueError("Either model or ckpt_path must be provided")
+            if ckpt_path:
+                model = Module.load(ckpt_path)
+            if not model.trained:
+                raise ValueError("Model must be trained before evaluation")
 
-        return metrics
+            datamodule_func_name: str = "validation_set" if split == "validation" else "test_set"
+            datamodule_func: Callable[[], tuple[ArrayLike, ArrayLike]] = getattr(datamodule, datamodule_func_name)
+            split_prefix: str = "val/" if split == "validation" else "test/"
+            X, y = datamodule_func()
+            metrics: Metrics = model.evaluate(X, y, split_prefix)
+
+        print_metrics(metrics, split.capitalize())
+        return [metrics]
 
 
 def print_metrics(metrics: Metrics, prefix: str) -> None:
