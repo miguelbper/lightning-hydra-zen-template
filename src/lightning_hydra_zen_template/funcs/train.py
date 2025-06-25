@@ -3,7 +3,9 @@ import logging
 import lightning as L
 import torch
 from lightning import LightningDataModule, LightningModule, Trainer
+from lightning.pytorch.callbacks import Checkpoint
 from lightning.pytorch.utilities.types import _EVALUATE_OUTPUT
+from torch import Tensor
 
 log = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ def train(
     matmul_precision: str | None = None,
     compile: bool = False,
     return_all_metrics: bool = False,
-) -> float | dict[str, float]:
+) -> float | dict[str, float] | None:
     """Train, validate and test a PyTorch Lightning model.
 
     Args:
@@ -31,10 +33,7 @@ def train(
     Returns:
         float: The best model score achieved during training, or None if no score was recorded.
     """
-    if not hasattr(trainer, "checkpoint_callback"):
-        raise ValueError("Trainer does not have a checkpoint callback")
-    if not compatible_inputs(data=data, model=model, trainer=trainer):
-        raise ValueError("Data, model and trainer must be compatible")
+    validate_inputs(data=data, model=model, trainer=trainer)
 
     if matmul_precision:
         log.info(f"Setting matmul precision to {matmul_precision}")
@@ -46,17 +45,29 @@ def train(
 
     log.info("Training model")
     trainer.fit(model=model, datamodule=data, ckpt_path=ckpt_path)
-    ckpt_path: str = trainer.checkpoint_callback.best_model_path
-    metric: float = trainer.checkpoint_callback.best_model_score.item()
+    ckpt_callback: Checkpoint | None = trainer.checkpoint_callback
 
-    log.info("Validating model")
-    val_out: _EVALUATE_OUTPUT = trainer.validate(model=model, datamodule=data, ckpt_path=ckpt_path)
+    if ckpt_callback is None:
+        log.info("No checkpoint callback found. Will not evaluate model.")
+        return None
 
-    log.info("Testing model")
-    test_out: _EVALUATE_OUTPUT = trainer.test(model=model, datamodule=data, ckpt_path=ckpt_path)
+    ckpt_path: str = ckpt_callback.best_model_path
+    metric: Tensor | None = ckpt_callback.best_model_score
+    metrics: dict[str, float] = {}
 
-    metrics: dict[str, float] = {**val_out[0], **test_out[0]}
-    return metrics if return_all_metrics else metric
+    if ckpt_path:
+        log.info("Validating model")
+        val_out: _EVALUATE_OUTPUT = trainer.validate(model=model, datamodule=data, ckpt_path=ckpt_path)
+
+        log.info("Testing model")
+        test_out: _EVALUATE_OUTPUT = trainer.test(model=model, datamodule=data, ckpt_path=ckpt_path)
+
+        metrics |= {**val_out[0], **test_out[0]}
+
+    if return_all_metrics:
+        return metrics
+
+    return metric.item() if metric is not None else None
 
 
 def seed_fn(seed: int) -> None:
@@ -69,8 +80,8 @@ def seed_fn(seed: int) -> None:
     L.seed_everything(seed, workers=True, verbose=False)
 
 
-def compatible_inputs(data: LightningDataModule, model: LightningModule, trainer: Trainer) -> bool:
-    """Check if the data, model and trainer are compatible.
+def validate_inputs(data: LightningDataModule, model: LightningModule, trainer: Trainer) -> None:
+    """Validate the data, model and trainer.
 
     Args:
         data (LightningDataModule): The data module containing training, validation and test data.
