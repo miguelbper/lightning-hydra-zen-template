@@ -7,7 +7,7 @@ from sklearn.base import BaseEstimator
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-from lightning_hydra_zen_template.sklearn.module import Criterion, Module
+from lightning_hydra_zen_template.scikit_learn.module import Criterion, Module
 
 N = 5
 RNG = np.random.RandomState(42)

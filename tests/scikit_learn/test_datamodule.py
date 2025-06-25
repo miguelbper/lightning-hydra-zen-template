@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from lightning_hydra_zen_template.sklearn.datamodule import DataModule
+from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
 from lightning_hydra_zen_template.utils.types import Data
 
 NUM_TRAIN_SAMPLES = 10

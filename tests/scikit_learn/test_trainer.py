@@ -5,10 +5,10 @@ import pytest
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-from lightning_hydra_zen_template.sklearn.checkpoint import SKLearnCheckpoint
-from lightning_hydra_zen_template.sklearn.datamodule import DataModule
-from lightning_hydra_zen_template.sklearn.module import Module
-from lightning_hydra_zen_template.sklearn.trainer import SKLearnTrainer
+from lightning_hydra_zen_template.scikit_learn.checkpoint import SKLearnCheckpoint
+from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
+from lightning_hydra_zen_template.scikit_learn.module import Module
+from lightning_hydra_zen_template.scikit_learn.trainer import SKLearnTrainer
 from lightning_hydra_zen_template.utils.types import Data
 
 N = 5

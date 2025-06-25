@@ -1,4 +1,6 @@
-from hydra_zen import store
+from hydra_zen import make_custom_builds_fn, store
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from torch import nn
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
@@ -7,8 +9,10 @@ from torchmetrics import Accuracy, F1Score, MetricCollection, Precision, Recall
 from lightning_hydra_zen_template.configs.utils.utils import fbuilds, log_instantiation
 from lightning_hydra_zen_template.model.components.resnet import ResNet
 from lightning_hydra_zen_template.model.model import Model
+from lightning_hydra_zen_template.scikit_learn.module import Module
 
 NUM_CLASSES = 10
+pbuilds = make_custom_builds_fn(populate_full_signature=True, zen_partial=True)
 
 ModelCfg = fbuilds(
     Model,
@@ -28,4 +32,18 @@ ModelCfg = fbuilds(
     zen_wrappers=log_instantiation,
 )
 
-store(ModelCfg, group="model", name="mnist")
+SKLearnModelCfg = fbuilds(
+    Module,
+    model=fbuilds(LogisticRegression),
+    metrics=[
+        accuracy_score,
+        pbuilds(f1_score, average="macro"),
+        pbuilds(precision_score, average="macro"),
+        pbuilds(recall_score, average="macro"),
+    ],
+    zen_wrappers=log_instantiation,
+)
+
+model_store = store(group="model")
+model_store(ModelCfg, name="mnist")
+model_store(SKLearnModelCfg, name="logistic")

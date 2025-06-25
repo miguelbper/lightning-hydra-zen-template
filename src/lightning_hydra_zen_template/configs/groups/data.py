@@ -1,6 +1,7 @@
 from hydra_zen import store
 
 from lightning_hydra_zen_template.configs.utils.utils import fbuilds, log_instantiation
+from lightning_hydra_zen_template.data.iris import IrisDataModule
 from lightning_hydra_zen_template.data.mnist import MNISTDataModule
 
 MNISTDataModuleCfg = fbuilds(
@@ -8,4 +9,11 @@ MNISTDataModuleCfg = fbuilds(
     zen_wrappers=log_instantiation,
 )
 
-store(MNISTDataModuleCfg, group="data", name="mnist")
+IrisDataModuleCfg = fbuilds(
+    IrisDataModule,
+    zen_wrappers=log_instantiation,
+)
+
+data_store = store(group="data")
+data_store(MNISTDataModuleCfg, name="mnist")
+data_store(IrisDataModuleCfg, name="iris")

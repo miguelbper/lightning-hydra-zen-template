@@ -6,9 +6,9 @@ from numpy.typing import ArrayLike
 from rich.console import Console
 from rich.table import Table
 
-from lightning_hydra_zen_template.sklearn.checkpoint import SKLearnCheckpoint
-from lightning_hydra_zen_template.sklearn.datamodule import DataModule
-from lightning_hydra_zen_template.sklearn.module import Module
+from lightning_hydra_zen_template.scikit_learn.checkpoint import SKLearnCheckpoint
+from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
+from lightning_hydra_zen_template.scikit_learn.module import Module
 from lightning_hydra_zen_template.utils.types import Metrics, Path_
 
 
