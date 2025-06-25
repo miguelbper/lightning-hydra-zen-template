@@ -7,6 +7,7 @@ from lightning.pytorch.callbacks import Checkpoint
 from lightning.pytorch.utilities.types import _EVALUATE_OUTPUT
 from torch import Tensor
 
+from lightning_hydra_zen_template.funcs.validate import valid_types
 from lightning_hydra_zen_template.scikit_learn.datamodule import SKLearnDataModule
 from lightning_hydra_zen_template.scikit_learn.module import SKLearnModule
 from lightning_hydra_zen_template.scikit_learn.trainer import SKLearnTrainer
@@ -24,20 +25,26 @@ def train(
     compile: bool = False,
     return_all_metrics: bool = False,
 ) -> float | Metrics | None:
-    """Train, validate and test a PyTorch Lightning model.
+    """Train, validate and test a model.
+
+    This function trains a model using the provided data module and trainer, then
+    validates and tests it. Supports both PyTorch Lightning and scikit-learn components.
 
     Args:
-        data (LightningDataModule): The data module containing training, validation and test data.
-        model (LightningModule): The PyTorch Lightning model to train.
-        trainer (Trainer): The PyTorch Lightning trainer instance.
+        data (LightningDataModule | SKLearnDataModule): The data module containing training, validation and test data.
+        model (LightningModule | SKLearnModule): The model to train.
+        trainer (Trainer | SKLearnTrainer): The trainer instance.
         ckpt_path (str | None, optional): Path to a checkpoint to resume training from. Defaults to None.
         matmul_precision (str | None, optional): Precision for matrix multiplication. Defaults to None.
-        compile (bool | None, optional): Whether to compile the model using torch.compile(). Defaults to True.
+        compile (bool, optional): Whether to compile the model using torch.compile(). Defaults to False.
         return_all_metrics (bool, optional): Whether to return all metrics or just the best one. Defaults to False.
 
     Returns:
-        float: The best model score achieved during training, or None if no score was recorded.
+        float | Metrics | None: The best model score as float, all metrics as dict, or None.
     """
+    if not valid_types(data=data, model=model, trainer=trainer):
+        raise ValueError("Invalid types for data, model, and trainer")
+
     if matmul_precision:
         log.info(f"Setting matmul precision to {matmul_precision}")
         torch.set_float32_matmul_precision(matmul_precision)

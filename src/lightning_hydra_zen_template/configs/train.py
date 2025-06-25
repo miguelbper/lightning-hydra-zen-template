@@ -17,7 +17,7 @@ TrainCfg = make_config(
         ]
     ),
     seed=42,
-    task_name="train", 
+    task_name="train",
     monitor="val/MulticlassAccuracy",
     mode="max",
     output_dir=output_dir,
