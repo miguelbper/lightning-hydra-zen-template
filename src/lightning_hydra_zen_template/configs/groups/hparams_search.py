@@ -12,6 +12,7 @@ TPESamplerCfg = make_config(
 )
 store(TPESamplerCfg, group="hydra/sweeper/sampler", name="custom_tpe")
 
+
 OptunaSweeperCfg = make_config(
     hydra_defaults=["_self_", {"sampler": "custom_tpe"}],
     bases=(OptunaSweeperConf,),
@@ -26,6 +27,7 @@ OptunaSweeperCfg = make_config(
     },
 )
 store(OptunaSweeperCfg, group="hydra/sweeper", name="custom_optuna")
+
 
 HparamsSearchOptunaCfg = make_config(
     hydra_defaults=["_self_", {"override /hydra/sweeper": "custom_optuna"}],

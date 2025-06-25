@@ -25,16 +25,15 @@ ExperimentExampleCfg = make_config(
     seed=0,
 )
 
-IrisExperimentCfg = make_config(
+SKLearnExperimentCfg = make_config(
     hydra_defaults=[
-        {"override /data": "iris"},
         {"override /model": "logistic"},
         {"override /trainer": "sklearn"},
         {"override /callbacks": None},
         {"override /logger": None},
         "_self_",
     ],
-    task_name="iris",
+    task_name="sklearn",
     monitor="val/accuracy_score",
     mode="max",
     output_dir=output_dir,
@@ -43,4 +42,4 @@ IrisExperimentCfg = make_config(
 
 experiment_store = store(group="experiment", package="_global_", to_config=remove_types)
 experiment_store(ExperimentExampleCfg, name="example")
-experiment_store(IrisExperimentCfg, name="iris")
+experiment_store(SKLearnExperimentCfg, name="sklearn")

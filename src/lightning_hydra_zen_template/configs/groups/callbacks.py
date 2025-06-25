@@ -7,10 +7,25 @@ from lightning_hydra_zen_template.configs.utils.paths import output_dir
 from lightning_hydra_zen_template.configs.utils.utils import fbuilds, remove_types
 from lightning_hydra_zen_template.utils.logging import LogConfigToMLflow
 
-RichProgressBarCfg = fbuilds(RichProgressBar)
-RichModelSummaryCfg = fbuilds(RichModelSummary)
-LogConfigToMLflowCfg = fbuilds(LogConfigToMLflow)
-EarlyStoppingCfg = fbuilds(EarlyStopping, monitor="${monitor}", patience=3, mode="${mode}")
+RichProgressBarCfg = fbuilds(
+    RichProgressBar,
+)
+
+RichModelSummaryCfg = fbuilds(
+    RichModelSummary,
+)
+
+LogConfigToMLflowCfg = fbuilds(
+    LogConfigToMLflow,
+)
+
+EarlyStoppingCfg = fbuilds(
+    EarlyStopping,
+    monitor="${monitor}",
+    patience=3,
+    mode="${mode}",
+)
+
 ModelCheckpointCfg = fbuilds(
     ModelCheckpoint,
     dirpath=os.path.join(output_dir, "checkpoints"),
@@ -18,6 +33,7 @@ ModelCheckpointCfg = fbuilds(
     save_last=True,
     mode="${mode}",
 )
+
 
 CallbacksTrainCfg = make_config(
     callbacks=[
@@ -28,7 +44,13 @@ CallbacksTrainCfg = make_config(
         LogConfigToMLflowCfg,
     ],
 )
-CallbacksEvalCfg = make_config(callbacks=[RichProgressBarCfg])
+
+CallbacksEvalCfg = make_config(
+    callbacks=[
+        RichProgressBarCfg,
+    ],
+)
+
 
 callbacks_store = store(group="callbacks", package="trainer", to_config=remove_types)
 callbacks_store(CallbacksTrainCfg, name="train")

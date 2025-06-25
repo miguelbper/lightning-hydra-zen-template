@@ -31,6 +31,7 @@ SKLearnTrainerCfg = fbuilds(
     zen_wrappers=log_instantiation,
 )
 
+
 trainer_store = store(group="trainer")
 trainer_store(TrainerCfg, name="default")
 trainer_store(SKLearnTrainerCfg, name="sklearn")
