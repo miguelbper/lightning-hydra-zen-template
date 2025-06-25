@@ -65,7 +65,10 @@ def matrix_overrides(
 
 @pytest.fixture
 def ckpt_path(overrides: OverrideDict) -> str:
+    overrides = overrides.copy()
+    overrides.pop("trainer.callbacks")
+
     store.add_to_hydra_store()
     launch(TrainCfg, zen(train), version_base="1.3", overrides=overrides)
-    ckpt_path = os.path.join(overrides["hydra.run.dir"], "checkpoints", "last.ckpt")
-    return ckpt_path
+    ckpt_dir: str = os.path.join(overrides["hydra.run.dir"], "checkpoints", "last.ckpt")
+    return ckpt_dir
