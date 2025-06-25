@@ -10,7 +10,7 @@ from torchvision.datasets import MNIST
 from torchvision.transforms import v2
 
 from lightning_hydra_zen_template.configs.utils.paths import data_dir
-from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
+from lightning_hydra_zen_template.scikit_learn.datamodule import SKLearnDataModule
 from lightning_hydra_zen_template.utils.types import Batch, Data, Path_
 
 MNIST_NUM_TRAIN_EXAMPLES: int = 60000
@@ -20,7 +20,7 @@ MNIST_STD: float = 0.3081
 raw_data_dir: str = os.path.join(data_dir, "raw")
 
 
-class MNISTDataModule(LightningDataModule, DataModule):
+class MNISTDataModule(LightningDataModule, SKLearnDataModule):
     """A PyTorch Lightning DataModule for the MNIST dataset.
 
     This class handles downloading, preprocessing, and loading of the MNIST dataset.

@@ -9,5 +9,4 @@ MNISTDataModuleCfg = fbuilds(
 )
 
 
-data_store = store(group="data")
-data_store(MNISTDataModuleCfg, name="mnist")
+store(MNISTDataModuleCfg, group="data", name="mnist")

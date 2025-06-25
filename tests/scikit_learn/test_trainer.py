@@ -6,8 +6,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
 from lightning_hydra_zen_template.scikit_learn.checkpoint import SKLearnCheckpoint
-from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
-from lightning_hydra_zen_template.scikit_learn.module import Module
+from lightning_hydra_zen_template.scikit_learn.datamodule import SKLearnDataModule
+from lightning_hydra_zen_template.scikit_learn.module import SKLearnModule
 from lightning_hydra_zen_template.scikit_learn.trainer import SKLearnTrainer
 from lightning_hydra_zen_template.utils.types import Data
 
@@ -24,7 +24,7 @@ X_TEST = rng.randn(N, N)
 Y_TEST = rng.randn(N)
 
 
-class RandomDataModule(DataModule):
+class RandomDataModule(SKLearnDataModule):
     def train_dataset(self) -> Data:
         return X_TRAIN, Y_TRAIN
 
@@ -35,7 +35,7 @@ class RandomDataModule(DataModule):
         return X_TEST, Y_TEST
 
 
-class TrainValSameDataModule(DataModule):
+class TrainValSameDataModule(SKLearnDataModule):
     def train_dataset(self) -> Data:
         return X_TRAIN, Y_TRAIN
 
@@ -46,7 +46,7 @@ class TrainValSameDataModule(DataModule):
         return X_TEST, Y_TEST
 
 
-class ValTestSameDataModule(DataModule):
+class ValTestSameDataModule(SKLearnDataModule):
     def train_dataset(self) -> Data:
         return X_TRAIN, Y_TRAIN
 
@@ -58,12 +58,12 @@ class ValTestSameDataModule(DataModule):
 
 
 @pytest.fixture
-def model() -> Module:
-    return Module(model=LinearRegression(fit_intercept=False), metrics=[mean_squared_error, r2_score])
+def model() -> SKLearnModule:
+    return SKLearnModule(model=LinearRegression(fit_intercept=False), metrics=[mean_squared_error, r2_score])
 
 
 @pytest.fixture
-def datamodule() -> DataModule:
+def datamodule() -> SKLearnDataModule:
     return RandomDataModule()
 
 
@@ -87,12 +87,14 @@ def trainer(checkpoint_callback: SKLearnCheckpoint) -> SKLearnTrainer:
 
 
 class TestTrainer:
-    def test_fit(self, trainer: SKLearnTrainer, datamodule: DataModule, model: Module, ckpt_path: Path) -> None:
+    def test_fit(
+        self, trainer: SKLearnTrainer, datamodule: SKLearnDataModule, model: SKLearnModule, ckpt_path: Path
+    ) -> None:
         trainer.fit(model, datamodule, ckpt_path)
         assert hasattr(model.model, "coef_")
         assert hasattr(model.model, "intercept_")
 
-    def test_validate(self, trainer: SKLearnTrainer, datamodule: DataModule, model: Module) -> None:
+    def test_validate(self, trainer: SKLearnTrainer, datamodule: SKLearnDataModule, model: SKLearnModule) -> None:
         trainer.fit(model, datamodule)
         metrics = trainer.validate(model, datamodule)[0]
         assert isinstance(metrics, dict)
@@ -102,7 +104,7 @@ class TestTrainer:
         assert isinstance(metrics["val/mean_squared_error"], float)
         assert isinstance(metrics["val/r2_score"], float)
 
-    def test_test(self, trainer: SKLearnTrainer, datamodule: DataModule, model: Module) -> None:
+    def test_test(self, trainer: SKLearnTrainer, datamodule: SKLearnDataModule, model: SKLearnModule) -> None:
         trainer.fit(model, datamodule)
         metrics = trainer.test(model, datamodule)[0]
         assert isinstance(metrics, dict)
@@ -112,7 +114,13 @@ class TestTrainer:
         assert isinstance(metrics["test/mean_squared_error"], float)
         assert isinstance(metrics["test/r2_score"], float)
 
-    def test_checkpoint(self, trainer: SKLearnTrainer, datamodule: DataModule, model: Module, ckpt_path: Path) -> None:
+    def test_checkpoint(
+        self,
+        trainer: SKLearnTrainer,
+        datamodule: SKLearnDataModule,
+        model: SKLearnModule,
+        ckpt_path: Path,
+    ) -> None:
         trainer.fit(model, datamodule, ckpt_path)
 
         val_metrics_ckpt = trainer.validate(None, datamodule, ckpt_path)
@@ -123,13 +131,13 @@ class TestTrainer:
         test_metrics_model = trainer.test(model, datamodule, None)
         assert test_metrics_ckpt == test_metrics_model
 
-    def test_invalid_inputs(self, trainer: SKLearnTrainer, datamodule: DataModule, model: Module) -> None:
+    def test_invalid_inputs(self, trainer: SKLearnTrainer, datamodule: SKLearnDataModule, model: SKLearnModule) -> None:
         with pytest.raises(ValueError, match="Either model or ckpt_path must be provided"):
             trainer.validate(None, datamodule, None)
         with pytest.raises(ValueError, match="Model must be trained before evaluation"):
             trainer.validate(model, datamodule, None)
 
-    def test_perfect_fit(self, trainer: SKLearnTrainer, model: Module) -> None:
+    def test_perfect_fit(self, trainer: SKLearnTrainer, model: SKLearnModule) -> None:
         datamodule = TrainValSameDataModule()
         trainer.fit(model, datamodule)
         metrics = trainer.validate(model, datamodule)[0]

@@ -3,8 +3,8 @@ from typing import Literal
 
 from torch import Tensor, tensor
 
-from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
-from lightning_hydra_zen_template.scikit_learn.module import Module
+from lightning_hydra_zen_template.scikit_learn.datamodule import SKLearnDataModule
+from lightning_hydra_zen_template.scikit_learn.module import SKLearnModule
 from lightning_hydra_zen_template.utils.types import Metrics
 
 
@@ -22,7 +22,7 @@ class SKLearnCheckpoint:
         self.val_metrics: Metrics = {}
         self.test_metrics: Metrics = {}
 
-    def save(self, model: Module, datamodule: DataModule) -> None:
+    def save(self, model: SKLearnModule, datamodule: SKLearnDataModule) -> None:
         os.makedirs(self.dirpath, exist_ok=True)
         model.save(self.model_path)
 

@@ -9,7 +9,7 @@ from torchmetrics import Accuracy, F1Score, MetricCollection, Precision, Recall
 from lightning_hydra_zen_template.configs.utils.utils import fbuilds, log_instantiation
 from lightning_hydra_zen_template.model.components.resnet import ResNet
 from lightning_hydra_zen_template.model.model import Model
-from lightning_hydra_zen_template.scikit_learn.module import Module
+from lightning_hydra_zen_template.scikit_learn.module import SKLearnModule
 
 NUM_CLASSES = 10
 pbuilds = make_custom_builds_fn(populate_full_signature=True, zen_partial=True)
@@ -33,7 +33,7 @@ ModelCfg = fbuilds(
 )
 
 SKLearnModelCfg = fbuilds(
-    Module,
+    SKLearnModule,
     model=fbuilds(LogisticRegression),
     metrics=[
         accuracy_score,

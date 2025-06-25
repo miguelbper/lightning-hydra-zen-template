@@ -7,15 +7,18 @@ from lightning.pytorch.callbacks import Checkpoint
 from lightning.pytorch.utilities.types import _EVALUATE_OUTPUT
 from torch import Tensor
 
+from lightning_hydra_zen_template.scikit_learn.datamodule import SKLearnDataModule
+from lightning_hydra_zen_template.scikit_learn.module import SKLearnModule
+from lightning_hydra_zen_template.scikit_learn.trainer import SKLearnTrainer
 from lightning_hydra_zen_template.utils.types import Metrics
 
 log = logging.getLogger(__name__)
 
 
 def train(
-    data: LightningDataModule,
-    model: LightningModule,
-    trainer: Trainer,
+    data: LightningDataModule | SKLearnDataModule,
+    model: LightningModule | SKLearnModule,
+    trainer: Trainer | SKLearnTrainer,
     ckpt_path: str | None = None,
     matmul_precision: str | None = None,
     compile: bool = False,

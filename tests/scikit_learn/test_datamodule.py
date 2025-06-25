@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
+from lightning_hydra_zen_template.scikit_learn.datamodule import SKLearnDataModule
 from lightning_hydra_zen_template.utils.types import Data
 
 NUM_TRAIN_SAMPLES = 10
@@ -21,7 +21,7 @@ X_test = np.random.rand(NUM_TEST_SAMPLES, NUM_FEATURES)
 y_test = np.random.randint(0, NUM_CLASSES, NUM_TEST_SAMPLES)
 
 
-class CompleteDataModule(DataModule):
+class CompleteDataModule(SKLearnDataModule):
     def train_dataset(self) -> Data:
         return X_train, y_train
 
@@ -32,7 +32,7 @@ class CompleteDataModule(DataModule):
         return X_test, y_test
 
 
-class IncompleteDataModule(DataModule):
+class IncompleteDataModule(SKLearnDataModule):
     def train_dataset(self) -> Data:
         return X_train, y_train
 
@@ -70,4 +70,4 @@ class TestDataModule:
 
     def test_cannot_instantiate_base_datamodule(self):
         with pytest.raises(TypeError):
-            DataModule()
+            SKLearnDataModule()

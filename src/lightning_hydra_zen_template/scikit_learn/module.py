@@ -17,7 +17,7 @@ Criterion = Callable[
 ]
 
 
-class Module:
+class SKLearnModule:
     """A wrapper class for scikit-learn models with Numerai-specific
     functionality.
 
@@ -33,7 +33,7 @@ class Module:
     """
 
     def __init__(self, model: BaseEstimator, metrics: list[Criterion]):
-        """Initialize a Module.
+        """Initialize a SKLearnModule.
 
         Args:
             model: A scikit-learn compatible estimator
@@ -126,7 +126,7 @@ class Module:
         return results
 
     def save(self, path: Path_) -> None:
-        """Save the entire Module object to the specified path.
+        """Save the entire SKLearnModule object to the specified path.
 
         Args:
             path: Path where to save the model
@@ -135,14 +135,14 @@ class Module:
         joblib.dump(self, path)
 
     @classmethod
-    def load(cls, path: Path_) -> "Module":
-        """Load a Module object from the specified path.
+    def load(cls, path: Path_) -> "SKLearnModule":
+        """Load a SKLearnModule object from the specified path.
 
         Args:
             path: Path from where to load the model
 
         Returns:
-            Module: The loaded module object
+            SKLearnModule: The loaded module object
         """
         path = Path(path)
         return joblib.load(path)

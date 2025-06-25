@@ -7,8 +7,8 @@ from rich.console import Console
 from rich.table import Table
 
 from lightning_hydra_zen_template.scikit_learn.checkpoint import SKLearnCheckpoint
-from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
-from lightning_hydra_zen_template.scikit_learn.module import Module
+from lightning_hydra_zen_template.scikit_learn.datamodule import SKLearnDataModule
+from lightning_hydra_zen_template.scikit_learn.module import SKLearnModule
 from lightning_hydra_zen_template.utils.types import Metrics, Path_
 
 
@@ -28,7 +28,7 @@ class SKLearnTrainer:
     def __init__(self, checkpoint_callback: SKLearnCheckpoint) -> None:
         self.checkpoint_callback = checkpoint_callback
 
-    def fit(self, model: Module, datamodule: DataModule, ckpt_path: Path_ | None = None) -> None:
+    def fit(self, model: SKLearnModule, datamodule: SKLearnDataModule, ckpt_path: Path_ | None = None) -> None:
         """Train a model using the provided datamodule.
 
         Args:
@@ -41,7 +41,7 @@ class SKLearnTrainer:
         self.checkpoint_callback.save(model=model, datamodule=datamodule)
 
     def validate(
-        self, model: Module | None, datamodule: DataModule, ckpt_path: Path_ | None = None
+        self, model: SKLearnModule | None, datamodule: SKLearnDataModule, ckpt_path: Path_ | None = None
     ) -> _EVALUATE_OUTPUT:
         """Evaluate the model on validation data.
 
@@ -58,7 +58,12 @@ class SKLearnTrainer:
         """
         return self.evaluate(model, datamodule, ckpt_path, "validation")
 
-    def test(self, model: Module | None, datamodule: DataModule, ckpt_path: Path_ | None = None) -> _EVALUATE_OUTPUT:
+    def test(
+        self,
+        model: SKLearnModule | None,
+        datamodule: SKLearnDataModule,
+        ckpt_path: Path_ | None = None,
+    ) -> _EVALUATE_OUTPUT:
         """Evaluate the model on test data.
 
         Args:
@@ -76,8 +81,8 @@ class SKLearnTrainer:
 
     def evaluate(
         self,
-        model: Module | None,
-        datamodule: DataModule,
+        model: SKLearnModule | None,
+        datamodule: SKLearnDataModule,
         ckpt_path: Path_ | None,
         split: Literal["validation", "test"],
     ) -> _EVALUATE_OUTPUT:
@@ -102,7 +107,7 @@ class SKLearnTrainer:
             if model is None and ckpt_path is None:
                 raise ValueError("Either model or ckpt_path must be provided")
             if ckpt_path:
-                model = Module.load(ckpt_path)
+                model = SKLearnModule.load(ckpt_path)
             if not model.trained:
                 raise ValueError("Model must be trained before evaluation")
 

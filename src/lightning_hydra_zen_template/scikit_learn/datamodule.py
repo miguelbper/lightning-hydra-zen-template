@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from lightning_hydra_zen_template.utils.types import Data
 
 
-class DataModule(ABC):
+class SKLearnDataModule(ABC):
     """Abstract base class for data modules in the sklearn framework.
 
     This class defines the interface for data modules that provide access to
