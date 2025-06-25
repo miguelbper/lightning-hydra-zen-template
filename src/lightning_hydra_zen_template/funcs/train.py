@@ -35,8 +35,6 @@ def train(
     Returns:
         float: The best model score achieved during training, or None if no score was recorded.
     """
-    validate_inputs(data=data, model=model, trainer=trainer)
-
     if matmul_precision:
         log.info(f"Setting matmul precision to {matmul_precision}")
         torch.set_float32_matmul_precision(matmul_precision)
@@ -80,14 +78,3 @@ def seed_fn(seed: int) -> None:
     """
     log.info(f"Setting seed to {seed}")
     L.seed_everything(seed, workers=True, verbose=False)
-
-
-def validate_inputs(data: LightningDataModule, model: LightningModule, trainer: Trainer) -> None:
-    """Validate the data, model and trainer.
-
-    Args:
-        data (LightningDataModule): The data module containing training, validation and test data.
-        model (LightningModule): The PyTorch Lightning model to train.
-        trainer (Trainer): The PyTorch Lightning trainer instance.
-    """
-    return True
