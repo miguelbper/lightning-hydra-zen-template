@@ -6,7 +6,7 @@ from lightning_hydra_zen_template.sklearn.module import Module
 from lightning_hydra_zen_template.utils.types import Metrics, Path_
 
 
-class Trainer:
+class SKLearnTrainer:
     """A trainer class for scikit-learn models with Numerai-specific
     evaluation.
 
