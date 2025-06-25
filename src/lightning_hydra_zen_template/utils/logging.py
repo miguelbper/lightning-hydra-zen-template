@@ -183,6 +183,10 @@ class LogConfigToMLflow(Callback):
     def on_train_start(self, trainer: Trainer, pl_module: LightningModule) -> None:
         """Log configuration files to MLflow when training starts.
 
+        This method logs all configuration files from the output directory and
+        .hydra directory to MLflow. It also logs hyperparameters from the flattened
+        configuration if available.
+
         Args:
             trainer (Trainer): The PyTorch Lightning trainer instance.
             pl_module (LightningModule): The PyTorch Lightning module being trained.
