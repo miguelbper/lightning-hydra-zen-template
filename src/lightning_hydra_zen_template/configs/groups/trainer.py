@@ -26,7 +26,6 @@ SKLearnTrainerCfg = fbuilds(
         dirpath=os.path.join(output_dir, "checkpoints"),
         monitor="${monitor}",
         mode="${mode}",
-        zen_wrappers=log_instantiation,
     ),
     zen_wrappers=log_instantiation,
 )
