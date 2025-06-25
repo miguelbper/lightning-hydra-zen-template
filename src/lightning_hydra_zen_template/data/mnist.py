@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 import torch
 from lightning import LightningDataModule
@@ -10,10 +9,7 @@ from torchvision.datasets import MNIST
 from torchvision.transforms import v2
 
 from lightning_hydra_zen_template.configs.utils.paths import data_dir
-
-Input = torch.Tensor
-Target = torch.Tensor
-Batch = tuple[Input, Target]
+from lightning_hydra_zen_template.utils.types import Batch, Path_
 
 MNIST_NUM_TRAIN_EXAMPLES: int = 60000
 MNIST_MEAN: float = 0.1307
@@ -30,7 +26,7 @@ class MNISTDataModule(LightningDataModule):
     separate dataloaders for training, validation, and testing.
 
     Attributes:
-        data_dir (str | Path): Directory where MNIST dataset is stored.
+        data_dir (Path_): Directory where MNIST dataset is stored.
         batch_size (int): Number of samples per batch.
         num_workers (int): Number of subprocesses for data loading.
         pin_memory (bool): Whether to pin memory in CPU for faster GPU transfer.
@@ -41,7 +37,7 @@ class MNISTDataModule(LightningDataModule):
 
     def __init__(
         self,
-        data_dir: str | Path = raw_data_dir,
+        data_dir: Path_ = raw_data_dir,
         num_val_examples: int = 5000,
         batch_size: int = 32,
         num_workers: int | None = None,
@@ -51,7 +47,7 @@ class MNISTDataModule(LightningDataModule):
         """Initialize the MNIST DataModule.
 
         Args:
-            data_dir (str | Path): Directory where MNIST dataset is stored.
+            data_dir (Path_): Directory where MNIST dataset is stored.
             num_val_examples (int, optional): Number of validation examples. Defaults to 5000.
             batch_size (int, optional): Number of samples per batch. Defaults to 32.
             num_workers (int, optional): Number of subprocesses for data loading. Defaults to 0. If None, the number of

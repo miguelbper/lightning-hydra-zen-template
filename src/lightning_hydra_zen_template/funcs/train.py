@@ -7,6 +7,8 @@ from lightning.pytorch.callbacks import Checkpoint
 from lightning.pytorch.utilities.types import _EVALUATE_OUTPUT
 from torch import Tensor
 
+from lightning_hydra_zen_template.utils.types import Metrics
+
 log = logging.getLogger(__name__)
 
 
@@ -18,7 +20,7 @@ def train(
     matmul_precision: str | None = None,
     compile: bool = False,
     return_all_metrics: bool = False,
-) -> float | dict[str, float] | None:
+) -> float | Metrics | None:
     """Train, validate and test a PyTorch Lightning model.
 
     Args:
@@ -53,7 +55,7 @@ def train(
 
     ckpt_path: str = ckpt_callback.best_model_path
     metric: Tensor | None = ckpt_callback.best_model_score
-    metrics: dict[str, float] = {}
+    metrics: Metrics = {}
 
     if ckpt_path:
         log.info("Validating model")
