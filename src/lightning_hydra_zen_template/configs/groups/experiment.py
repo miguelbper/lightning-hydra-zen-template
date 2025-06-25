@@ -8,21 +8,20 @@ ExperimentExampleCfg = make_config(
         {"override /model": "mnist"},
         "_self_",
     ],
-    tags=["mnist"],
-    seed=12345,
-    trainer=dict(
-        min_epochs=10,
-        max_epochs=10,
-        gradient_clip_val=0.5,
+    data=dict(
+        batch_size=64,
     ),
     model=dict(
         optimizer=dict(
             lr=0.002,
         ),
     ),
-    data=dict(
-        batch_size=64,
+    trainer=dict(
+        min_epochs=10,
+        max_epochs=10,
+        gradient_clip_val=0.5,
     ),
+    seed=0,
 )
 
 experiment_store = store(group="experiment", package="_global_", to_config=remove_types)

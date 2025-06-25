@@ -84,6 +84,11 @@ publish:
 tree:
     tree -a -I ".venv|.git|.pytest_cache|.coverage|dist|__pycache__|.vscode|.ruff_cache" --dirsfirst
 
+# Run mlflow server
+[group("tools")]
+mlflow-server:
+    mlflow server --backend-store-uri logs/mlflow/mlruns
+
 # Clean logs directory
 [group("cleanup")]
 clean-logs:
