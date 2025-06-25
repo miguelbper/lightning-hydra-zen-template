@@ -41,9 +41,9 @@ class MNISTDataModule(LightningDataModule, DataModule):
         self,
         data_dir: Path_ = raw_data_dir,
         num_val_examples: int = 5000,
-        batch_size: int = 32,
-        num_workers: int | None = None,
+        batch_size: int = 1024,
         num_devices: int | None = None,
+        num_workers: int | None = None,
         pin_memory: bool = False,
     ) -> None:
         """Initialize the MNIST DataModule.
@@ -51,7 +51,7 @@ class MNISTDataModule(LightningDataModule, DataModule):
         Args:
             data_dir (Path_): Directory where MNIST dataset is stored.
             num_val_examples (int, optional): Number of validation examples. Defaults to 5000.
-            batch_size (int, optional): Number of samples per batch. Defaults to 32.
+            batch_size (int, optional): Number of samples per batch. Defaults to 1024.
             num_workers (int, optional): Number of subprocesses for data loading. Defaults to 0. If None, the number of
                 workers is automatically computed based on the number of devices.
             num_devices (int, optional): Number of devices in trainer. Only relevant if num_workers is not None, to do
@@ -60,14 +60,16 @@ class MNISTDataModule(LightningDataModule, DataModule):
         """
         super().__init__()
         self.save_hyperparameters()
-        self.data_dir = data_dir
-        self.batch_size = batch_size
-        self.num_devices = num_devices or 1
-        self.num_workers = suggested_max_num_workers(self.num_devices) if num_workers is None else num_workers
-        self.pin_memory = pin_memory
-        self.num_val_examples = num_val_examples
-        self.num_train_examples = MNIST_NUM_TRAIN_EXAMPLES - num_val_examples
-        self.transform = v2.Compose(
+
+        self.data_dir: Path_ = data_dir
+        self.num_val_examples: int = num_val_examples
+        self.batch_size: int = batch_size
+        self.num_devices: int = num_devices or 1
+        self.num_workers: int = suggested_max_num_workers(self.num_devices) if num_workers is None else num_workers
+        self.pin_memory: bool = pin_memory
+
+        self.num_train_examples: int = MNIST_NUM_TRAIN_EXAMPLES - num_val_examples
+        self.transform: v2.Compose = v2.Compose(
             [
                 v2.ToImage(),
                 v2.RGB(),
@@ -87,6 +89,8 @@ class MNISTDataModule(LightningDataModule, DataModule):
 
         Args:
             stage (str): Either 'fit' (training) or 'test'.
+                - 'fit': Downloads training data, splits into train/val sets, and creates train/val datasets
+                - 'test': Downloads test data and creates test dataset
         """
         if stage == "fit":
             dataset: Dataset[Batch] = MNIST(self.data_dir, train=True, transform=self.transform)
@@ -105,11 +109,11 @@ class MNISTDataModule(LightningDataModule, DataModule):
             DataLoader[Batch]: Dataloader for training data with shuffling enabled.
         """
         return DataLoader(
-            self.mnist_train,
+            dataset=self.mnist_train,
             batch_size=self.batch_size,
+            shuffle=True,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            shuffle=True,
         )
 
     def val_dataloader(self) -> DataLoader[Batch]:
@@ -119,11 +123,11 @@ class MNISTDataModule(LightningDataModule, DataModule):
             DataLoader[Batch]: Dataloader for validation data with shuffling disabled.
         """
         return DataLoader(
-            self.mnist_val,
+            dataset=self.mnist_val,
             batch_size=self.batch_size,
+            shuffle=False,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            shuffle=False,
         )
 
     def test_dataloader(self) -> DataLoader[Batch]:
@@ -133,38 +137,66 @@ class MNISTDataModule(LightningDataModule, DataModule):
             DataLoader[Batch]: Dataloader for test data with shuffling disabled.
         """
         return DataLoader(
-            self.mnist_test,
+            dataset=self.mnist_test,
             batch_size=self.batch_size,
+            shuffle=False,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            shuffle=False,
         )
 
     def train_dataset(self) -> Data:
+        """Get the training dataset as numpy arrays.
+
+        Returns:
+            Data: Tuple of (X, y) where X is flattened images and y is labels.
+        """
         if not hasattr(self, "mnist_train"):
             self.setup(stage="fit")
         return self.get_dataset(self.mnist_train)
 
     def val_dataset(self) -> Data:
+        """Get the validation dataset as numpy arrays.
+
+        Returns:
+            Data: Tuple of (X, y) where X is flattened images and y is labels.
+        """
         if not hasattr(self, "mnist_val"):
             self.setup(stage="fit")
         return self.get_dataset(self.mnist_val)
 
     def test_dataset(self) -> Data:
+        """Get the test dataset as numpy arrays.
+
+        Returns:
+            Data: Tuple of (X, y) where X is flattened images and y is labels.
+        """
         if not hasattr(self, "mnist_test"):
             self.setup(stage="test")
         return self.get_dataset(self.mnist_test)
 
     def get_dataset(self, dataset: Dataset[Batch]) -> Data:
-        loader = DataLoader(dataset, batch_size=1024, shuffle=False, num_workers=self.num_workers)
-        images: list[Tensor] = []
-        labels: list[Tensor] = []
-        for image, label in loader:
-            images.append(image)
-            labels.append(label)
-        images: Tensor = torch.cat(images, dim=0)
-        labels: Tensor = torch.cat(labels, dim=0)
+        """Convert a PyTorch dataset to numpy arrays.
 
+        This method loads all data from the dataset, flattens the images, and converts
+        everything to numpy arrays for use with scikit-learn or other numpy-based libraries.
+
+        Args:
+            dataset (Dataset[Batch]): PyTorch dataset to convert.
+
+        Returns:
+            Data: Tuple of (X, y) where:
+                - X: Flattened images as numpy array of shape (n_samples, n_features)
+                - y: Labels as numpy array of shape (n_samples,)
+        """
+        loader: DataLoader[Batch] = DataLoader(
+            dataset=dataset,
+            batch_size=1024,
+            shuffle=False,
+            num_workers=self.num_workers,
+        )
+        batches: list[Batch] = list(loader)
+        images: Tensor = torch.cat([image for image, _ in batches], dim=0)  # n c h w
+        labels: Tensor = torch.cat([label for _, label in batches], dim=0)  # n
         grayscale: Tensor = images[:, 0]  # n c h w -> n h w
         X: Tensor = rearrange(grayscale, "n h w -> n (h w)")
         y: Tensor = labels
