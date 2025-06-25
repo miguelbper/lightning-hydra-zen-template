@@ -1,5 +1,4 @@
 from collections.abc import Callable
-from typing import Any
 
 from lightning import LightningModule
 from lightning.pytorch.utilities.types import OptimizerConfigType, OptimizerLRSchedulerConfigType
@@ -9,9 +8,7 @@ from torch.optim.lr_scheduler import LRScheduler
 from torch.optim.optimizer import ParamsT
 from torchmetrics import MetricCollection
 
-Input = Any
-Target = Tensor
-Batch = tuple[Input, Target]
+from lightning_hydra_zen_template.utils.types import Batch
 
 
 class Model(LightningModule):
@@ -19,7 +16,9 @@ class Model(LightningModule):
 
     This class handles the training, validation, and testing steps, as well as
     optimizer and learning rate scheduler configuration. It uses torchmetrics
-    for tracking various metrics during training.
+    for tracking various metrics during training. Metrics are automatically
+    cloned with appropriate prefixes ("val/" for validation, "test/" for testing)
+    and logged during each step and epoch.
 
     Attributes:
         net (nn.Module): The neural network model.
@@ -27,8 +26,8 @@ class Model(LightningModule):
         optimizer (Callable): Partially instantiated optimizer (remains to be instantiated with parameters).
         scheduler (Callable | None): Partially instantiated scheduler (remains to be instantiated with optimizer).
         metric_collection (MetricCollection): Collection of metrics to track.
-        val_metrics (MetricCollection): Metrics for validation phase.
-        test_metrics (MetricCollection): Metrics for testing phase.
+        val_metrics (MetricCollection): Metrics for validation phase (cloned with "val/" prefix).
+        test_metrics (MetricCollection): Metrics for testing phase (cloned with "test/" prefix).
     """
 
     def __init__(
@@ -81,6 +80,9 @@ class Model(LightningModule):
     def validation_step(self, batch: Batch, batch_idx: int) -> None:
         """Perform a single validation step.
 
+        Computes predictions, updates validation metrics, and logs them.
+        Metrics are logged both per step and per epoch.
+
         Args:
             batch (Batch): A tuple of (input, target) tensors.
             batch_idx (int): The index of the current batch.
@@ -92,6 +94,9 @@ class Model(LightningModule):
 
     def test_step(self, batch: Batch, batch_idx: int) -> None:
         """Perform a single test step.
+
+        Computes predictions, updates test metrics, and logs them.
+        Metrics are logged both per step and per epoch.
 
         Args:
             batch (Batch): A tuple of (input, target) tensors.
@@ -105,9 +110,14 @@ class Model(LightningModule):
     def configure_optimizers(self) -> OptimizerConfigType | OptimizerLRSchedulerConfigType:
         """Configure the optimizer and learning rate scheduler.
 
+        Creates the optimizer and optionally the learning rate scheduler.
+        If a scheduler is provided, it's configured to update every epoch
+        and monitor the training loss.
+
         Returns:
-            OptimizerConfig | OptimizerLRSchedulerConfig: Configuration for the optimizer
-                and optionally the learning rate scheduler.
+            OptimizerConfigType | OptimizerLRSchedulerConfigType: Configuration for the optimizer
+                and optionally the learning rate scheduler. The scheduler (if present) is configured
+                to update every epoch and monitor "train/loss".
         """
         optimizer: Optimizer = self.optimizer(self.parameters())
         if self.scheduler:

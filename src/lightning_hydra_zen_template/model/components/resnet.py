@@ -6,8 +6,8 @@ from torchvision.models import ResNet18_Weights, resnet18
 class ResNet(nn.Module):
     """A wrapper class for ResNet18 model with customizable output layer.
 
-    This class provides a pre-trained ResNet18 model from torchvision with a
-    customizable final fully connected layer for transfer learning tasks.
+    This class provides a pre-trained ResNet18 model from torchvision with ImageNet weights
+    and a customizable final fully connected layer for transfer learning tasks.
 
     Attributes:
         model (nn.Module): The underlying ResNet18 model with modified final layer.
@@ -15,6 +15,9 @@ class ResNet(nn.Module):
 
     def __init__(self, num_classes: int = 10) -> None:
         """Initialize the ResNet model.
+
+        Loads a pre-trained ResNet18 model with ImageNet weights and replaces the final
+        fully connected layer with a new one for the specified number of classes.
 
         Args:
             num_classes (int, optional): Number of output classes. Defaults to 10.
