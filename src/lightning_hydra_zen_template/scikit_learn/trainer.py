@@ -36,7 +36,7 @@ class SKLearnTrainer:
             datamodule: DataModule containing the training data
             ckpt_path: Optional path to save the trained model checkpoint
         """
-        X, y = datamodule.train_set()
+        X, y = datamodule.train_dataset()
         model.train(X, y)
         self.checkpoint_callback.save(model=model, datamodule=datamodule)
 
@@ -106,7 +106,7 @@ class SKLearnTrainer:
             if not model.trained:
                 raise ValueError("Model must be trained before evaluation")
 
-            datamodule_func_name: str = "validation_set" if split == "validation" else "test_set"
+            datamodule_func_name: str = "val_dataset" if split == "validation" else "test_dataset"
             datamodule_func: Callable[[], tuple[ArrayLike, ArrayLike]] = getattr(datamodule, datamodule_func_name)
             split_prefix: str = "val/" if split == "validation" else "test/"
             X, y = datamodule_func()

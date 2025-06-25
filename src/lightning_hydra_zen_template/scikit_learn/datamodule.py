@@ -16,7 +16,7 @@ class DataModule(ABC):
     """
 
     @abstractmethod
-    def train_set(self) -> Data:
+    def train_dataset(self) -> Data:
         """Get the training dataset.
 
         Returns:
@@ -27,7 +27,7 @@ class DataModule(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def validation_set(self) -> Data:
+    def val_dataset(self) -> Data:
         """Get the validation dataset.
 
         Returns:
@@ -38,7 +38,7 @@ class DataModule(ABC):
         pass  # pragma: no cover
 
     @abstractmethod
-    def test_set(self) -> Data:
+    def test_dataset(self) -> Data:
         """Get the test dataset.
 
         Returns:

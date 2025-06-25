@@ -26,10 +26,10 @@ class SKLearnCheckpoint:
         os.makedirs(self.dirpath, exist_ok=True)
         model.save(self.model_path)
 
-        X, y = datamodule.validation_set()
+        X, y = datamodule.val_dataset()
         self.val_metrics: Metrics = model.validate(X, y)
 
-        X, y = datamodule.test_set()
+        X, y = datamodule.test_dataset()
         self.test_metrics: Metrics = model.test(X, y)
 
     @property

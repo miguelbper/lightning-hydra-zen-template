@@ -25,35 +25,35 @@ Y_TEST = rng.randn(N)
 
 
 class RandomDataModule(DataModule):
-    def train_set(self) -> Data:
+    def train_dataset(self) -> Data:
         return X_TRAIN, Y_TRAIN
 
-    def validation_set(self) -> Data:
+    def val_dataset(self) -> Data:
         return X_VAL, Y_VAL
 
-    def test_set(self) -> Data:
+    def test_dataset(self) -> Data:
         return X_TEST, Y_TEST
 
 
 class TrainValSameDataModule(DataModule):
-    def train_set(self) -> Data:
+    def train_dataset(self) -> Data:
         return X_TRAIN, Y_TRAIN
 
-    def validation_set(self) -> Data:
+    def val_dataset(self) -> Data:
         return X_TRAIN, Y_TRAIN  # Same as train
 
-    def test_set(self) -> Data:
+    def test_dataset(self) -> Data:
         return X_TEST, Y_TEST
 
 
 class ValTestSameDataModule(DataModule):
-    def train_set(self) -> Data:
+    def train_dataset(self) -> Data:
         return X_TRAIN, Y_TRAIN
 
-    def validation_set(self) -> Data:
+    def val_dataset(self) -> Data:
         return X_VAL, Y_VAL
 
-    def test_set(self) -> Data:
+    def test_dataset(self) -> Data:
         return X_VAL, Y_VAL  # Same as validation
 
 

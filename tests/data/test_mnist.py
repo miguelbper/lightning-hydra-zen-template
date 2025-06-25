@@ -43,3 +43,21 @@ class TestMNISTDataModule:
         images, labels = batch
         assert images.shape == (batch_size, C, H, W)
         assert labels.shape == (batch_size,)
+
+    def test_train_dataset(self, datamodule: MNISTDataModule, batch_size: int):
+        X, y = datamodule.train_dataset()
+        N = len(datamodule.mnist_train)
+        assert X.shape == (N, H * W)
+        assert y.shape == (N,)
+
+    def test_val_dataset(self, datamodule: MNISTDataModule, batch_size: int):
+        X, y = datamodule.val_dataset()
+        N = len(datamodule.mnist_val)
+        assert X.shape == (N, H * W)
+        assert y.shape == (N,)
+
+    def test_test_dataset(self, datamodule: MNISTDataModule, batch_size: int):
+        X, y = datamodule.test_dataset()
+        N = len(datamodule.mnist_test)
+        assert X.shape == (N, H * W)
+        assert y.shape == (N,)

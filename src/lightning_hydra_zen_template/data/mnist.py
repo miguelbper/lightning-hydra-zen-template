@@ -1,15 +1,17 @@
 import os
 
 import torch
+from einops import asnumpy, rearrange
 from lightning import LightningDataModule
 from lightning.fabric.utilities.data import suggested_max_num_workers
-from torch import Generator
+from torch import Generator, Tensor
 from torch.utils.data import DataLoader, Dataset, Subset, random_split
 from torchvision.datasets import MNIST
 from torchvision.transforms import v2
 
 from lightning_hydra_zen_template.configs.utils.paths import data_dir
-from lightning_hydra_zen_template.utils.types import Batch, Path_
+from lightning_hydra_zen_template.scikit_learn.datamodule import DataModule
+from lightning_hydra_zen_template.utils.types import Batch, Data, Path_
 
 MNIST_NUM_TRAIN_EXAMPLES: int = 60000
 MNIST_MEAN: float = 0.1307
@@ -18,7 +20,7 @@ MNIST_STD: float = 0.3081
 raw_data_dir: str = os.path.join(data_dir, "raw")
 
 
-class MNISTDataModule(LightningDataModule):
+class MNISTDataModule(LightningDataModule, DataModule):
     """A PyTorch Lightning DataModule for the MNIST dataset.
 
     This class handles downloading, preprocessing, and loading of the MNIST dataset.
@@ -137,3 +139,33 @@ class MNISTDataModule(LightningDataModule):
             pin_memory=self.pin_memory,
             shuffle=False,
         )
+
+    def train_dataset(self) -> Data:
+        if not hasattr(self, "mnist_train"):
+            self.setup(stage="fit")
+        return self.get_dataset(self.mnist_train)
+
+    def val_dataset(self) -> Data:
+        if not hasattr(self, "mnist_val"):
+            self.setup(stage="fit")
+        return self.get_dataset(self.mnist_val)
+
+    def test_dataset(self) -> Data:
+        if not hasattr(self, "mnist_test"):
+            self.setup(stage="test")
+        return self.get_dataset(self.mnist_test)
+
+    def get_dataset(self, dataset: Dataset[Batch]) -> Data:
+        loader = DataLoader(dataset, batch_size=1024, shuffle=False, num_workers=self.num_workers)
+        images: list[Tensor] = []
+        labels: list[Tensor] = []
+        for image, label in loader:
+            images.append(image)
+            labels.append(label)
+        images: Tensor = torch.cat(images, dim=0)
+        labels: Tensor = torch.cat(labels, dim=0)
+
+        grayscale: Tensor = images[:, 0]  # n c h w -> n h w
+        X: Tensor = rearrange(grayscale, "n h w -> n (h w)")
+        y: Tensor = labels
+        return asnumpy(X), asnumpy(y)
