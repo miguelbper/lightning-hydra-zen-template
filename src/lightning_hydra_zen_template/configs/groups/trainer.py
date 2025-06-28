@@ -7,7 +7,7 @@ from lightning_hydra_zen_template.configs.utils.utils import fbuilds, log_instan
 TrainerCfg = fbuilds(
     Trainer,
     min_epochs=1,
-    max_epochs=10,
+    max_epochs=3,
     check_val_every_n_epoch=1,
     deterministic=False,
     default_root_dir=output_dir,
@@ -15,5 +15,5 @@ TrainerCfg = fbuilds(
     zen_wrappers=log_instantiation,
 )
 
-trainer_store = store(group="trainer")
-trainer_store(TrainerCfg, name="default")
+
+store(TrainerCfg, group="trainer", name="default")

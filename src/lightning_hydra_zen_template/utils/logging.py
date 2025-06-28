@@ -59,24 +59,24 @@ def flatten_cfg(cfg: DictConfig) -> dict[str, Any]:
     """
     result: dict[str, Any] = {}
 
-    def _process_dict(d: DictConfig, prefix: str = "") -> None:
+    def process_dict(d: DictConfig, prefix: str = "") -> None:
         for key, value in d.items():
             full_key = f"{prefix}{key}" if prefix else key
 
             if isinstance(value, DictConfig):
                 new_prefix = f"{full_key}."
-                _process_dict(value, new_prefix)
+                process_dict(value, new_prefix)
             elif isinstance(value, ListConfig):
                 for i, item in enumerate(value):
                     list_key = f"{full_key}.{i}"
                     if isinstance(item, DictConfig | ListConfig):
-                        _process_dict(item, f"{list_key}.")
+                        process_dict(item, f"{list_key}.")
                     else:
                         result[list_key] = item
             else:
                 result[full_key] = value
 
-    _process_dict(cfg)
+    process_dict(cfg)
     return result
 
 

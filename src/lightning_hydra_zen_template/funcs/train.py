@@ -12,7 +12,6 @@ def train(
     model: LightningModule,
     trainer: Trainer,
     ckpt_path: str | None = None,
-    evaluate: bool = True,
     matmul_precision: str | None = None,
     compile: bool = False,
 ) -> float:
@@ -23,9 +22,8 @@ def train(
         model (LightningModule): The PyTorch Lightning model to train.
         trainer (Trainer): The PyTorch Lightning trainer instance.
         ckpt_path (str | None, optional): Path to a checkpoint to resume training from. Defaults to None.
-        evaluate (bool | None, optional): Whether to run validation and testing after training. Defaults to True.
         matmul_precision (str | None, optional): Precision for matrix multiplication. Defaults to None.
-        compile (bool | None, optional): Whether to compile the model using torch.compile(). Defaults to True.
+        compile (bool | None, optional): Whether to compile the model using torch.compile(). Defaults to False.
 
     Returns:
         float: The best model score achieved during training, or None if no score was recorded.
@@ -43,7 +41,7 @@ def train(
     metric: torch.Tensor | None = trainer.checkpoint_callback.best_model_score
     ckpt_path: str = trainer.checkpoint_callback.best_model_path
 
-    if evaluate and ckpt_path:
+    if ckpt_path:
         log.info("Validating model")
         trainer.validate(model=model, datamodule=data, ckpt_path=ckpt_path)
 

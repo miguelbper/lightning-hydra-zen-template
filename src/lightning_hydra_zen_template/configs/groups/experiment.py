@@ -24,5 +24,6 @@ ExperimentExampleCfg = make_config(
     seed=0,
 )
 
+
 experiment_store = store(group="experiment", package="_global_", to_config=remove_types)
 experiment_store(ExperimentExampleCfg, name="example")

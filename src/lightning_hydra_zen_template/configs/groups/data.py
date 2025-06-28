@@ -8,4 +8,5 @@ MNISTDataModuleCfg = fbuilds(
     zen_wrappers=log_instantiation,
 )
 
+
 store(MNISTDataModuleCfg, group="data", name="mnist")

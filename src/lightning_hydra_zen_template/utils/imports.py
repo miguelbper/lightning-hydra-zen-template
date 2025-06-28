@@ -15,7 +15,7 @@ def import_modules(pkg_dir: Path) -> None:
     package is imported.
 
     Args:
-        pkg_dir: Directory containing Python modules to import
+        pkg_dir (Path): Directory containing Python modules to import.
     """
     modules: list[str] = python_modules(pkg_dir)
     for module in modules:
@@ -29,10 +29,10 @@ def python_modules(pkg_dir: Path) -> list[str]:
     their paths to module names, excluding __init__.py files.
 
     Args:
-        pkg_dir: Directory to search for Python files
+        pkg_dir (Path): Directory to search for Python files.
 
     Returns:
-        List of module names (e.g., ['numerai.common.data.datamodule'])
+        list[str]: List of module names (e.g., ['lightning_hydra_zen_template.data.mnist']).
     """
     return [module_name(path) for path in pkg_dir.rglob("*.py") if path.stem != "__init__"]
 
@@ -44,10 +44,10 @@ def module_name(module_path: Path) -> str:
     dot-separated module name.
 
     Args:
-        module_path: Path to the Python file
+        module_path (Path): Path to the Python file.
 
     Returns:
-        Module name as a string (e.g., 'numerai.common.data.datamodule')
+        str: Module name as a string (e.g., 'lightning_hydra_zen_template.data.mnist').
     """
     rel_path: Path = module_path.relative_to(src_dir)
     module_parts: list[str] = [*rel_path.parent.parts, rel_path.stem]

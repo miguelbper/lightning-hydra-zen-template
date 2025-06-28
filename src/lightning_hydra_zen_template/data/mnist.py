@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 import torch
 from lightning import LightningDataModule
@@ -10,10 +9,7 @@ from torchvision.datasets import MNIST
 from torchvision.transforms import v2
 
 from lightning_hydra_zen_template.configs.utils.paths import data_dir
-
-Input = torch.Tensor
-Target = torch.Tensor
-Batch = tuple[Input, Target]
+from lightning_hydra_zen_template.utils.types import Batch, Path_
 
 MNIST_NUM_TRAIN_EXAMPLES: int = 60000
 MNIST_MEAN: float = 0.1307
@@ -23,53 +19,39 @@ raw_data_dir: str = os.path.join(data_dir, "raw")
 
 
 class MNISTDataModule(LightningDataModule):
-    """A PyTorch Lightning DataModule for the MNIST dataset.
-
-    This class handles downloading, preprocessing, and loading of the MNIST dataset.
-    It splits the training data into training and validation sets, and provides
-    separate dataloaders for training, validation, and testing.
-
-    Attributes:
-        data_dir (str | Path): Directory where MNIST dataset is stored.
-        batch_size (int): Number of samples per batch.
-        num_workers (int): Number of subprocesses for data loading.
-        pin_memory (bool): Whether to pin memory in CPU for faster GPU transfer.
-        num_val_examples (int): Number of examples to use for validation.
-        num_train_examples (int): Number of examples to use for training.
-        transform (v2.Compose): Image transformations to apply to the data.
-    """
-
     def __init__(
         self,
-        data_dir: str | Path = raw_data_dir,
+        data_dir: Path_ = raw_data_dir,
         num_val_examples: int = 5000,
-        batch_size: int = 32,
-        num_workers: int | None = None,
+        batch_size: int = 1024,
         num_devices: int | None = None,
+        num_workers: int | None = None,
         pin_memory: bool = False,
     ) -> None:
         """Initialize the MNIST DataModule.
 
         Args:
-            data_dir (str | Path): Directory where MNIST dataset is stored.
+            data_dir (Path_): Directory where MNIST dataset is stored.
             num_val_examples (int, optional): Number of validation examples. Defaults to 5000.
-            batch_size (int, optional): Number of samples per batch. Defaults to 32.
-            num_workers (int, optional): Number of subprocesses for data loading. Defaults to 0. If None, the number of
-                workers is automatically computed based on the number of devices.
+            batch_size (int, optional): Number of samples per batch. Defaults to 1024.
             num_devices (int, optional): Number of devices in trainer. Only relevant if num_workers is not None, to do
                 automatic computation of num_workers.
+            num_workers (int, optional): Number of subprocesses for data loading. If None, the number of
+                workers is automatically computed based on the number of devices.
             pin_memory (bool, optional): Whether to pin memory in CPU. Defaults to False.
         """
         super().__init__()
         self.save_hyperparameters()
-        self.data_dir = data_dir
-        self.batch_size = batch_size
-        self.num_devices = num_devices or 1
-        self.num_workers = suggested_max_num_workers(self.num_devices) if num_workers is None else num_workers
-        self.pin_memory = pin_memory
-        self.num_val_examples = num_val_examples
-        self.num_train_examples = MNIST_NUM_TRAIN_EXAMPLES - num_val_examples
-        self.transform = v2.Compose(
+
+        self.data_dir: Path_ = data_dir
+        self.num_val_examples: int = num_val_examples
+        self.batch_size: int = batch_size
+        self.num_devices: int = num_devices or 1
+        self.num_workers: int = suggested_max_num_workers(self.num_devices) if num_workers is None else num_workers
+        self.pin_memory: bool = pin_memory
+
+        self.num_train_examples: int = MNIST_NUM_TRAIN_EXAMPLES - num_val_examples
+        self.transform: v2.Compose = v2.Compose(
             [
                 v2.ToImage(),
                 v2.RGB(),
@@ -104,40 +86,40 @@ class MNISTDataModule(LightningDataModule):
         """Create and return the training dataloader.
 
         Returns:
-            DataLoader[Batch]: Dataloader for training data with shuffling enabled.
+            DataLoader[Batch]: Dataloader for training data.
         """
         return DataLoader(
-            self.mnist_train,
+            dataset=self.mnist_train,
             batch_size=self.batch_size,
+            shuffle=True,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            shuffle=True,
         )
 
     def val_dataloader(self) -> DataLoader[Batch]:
         """Create and return the validation dataloader.
 
         Returns:
-            DataLoader[Batch]: Dataloader for validation data with shuffling disabled.
+            DataLoader[Batch]: Dataloader for validation data.
         """
         return DataLoader(
-            self.mnist_val,
+            dataset=self.mnist_val,
             batch_size=self.batch_size,
+            shuffle=False,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            shuffle=False,
         )
 
     def test_dataloader(self) -> DataLoader[Batch]:
         """Create and return the test dataloader.
 
         Returns:
-            DataLoader[Batch]: Dataloader for test data with shuffling disabled.
+            DataLoader[Batch]: Dataloader for test data.
         """
         return DataLoader(
-            self.mnist_test,
+            dataset=self.mnist_test,
             batch_size=self.batch_size,
+            shuffle=False,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
-            shuffle=False,
         )
