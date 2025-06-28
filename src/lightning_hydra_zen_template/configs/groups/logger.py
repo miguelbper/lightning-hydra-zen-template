@@ -20,6 +20,8 @@ TensorBoardLoggerCfg = fbuilds(
 
 MLFlowLoggerCfg = fbuilds(
     MLFlowLogger,
+    experiment_name="${experiment_name}",
+    run_name="${task_name}",
     tracking_uri=os.path.join(log_dir, "mlflow", "mlruns"),
     log_model=True,
 )

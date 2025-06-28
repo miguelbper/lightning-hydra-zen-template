@@ -11,7 +11,7 @@ EvalCfg = make_config(
         [
             "_self_",
             {"data": "mnist"},
-            {"model": "mnist"},
+            {"model": "resnet"},
             {"trainer": "default"},
             {"callbacks": "eval"},
         ]

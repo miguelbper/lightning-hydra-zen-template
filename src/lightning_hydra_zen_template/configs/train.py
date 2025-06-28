@@ -10,7 +10,7 @@ TrainCfg = make_config(
         [
             "_self_",
             {"data": "mnist"},
-            {"model": "mnist"},
+            {"model": "resnet"},
             {"trainer": "default"},
             {"callbacks": "train"},
             {"logger": "train"},
@@ -21,4 +21,6 @@ TrainCfg = make_config(
     monitor="val/MulticlassAccuracy",
     mode="max",
     output_dir=output_dir,
+    experiment_name="mnist",
+    run_name="resnet",
 )

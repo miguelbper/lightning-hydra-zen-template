@@ -90,6 +90,7 @@ SKLearnModelCfg = fbuilds(
     zen_wrappers=log_instantiation,
 )
 
+
 model_store = store(group="model")
-model_store(ModelCfg, name="mnist")
+model_store(ModelCfg, name="resnet")
 model_store(SKLearnModelCfg, name="logistic")
