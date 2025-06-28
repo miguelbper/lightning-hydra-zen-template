@@ -6,7 +6,6 @@ from typing import Any
 from hydra_zen import make_custom_builds_fn
 from hydra_zen.wrapper import default_to_config
 from omegaconf import DictConfig, OmegaConf
-from toolz.functoolz import compose
 
 log = logging.getLogger(__name__)
 
@@ -48,8 +47,7 @@ def remove_types(cfg: DictConfig) -> DictConfig:
         DictConfig: The configuration object with type information removed.
     """
     cfg = default_to_config(cfg)
-    untype = compose(OmegaConf.create, OmegaConf.to_container, OmegaConf.create)
-    return untype(cfg) if is_dataclass(cfg) else cfg
+    return OmegaConf.create(OmegaConf.to_container(OmegaConf.create(cfg))) if is_dataclass(cfg) else cfg
 
 
 def add_colorlog(hydra_defaults: list[str | dict[str, str]]) -> list[str | dict[str, str]]:
