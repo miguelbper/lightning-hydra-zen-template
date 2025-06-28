@@ -70,6 +70,7 @@ DebugProfilerCfg = make_config(
     ),
 )
 
+
 debug_store = store(group="debug", package="_global_", to_config=remove_types)
 debug_store(DebugDefaultCfg, name="debug_default")
 debug_store(DebugFDRCfg, name="fdr")

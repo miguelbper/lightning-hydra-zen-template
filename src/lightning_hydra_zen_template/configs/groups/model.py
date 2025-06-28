@@ -12,20 +12,56 @@ NUM_CLASSES = 10
 
 ModelCfg = fbuilds(
     Model,
-    net=fbuilds(ResNet, num_classes=NUM_CLASSES),
-    loss_fn=fbuilds(nn.CrossEntropyLoss),
-    optimizer=fbuilds(Adam, lr=0.001, zen_partial=True),
-    scheduler=fbuilds(ReduceLROnPlateau, mode="min", factor=0.1, patience=10, zen_partial=True),
+    net=fbuilds(
+        ResNet,
+        num_classes=NUM_CLASSES,
+    ),
+    loss_fn=fbuilds(
+        nn.CrossEntropyLoss,
+    ),
+    optimizer=fbuilds(
+        Adam,
+        lr=0.001,
+        zen_partial=True,
+    ),
+    scheduler=fbuilds(
+        ReduceLROnPlateau,
+        mode="min",
+        factor=0.1,
+        patience=10,
+        zen_partial=True,
+    ),
     metric_collection=fbuilds(
         MetricCollection,
         metrics=[
-            fbuilds(Accuracy, task="multiclass", num_classes=NUM_CLASSES, average="micro"),
-            fbuilds(F1Score, task="multiclass", num_classes=NUM_CLASSES, average="macro"),
-            fbuilds(Precision, task="multiclass", num_classes=NUM_CLASSES, average="macro"),
-            fbuilds(Recall, task="multiclass", num_classes=NUM_CLASSES, average="macro"),
+            fbuilds(
+                Accuracy,
+                task="multiclass",
+                num_classes=NUM_CLASSES,
+                average="micro",
+            ),
+            fbuilds(
+                F1Score,
+                task="multiclass",
+                num_classes=NUM_CLASSES,
+                average="macro",
+            ),
+            fbuilds(
+                Precision,
+                task="multiclass",
+                num_classes=NUM_CLASSES,
+                average="macro",
+            ),
+            fbuilds(
+                Recall,
+                task="multiclass",
+                num_classes=NUM_CLASSES,
+                average="macro",
+            ),
         ],
     ),
     zen_wrappers=log_instantiation,
 )
+
 
 store(ModelCfg, group="model", name="mnist")

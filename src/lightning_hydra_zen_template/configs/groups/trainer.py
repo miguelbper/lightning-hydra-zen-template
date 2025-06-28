@@ -15,5 +15,5 @@ TrainerCfg = fbuilds(
     zen_wrappers=log_instantiation,
 )
 
-trainer_store = store(group="trainer")
-trainer_store(TrainerCfg, name="default")
+
+store(TrainerCfg, group="trainer", name="default")

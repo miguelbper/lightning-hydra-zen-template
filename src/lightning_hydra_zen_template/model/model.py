@@ -1,5 +1,4 @@
 from collections.abc import Callable
-from typing import Any
 
 from lightning import LightningModule
 from lightning.pytorch.utilities.types import OptimizerConfigType, OptimizerLRSchedulerConfigType
@@ -9,28 +8,10 @@ from torch.optim.lr_scheduler import LRScheduler
 from torch.optim.optimizer import ParamsT
 from torchmetrics import MetricCollection
 
-Input = Any
-Target = Tensor
-Batch = tuple[Input, Target]
+from lightning_hydra_zen_template.utils.types import Batch
 
 
 class Model(LightningModule):
-    """A PyTorch Lightning module that implements a complete training pipeline.
-
-    This class handles the training, validation, and testing steps, as well as
-    optimizer and learning rate scheduler configuration. It uses torchmetrics
-    for tracking various metrics during training.
-
-    Attributes:
-        net (nn.Module): The neural network model.
-        loss_fn (nn.Module): The loss function.
-        optimizer (Callable): Partially instantiated optimizer (remains to be instantiated with parameters).
-        scheduler (Callable | None): Partially instantiated scheduler (remains to be instantiated with optimizer).
-        metric_collection (MetricCollection): Collection of metrics to track.
-        val_metrics (MetricCollection): Metrics for validation phase.
-        test_metrics (MetricCollection): Metrics for testing phase.
-    """
-
     def __init__(
         self,
         net: nn.Module,
